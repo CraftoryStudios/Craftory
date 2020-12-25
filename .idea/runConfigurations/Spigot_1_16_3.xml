@@ -2,6 +2,7 @@
   <configuration default="false" name="Spigot 1.16.3" type="JarApplication">
     <option name="JAR_PATH" value="$PROJECT_DIR$/testServers/spigot/1.16.3/spigot-1.16.3.jar" />
     <option name="VM_PARAMETERS" value="-DIReallyKnowWhatIAmDoingISwear" />
+    <option name="PROGRAM_PARAMETERS" value="nogui" />
     <option name="WORKING_DIRECTORY" value="C:\GitProjects\CraftoryCore\testServers\spigot\1.16.3" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="ALTERNATIVE_JRE_PATH" value="11 (2)" />
