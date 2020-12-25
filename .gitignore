@@ -1,5 +1,7 @@
 # User-specific stuff
-.idea/
+.idea/*
+!.idea/artifacts/
+!.idea/runConfigurations/
 
 *.iml
 *.ipr

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="CopyJar-paper-1.15.1">
+    <output-path>$PROJECT_DIR$/testServers/paper/1.15.1/plugins</output-path>
+    <root id="root">
+      <element id="file-copy" path="$PROJECT_DIR$/target/core-1.0.0.jar" />
+    </root>
+  </artifact>
+</component>
