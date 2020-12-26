@@ -5,12 +5,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 import org.bukkit.scheduler.BukkitRunnable;
 import studio.craftory.core.executors.interfaces.Tickable;
 
-public class AsyncExecutionManager extends BukkitRunnable {
+public class SyncExecutionManager extends BukkitRunnable {
 
   private ArrayList<TickGroup> tickGroups;
   private HashMap<Class<? extends Tickable>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
@@ -24,7 +23,7 @@ public class AsyncExecutionManager extends BukkitRunnable {
 
   private ForkJoinPool forkJoinPool = new ForkJoinPool(2);
 
-  public AsyncExecutionManager() {
+  public SyncExecutionManager() {
     tickGroups = new ArrayList<>();
     tickableMethods = new HashMap<>();
     tick = 0;
@@ -38,24 +37,20 @@ public class AsyncExecutionManager extends BukkitRunnable {
     for (i = 0; i < tickGroupsLength; i++) {
       if (tick % tickGroups.get(i).tick == 0) {
         Iterator<Tickable> iterator = tickGroups.get(i).tickables.iterator();
-
+        
         while (iterator.hasNext()) {
           Tickable tickable = iterator.next();
           ArrayList<Method> tickMethods = tickableMethods.get(tickable.getClass()).get(tickGroups.get(i));
           length = tickMethods.size();
 
           for (x = 0; x < length; x++) {
-            final Method method = tickMethods.get(x);
-            forkJoinPool.execute(() -> {
-              try {
-                method.invoke(tickable);
-              } catch (IllegalAccessException e) {
-                e.printStackTrace();
-              } catch (InvocationTargetException e) {
-                e.printStackTrace();
-              }
-            });
-
+            try {
+              tickMethods.get(x).invoke(tickable);
+            } catch (IllegalAccessException e) {
+              e.printStackTrace();
+            } catch (InvocationTargetException e) {
+              e.printStackTrace();
+            }
           }
         }
       }
