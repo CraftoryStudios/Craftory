@@ -6,11 +6,6 @@
     <option name="WORKING_DIRECTORY" value="C:\GitProjects\CraftoryCore\testServers\spigot\1.16.4" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="ALTERNATIVE_JRE_PATH" value="11 (2)" />
-    <method v="2">
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Package Spigot" run_configuration_type="MavenRunConfiguration" />
-      <option name="BuildArtifacts" enabled="true">
-        <artifact name="CopyJar-spigot-1.16.4" />
-      </option>
-    </method>
+    <method v="2" />
   </configuration>
 </component>

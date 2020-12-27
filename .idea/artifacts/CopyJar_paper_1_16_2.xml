@@ -2,7 +2,7 @@
   <artifact build-on-make="true" name="CopyJar-paper-1.16.2">
     <output-path>$PROJECT_DIR$/testServers/paper/1.16.2/plugins</output-path>
     <root id="root">
-      <element id="file-copy" path="$PROJECT_DIR$/target/core-1.0.0.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/testServers/spigot/1.16.4/plugins/core-1.0.0.jar" />
     </root>
   </artifact>
 </component>

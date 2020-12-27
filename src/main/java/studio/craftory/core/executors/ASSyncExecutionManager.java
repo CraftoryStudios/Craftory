@@ -16,7 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import studio.craftory.core.annotations.SyncTickable;
 import studio.craftory.core.executors.interfaces.Tickable;
 
-public class SyncExecutionManager extends BukkitRunnable {
+public class ASSyncExecutionManager extends BukkitRunnable {
 
   private HashSet<TickGroup> tickGroups;
   private HashMap<Integer, TickGroup> tickGroupsMap;
@@ -28,14 +28,16 @@ public class SyncExecutionManager extends BukkitRunnable {
   private int j;
   private int x;
   private int length;
+  private ForkJoinPool forkJoinPool;
 
-  public SyncExecutionManager() {
+  public ASSyncExecutionManager() {
     tickGroups = new HashSet<>();
     tickGroupsMap = new HashMap<>();
     tickableMethods = new HashMap<>();
     tick = 0;
     maxTick = 0;
     tickGroupsLength = 0;
+    forkJoinPool = new ForkJoinPool(4);
   }
 
   @Override
@@ -51,13 +53,16 @@ public class SyncExecutionManager extends BukkitRunnable {
           length = tickMethods.size();
 
           for (x = 0; x < length; x++) {
-            try {
-              tickMethods.get(x).invoke(tickable);
-            } catch (IllegalAccessException e) {
-              e.printStackTrace();
-            } catch (InvocationTargetException e) {
-              e.printStackTrace();
-            }
+            final Method method = tickMethods.get(x);
+            forkJoinPool.execute(() -> {
+              try {
+                method.invoke(tickable);
+              } catch (IllegalAccessException e) {
+                e.printStackTrace();
+              } catch (InvocationTargetException e) {
+                e.printStackTrace();
+              }
+            });
           }
         }
       }
