@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ForkJoinPool;
 import lombok.NonNull;
 import org.bukkit.scheduler.BukkitRunnable;
 import studio.craftory.core.annotations.SyncTickable;
@@ -23,9 +22,6 @@ public class SyncExecutionManager extends BukkitRunnable {
   private HashMap<Class<? extends Tickable>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
   private int tick;
   private int maxTick;
-  private int tickGroupsLength;
-  private int i;
-  private int j;
   private int x;
   private int length;
 
@@ -35,7 +31,6 @@ public class SyncExecutionManager extends BukkitRunnable {
     tickableMethods = new HashMap<>();
     tick = 0;
     maxTick = 0;
-    tickGroupsLength = 0;
   }
 
   @Override
@@ -43,19 +38,15 @@ public class SyncExecutionManager extends BukkitRunnable {
     tick++;
     for (TickGroup tickGroup : tickGroups) {
       if (tick % tickGroup.tick == 0) {
-        Iterator<Tickable> iterator = tickGroup.tickables.iterator();
-        
-        while (iterator.hasNext()) {
-          Tickable tickable = iterator.next();
+
+        for (Tickable tickable : tickGroup.tickables) {
           ArrayList<Method> tickMethods = tickableMethods.get(tickable.getClass()).get(tickGroup.tick);
           length = tickMethods.size();
 
           for (x = 0; x < length; x++) {
             try {
               tickMethods.get(x).invoke(tickable);
-            } catch (IllegalAccessException e) {
-              e.printStackTrace();
-            } catch (InvocationTargetException e) {
+            } catch (IllegalAccessException | InvocationTargetException e) {
               e.printStackTrace();
             }
           }

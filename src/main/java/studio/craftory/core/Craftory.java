@@ -1,10 +1,8 @@
 package studio.craftory.core;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import studio.craftory.core.blocks.SimpleIncrease;
-import studio.craftory.core.executors.ASSyncExecutionManager;
-import studio.craftory.core.executors.SyncExecutionManager;
+import studio.craftory.core.executors.AsyncExecutionManager;
 
 public final class Craftory extends JavaPlugin {
 
@@ -12,7 +10,7 @@ public final class Craftory extends JavaPlugin {
   public void onEnable() {
     // Plugin startup logic
     this.getLogger().info("Plugin now running! NOW");
-    ASSyncExecutionManager syncExecutionManager = new ASSyncExecutionManager();
+    AsyncExecutionManager syncExecutionManager = new AsyncExecutionManager();
     syncExecutionManager.registerTickableClass(SimpleIncrease.class);
     for (int i = 0; i < 100000; i++) {
       syncExecutionManager.addTickableObject(new SimpleIncrease());

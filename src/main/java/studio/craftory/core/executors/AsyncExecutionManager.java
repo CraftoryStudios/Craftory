@@ -1,18 +1,25 @@
 package studio.craftory.core.executors;
 
+import com.google.common.collect.Lists;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
+import lombok.NonNull;
 import org.bukkit.scheduler.BukkitRunnable;
+import studio.craftory.core.annotations.SyncTickable;
 import studio.craftory.core.executors.interfaces.Tickable;
 
 public class AsyncExecutionManager extends BukkitRunnable {
 
-  private ArrayList<TickGroup> tickGroups;
+  private HashSet<TickGroup> tickGroups;
+  private HashMap<Integer, TickGroup> tickGroupsMap;
   private HashMap<Class<? extends Tickable>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
   private int tick;
   private int maxTick;
@@ -21,27 +28,26 @@ public class AsyncExecutionManager extends BukkitRunnable {
   private int j;
   private int x;
   private int length;
-
-  private ForkJoinPool forkJoinPool = new ForkJoinPool(2);
+  private ForkJoinPool forkJoinPool;
 
   public AsyncExecutionManager() {
-    tickGroups = new ArrayList<>();
+    tickGroups = new HashSet<>();
+    tickGroupsMap = new HashMap<>();
     tickableMethods = new HashMap<>();
     tick = 0;
     maxTick = 0;
     tickGroupsLength = 0;
+    forkJoinPool = new ForkJoinPool(4);
   }
 
   @Override
   public void run() {
     tick++;
-    for (i = 0; i < tickGroupsLength; i++) {
-      if (tick % tickGroups.get(i).tick == 0) {
-        Iterator<Tickable> iterator = tickGroups.get(i).tickables.iterator();
+    for (TickGroup tickGroup : tickGroups) {
+      if (tick % tickGroup.tick == 0) {
 
-        while (iterator.hasNext()) {
-          Tickable tickable = iterator.next();
-          ArrayList<Method> tickMethods = tickableMethods.get(tickable.getClass()).get(tickGroups.get(i));
+        for (Tickable tickable : tickGroup.tickables) {
+          ArrayList<Method> tickMethods = tickableMethods.get(tickable.getClass()).get(tickGroup.tick);
           length = tickMethods.size();
 
           for (x = 0; x < length; x++) {
@@ -55,7 +61,6 @@ public class AsyncExecutionManager extends BukkitRunnable {
                 e.printStackTrace();
               }
             });
-
           }
         }
       }
@@ -64,4 +69,63 @@ public class AsyncExecutionManager extends BukkitRunnable {
       tick = 0;
     }
   }
+
+  public void registerTickableClass(@NonNull Class<? extends Tickable> clazz) {
+    //if (!tickableMethods.containsKey(clazz)) return;
+
+    HashMap<Integer, ArrayList<Method>> tickMethods = new HashMap<>();
+
+
+    getMethodsRecursively(clazz, Object.class).forEach(method -> {
+      SyncTickable syncTickable = method.getAnnotation(SyncTickable.class);
+      if (Objects.nonNull(syncTickable) && method.getParameterCount() == 0) {
+
+        ArrayList<Method> temp;
+        if (tickMethods.containsKey(syncTickable.ticks())) {
+          temp = tickMethods.get(syncTickable.ticks());
+        } else {
+          temp = new ArrayList<>();
+        }
+
+        temp.add(method);
+        tickMethods.put(syncTickable.ticks(), temp);
+      }
+    });
+
+    tickableMethods.put(clazz, tickMethods);
+
+  }
+
+  public void addTickableObject(@NonNull Tickable object) {
+    if (tickableMethods.containsKey(object.getClass())) {
+      Set<Integer> tickKeys = tickableMethods.get(object.getClass()).keySet();
+      for (Integer integer : tickKeys) {
+        TickGroup tickGroup;
+        if (tickGroupsMap.containsKey(integer)) {
+          tickGroup = tickGroupsMap.get(integer);
+        } else {
+          tickGroup = new TickGroup(integer);
+        }
+
+        tickGroup.tickables.add(object);
+        tickGroups.add(tickGroup);
+        tickGroupsMap.put(integer, tickGroup);
+      }
+    } else {
+      //Error
+    }
+  }
+
+
+
+  private Collection<Method> getMethodsRecursively(@NonNull Class<?> startClass, @NonNull Class<?> exclusiveParent) {
+    Collection<Method> methods = Lists.newArrayList(startClass.getDeclaredMethods());
+    Class<?> parentClass = startClass.getSuperclass();
+
+    if (parentClass != null && !(parentClass.equals(exclusiveParent))) {
+      methods.addAll(getMethodsRecursively(parentClass, exclusiveParent));
+    }
+    return methods;
+  }
+
 }

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
@@ -16,7 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import studio.craftory.core.annotations.SyncTickable;
 import studio.craftory.core.executors.interfaces.Tickable;
 
-public class ASSyncExecutionManager extends BukkitRunnable {
+public class AsyncNewExecutionManager extends BukkitRunnable {
 
   private HashSet<TickGroup> tickGroups;
   private HashMap<Integer, TickGroup> tickGroupsMap;
@@ -30,7 +29,7 @@ public class ASSyncExecutionManager extends BukkitRunnable {
   private int length;
   private ForkJoinPool forkJoinPool;
 
-  public ASSyncExecutionManager() {
+  public AsyncNewExecutionManager() {
     tickGroups = new HashSet<>();
     tickGroupsMap = new HashMap<>();
     tickableMethods = new HashMap<>();
@@ -45,10 +44,8 @@ public class ASSyncExecutionManager extends BukkitRunnable {
     tick++;
     for (TickGroup tickGroup : tickGroups) {
       if (tick % tickGroup.tick == 0) {
-        Iterator<Tickable> iterator = tickGroup.tickables.iterator();
-        
-        while (iterator.hasNext()) {
-          Tickable tickable = iterator.next();
+
+        for (Tickable tickable : tickGroup.tickables) {
           ArrayList<Method> tickMethods = tickableMethods.get(tickable.getClass()).get(tickGroup.tick);
           length = tickMethods.size();
 
