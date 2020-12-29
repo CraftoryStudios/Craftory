@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.bukkit.plugin.java.JavaPlugin;
 import studio.craftory.core.blocks.ComplexObject;
 import studio.craftory.core.blocks.SimpleObject;
-import studio.craftory.core.executors.AsyncNewExecutionManager;
+import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.interfaces.Tickable;
 
 public final class Craftory extends JavaPlugin {
@@ -23,7 +23,7 @@ public final class Craftory extends JavaPlugin {
     this.getLogger().info("Plugin now running! NOW");
 
     //Setup Executor
-    AsyncNewExecutionManager syncExecutionManager = new AsyncNewExecutionManager(4);
+    AsyncExecutionManager syncExecutionManager = new AsyncExecutionManager(4);
     syncExecutionManager.registerTickableClass(SimpleObject.class);
     syncExecutionManager.registerTickableClass(ComplexObject.class);
 
