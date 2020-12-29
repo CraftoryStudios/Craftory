@@ -34,6 +34,7 @@ public class SyncOldExecutionManager extends BukkitRunnable {
             method.invoke(tickable);
           } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("Shit is fucked yo");
           }
         }
       }));
@@ -41,7 +42,7 @@ public class SyncOldExecutionManager extends BukkitRunnable {
   }
 
   @Synchronized
-  public void addTickingBlock(@NonNull Tickable tickable) {
+  public void addTickableObject(@NonNull Tickable tickable) {
     if (classCache.containsKey(tickable.getClass())) {
       trackedBlocks.add(tickable);
     }
@@ -53,7 +54,7 @@ public class SyncOldExecutionManager extends BukkitRunnable {
   }
 
   @Synchronized
-  public void registerCustomBlockClass(@NonNull Class<? extends Tickable> clazz) {
+  public void registerTickableClass(@NonNull Class<? extends Tickable> clazz) {
     if (!classCache.containsKey(clazz)) {
       Collection<Method> methods = getMethodsRecursively(clazz, Object.class);
       HashMap<Method, Integer> tickingMethods = new HashMap<>();

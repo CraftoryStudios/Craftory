@@ -3,6 +3,9 @@ package studio.craftory.core;
 import org.bukkit.plugin.java.JavaPlugin;
 import studio.craftory.core.blocks.SimpleIncrease;
 import studio.craftory.core.executors.AsyncExecutionManager;
+import studio.craftory.core.executors.AsyncNewExecutionManager;
+import studio.craftory.core.executors.SyncExecutionManager;
+import studio.craftory.core.executors.SyncOldExecutionManager;
 
 public final class Craftory extends JavaPlugin {
 

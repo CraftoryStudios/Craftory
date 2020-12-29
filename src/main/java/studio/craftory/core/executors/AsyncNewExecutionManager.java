@@ -1,6 +1,7 @@
 package studio.craftory.core.executors;
 
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -9,7 +10,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.LongAdder;
 import lombok.NonNull;
 import org.bukkit.scheduler.BukkitRunnable;
 import studio.craftory.core.annotations.SyncTickable;
@@ -17,55 +20,56 @@ import studio.craftory.core.executors.interfaces.Tickable;
 
 public class AsyncNewExecutionManager extends BukkitRunnable {
 
-  private HashSet<TickGroup> tickGroups;
-  private HashMap<Integer, TickGroup> tickGroupsMap;
-  private HashMap<Class<? extends Tickable>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
-  private int tick;
-  private int maxTick;
-  private int tickGroupsLength;
-  private int i;
-  private int j;
-  private int x;
-  private int length;
-  private ForkJoinPool forkJoinPool;
+  private ArrayList<HashSet<TickGroup>> tickGroups;
+  private ArrayList<HashMap<Integer, TickGroup>> tickGroupsMap;
+  private HashMap<String, HashMap<Integer, ArrayList<Method>>> tickableMethods;
+  private HashMap<String, ArrayList<Integer>> threadTaskDistribution;
+  private final LongAdder tick;
+  private final ExecutorService executor;
+  private final int threadCount;
 
-  public AsyncNewExecutionManager() {
-    tickGroups = new HashSet<>();
-    tickGroupsMap = new HashMap<>();
+  public AsyncNewExecutionManager(int threadCount) {
+    this.threadCount = threadCount;
+    threadTaskDistribution = new HashMap<>();
+    tickGroups = new ArrayList<>(threadCount);
+    tickGroupsMap = new ArrayList<>(threadCount);
+    for (int i = 0; i < threadCount; i++) {
+      tickGroups.add(new HashSet<>());
+      tickGroupsMap.add(new HashMap<>());
+    }
     tickableMethods = new HashMap<>();
-    tick = 0;
-    maxTick = 0;
-    tickGroupsLength = 0;
-    forkJoinPool = new ForkJoinPool(4);
+    tick = new LongAdder();
+    executor = Executors.newFixedThreadPool(threadCount, new ThreadFactoryBuilder().setNameFormat("Craftory-Worker-%d").build());
   }
 
   @Override
   public void run() {
-    tick++;
-    for (TickGroup tickGroup : tickGroups) {
-      if (tick % tickGroup.tick == 0) {
+    tick.increment();
+    for (int threadID = 0; threadID < threadCount; threadID++) {
+      HashSet<TickGroup> threadTasks = tickGroups.get(threadID);
+      executor.execute(() -> threadTask(threadTasks, tick, tickableMethods));
+    }
+  }
 
-        for (Tickable tickable : tickGroup.tickables) {
-          ArrayList<Method> tickMethods = tickableMethods.get(tickable.getClass()).get(tickGroup.tick);
-          length = tickMethods.size();
+  private void threadTask(HashSet<TickGroup> threadTasks, LongAdder currentTick,
+      HashMap<String, HashMap<Integer, ArrayList<Method>>> tickMethods) {
+    for (TickGroup tickGroup: threadTasks) {
+      if (currentTick.intValue() % tickGroup.tick == 0) {
+        for (Tickable tickableObject : tickGroup.tickables) {
+          final ArrayList<Method> methods = tickMethods.get(tickableObject.getClass().getName()).get(tickGroup.tick);
+          int length = tickMethods.size();
 
+          int x;
           for (x = 0; x < length; x++) {
-            final Method method = tickMethods.get(x);
-            forkJoinPool.execute(() -> {
-              try {
-                method.invoke(tickable);
-              } catch (IllegalAccessException e) {
-                e.printStackTrace();
-              } catch (InvocationTargetException e) {
-                e.printStackTrace();
-              }
-            });
+            final Method method = methods.get(x);
+            try {
+              method.invoke(tickableObject);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+              e.printStackTrace();
+            }
           }
         }
       }
-    }
-    if (tick == maxTick) {
-      tick = 0;
     }
   }
 
@@ -91,27 +95,52 @@ public class AsyncNewExecutionManager extends BukkitRunnable {
       }
     });
 
-    tickableMethods.put(clazz, tickMethods);
+    tickableMethods.put(clazz.getName(), tickMethods);
 
   }
 
   public void addTickableObject(@NonNull Tickable object) {
-    if (tickableMethods.containsKey(object.getClass())) {
-      Set<Integer> tickKeys = tickableMethods.get(object.getClass()).keySet();
+    if (tickableMethods.containsKey(object.getClass().getName())) {
+      Set<Integer> tickKeys = tickableMethods.get(object.getClass().getName()).keySet();
+      if (tickKeys.isEmpty()) return;
+      int exectionThread = getExectionThread(object.getClass().getName());
+      HashMap<Integer,TickGroup> threadTickGroupMap = tickGroupsMap.get(exectionThread);
       for (Integer integer : tickKeys) {
         TickGroup tickGroup;
-        if (tickGroupsMap.containsKey(integer)) {
-          tickGroup = tickGroupsMap.get(integer);
+        if (threadTickGroupMap.containsKey(integer)) {
+          tickGroup = threadTickGroupMap.get(integer);
         } else {
           tickGroup = new TickGroup(integer);
         }
 
         tickGroup.tickables.add(object);
-        tickGroups.add(tickGroup);
-        tickGroupsMap.put(integer, tickGroup);
+        tickGroups.get(exectionThread).add(tickGroup);
+        tickGroupsMap.get(exectionThread).put(integer, tickGroup);
       }
+    }
+
+  }
+
+  private int getExectionThread(String className) {
+    if (threadTaskDistribution.containsKey(className)) {
+      ArrayList<Integer> threadWorkloads = threadTaskDistribution.get(className);
+      int bestThread = 0;
+      int taskCount = Integer.MAX_VALUE;
+      for (int l = 0; l < threadWorkloads.size(); l++) {
+        if (threadWorkloads.get(l) < taskCount) {
+          taskCount = threadWorkloads.get(l);
+          bestThread = l;
+        }
+      }
+      return bestThread;
     } else {
-      //Error
+      ArrayList<Integer> threadTasks = new ArrayList<>(threadCount);
+      threadTasks.add(1);
+      for (int l = 1; l < threadCount; l++) {
+        threadTasks.add(0);
+      }
+      threadTaskDistribution.put(className,threadTasks);
+      return 0;
     }
   }
 
