@@ -57,7 +57,8 @@ public class AsyncNewExecutionManager extends BukkitRunnable {
       if (currentTick.intValue() % tickGroup.tick == 0) {
         for (Tickable tickableObject : tickGroup.tickables) {
           final ArrayList<Method> methods = tickMethods.get(tickableObject.getClass().getName()).get(tickGroup.tick);
-          int length = tickMethods.size();
+          int length = methods.size();
+          if (length == 0) continue;
 
           int x;
           for (x = 0; x < length; x++) {
