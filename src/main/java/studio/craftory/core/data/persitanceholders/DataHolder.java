@@ -1,10 +1,10 @@
-package studio.craftory.core.data_containers.persitance_holders;
+package studio.craftory.core.data.persitanceholders;
 
 import java.util.HashMap;
 import java.util.Optional;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import studio.craftory.core.data_containers.CraftoryKey;
+import studio.craftory.core.data.CraftoryKey;
 
 @NoArgsConstructor
 public class DataHolder {

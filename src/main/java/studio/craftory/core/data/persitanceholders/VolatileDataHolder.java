@@ -1,4 +1,4 @@
-package studio.craftory.core.data_containers.persitance_holders;
+package studio.craftory.core.data.persitanceholders;
 
 public interface VolatileDataHolder {
 
