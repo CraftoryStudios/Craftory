@@ -14,6 +14,7 @@ public interface EnergyOutput extends EnergyStorage {
 
   /**
    * Extracts energy from objects storage up to the maximum amount requested.
+   *
    * @param energyRequested Maximum amount of energy to extract
    * @return Amount of energy extracted
    */
@@ -26,7 +27,7 @@ public interface EnergyOutput extends EnergyStorage {
   }
 
   /**
-   * @return Maximum amount of energy object is capable of outputting
+   * @return Maximum amount of energy object is capable of outputting each tick
    */
   default long getMaxEnergyOutput() {
     return Reflections.getClassAnnotation(this, EnergyOutputData.class).maxExtract();

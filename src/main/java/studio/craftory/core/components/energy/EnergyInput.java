@@ -5,6 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import lombok.NonNull;
+import lombok.Synchronized;
 import studio.craftory.core.utils.Reflections;
 
 /**
@@ -14,15 +15,15 @@ public interface EnergyInput extends EnergyStorage {
 
   /**
    * Inputs maximum possible amount of energy into objects energy storage
+   *
    * @param availableEnergy Amount of energy that is available to be insert into objects energy storage
    * @return Amount of energy that was stored
    */
+  @Synchronized
   default long receiveEnergy(@NonNull final long availableEnergy) {
-    synchronized (this) {
       long energyReceived = Math.min(getFreeSpace(), Math.min(getMaxEnergyInput(), availableEnergy));
       increaseStoredEnergy(energyReceived);
       return energyReceived;
-    }
   }
 
   /**
