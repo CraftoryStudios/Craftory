@@ -1,4 +1,4 @@
-package studio.craftory.core.data_containers;
+package studio.craftory.core.data;
 
 import java.io.Serializable;
 import java.util.Optional;
