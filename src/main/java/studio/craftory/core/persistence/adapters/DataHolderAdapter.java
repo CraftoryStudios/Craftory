@@ -9,7 +9,7 @@ public class DataHolderAdapter implements DataAdapter<DataHolder> {
 
   @Override
   public void store(PersistenceStorage persistenceStorage, DataHolder value, JsonNode node) {
-
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override

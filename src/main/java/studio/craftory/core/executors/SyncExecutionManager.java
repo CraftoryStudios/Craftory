@@ -7,22 +7,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import lombok.NonNull;
 import org.bukkit.scheduler.BukkitRunnable;
-import studio.craftory.core.annotations.SyncTickable;
 import studio.craftory.core.executors.interfaces.Tickable;
 
 public class SyncExecutionManager extends BukkitRunnable {
 
   private HashSet<TickGroup> tickGroups;
   private HashMap<Integer, TickGroup> tickGroupsMap;
-  private HashMap<Class<? extends Tickable>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
+  private HashMap<String, HashMap<Integer, ArrayList<Method>>> tickableMethods;
   private int tick;
   private int maxTick;
-  private int x;
-  private int length;
 
   public SyncExecutionManager() {
     tickGroups = new HashSet<>();
@@ -39,9 +35,10 @@ public class SyncExecutionManager extends BukkitRunnable {
       if (tick % tickGroup.tick == 0) {
 
         for (Tickable tickable : tickGroup.tickables) {
-          ArrayList<Method> tickMethods = tickableMethods.get(tickable.getClass()).get(tickGroup.tick);
-          length = tickMethods.size();
+          ArrayList<Method> tickMethods = tickableMethods.get(tickable.getClass().getName()).get(tickGroup.tick);
+          int length = tickMethods.size();
 
+          int x;
           for (x = 0; x < length; x++) {
             try {
               tickMethods.get(x).invoke(tickable);
@@ -58,34 +55,12 @@ public class SyncExecutionManager extends BukkitRunnable {
   }
 
   public void registerTickableClass(@NonNull Class<? extends Tickable> clazz) {
-    //if (!tickableMethods.containsKey(clazz)) return;
-
-    HashMap<Integer, ArrayList<Method>> tickMethods = new HashMap<>();
-
-
-    getMethodsRecursively(clazz, Object.class).forEach(method -> {
-      SyncTickable syncTickable = method.getAnnotation(SyncTickable.class);
-      if (Objects.nonNull(syncTickable) && method.getParameterCount() == 0) {
-
-        ArrayList<Method> temp;
-        if (tickMethods.containsKey(syncTickable.ticks())) {
-          temp = tickMethods.get(syncTickable.ticks());
-        } else {
-          temp = new ArrayList<>();
-        }
-
-        temp.add(method);
-        tickMethods.put(syncTickable.ticks(), temp);
-      }
-    });
-
-    tickableMethods.put(clazz, tickMethods);
-
+    ExecutorUtils.registerTickableClass(clazz, tickableMethods);
   }
 
   public void addTickableObject(@NonNull Tickable object) {
-    if (tickableMethods.containsKey(object.getClass())) {
-      Set<Integer> tickKeys = tickableMethods.get(object.getClass()).keySet();
+    if (tickableMethods.containsKey(object.getClass().getName())) {
+      Set<Integer> tickKeys = tickableMethods.get(object.getClass().getName()).keySet();
       for (Integer integer : tickKeys) {
         TickGroup tickGroup;
         if (tickGroupsMap.containsKey(integer)) {

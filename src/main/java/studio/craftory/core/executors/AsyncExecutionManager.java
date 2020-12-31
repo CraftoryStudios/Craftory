@@ -8,14 +8,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.LongAdder;
 import lombok.NonNull;
 import org.bukkit.scheduler.BukkitRunnable;
-import studio.craftory.core.annotations.SyncTickable;
 import studio.craftory.core.executors.interfaces.Tickable;
 
 public class AsyncExecutionManager extends BukkitRunnable {
@@ -75,29 +73,7 @@ public class AsyncExecutionManager extends BukkitRunnable {
   }
 
   public void registerTickableClass(@NonNull Class<? extends Tickable> clazz) {
-    //if (!tickableMethods.containsKey(clazz)) return;
-
-    HashMap<Integer, ArrayList<Method>> tickMethods = new HashMap<>();
-
-
-    getMethodsRecursively(clazz, Object.class).forEach(method -> {
-      SyncTickable syncTickable = method.getAnnotation(SyncTickable.class);
-      if (Objects.nonNull(syncTickable) && method.getParameterCount() == 0) {
-
-        ArrayList<Method> temp;
-        if (tickMethods.containsKey(syncTickable.ticks())) {
-          temp = tickMethods.get(syncTickable.ticks());
-        } else {
-          temp = new ArrayList<>();
-        }
-
-        temp.add(method);
-        tickMethods.put(syncTickable.ticks(), temp);
-      }
-    });
-    if (!tickMethods.isEmpty()) {
-      tickableMethods.put(clazz.getName(), tickMethods);
-    }
+    ExecutorUtils.registerTickableClass(clazz, tickableMethods);
   }
 
   public void addTickableObject(@NonNull Tickable object) {
