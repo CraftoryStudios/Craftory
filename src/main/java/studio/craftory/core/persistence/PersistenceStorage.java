@@ -32,18 +32,18 @@ public class PersistenceStorage {
 
   @NonNull
   public void saveFields(Object object, JsonNode node) {
-    Reflections.getFieldsRecursively(object.getClass(), Object.class).stream()
-               .filter(field -> field.getAnnotation(Persistent.class) != null).forEach(field -> {
-      field.setAccessible(true);
-      try {
-        if (field.get(object) != null) {
-          saveObject(field.get(object), nbtCompound.addCompound(field.getName()));
-        }
-      } catch (IllegalAccessException e) {
-        throw new IllegalStateException(
-            "Unable to save field " + object.getClass().getSimpleName() + "." + field.getName(), e);
-      }
-    });
+//    Reflections.getFieldsRecursively(object.getClass(), Object.class).stream()
+//               .filter(field -> field.getAnnotation(Persistent.class) != null).forEach(field -> {
+//      field.setAccessible(true);
+//      try {
+//        if (field.get(object) != null) {
+//          saveObject(field.get(object), nbtCompound.addCompound(field.getName()));
+//        }
+//      } catch (IllegalAccessException e) {
+//        throw new IllegalStateException(
+//            "Unable to save field " + object.getClass().getSimpleName() + "." + field.getName(), e);
+//      }
+//    });
   }
 
   @NonNull

@@ -37,9 +37,10 @@ public interface EnergyStorage extends PersistentDataHolder, VolatileDataHolder 
   /**
    * @return Current amount of energy stored in object or zero
    */
-  @Synchronized
   default long getEnergyStored() {
+    synchronized (this) {
       return (long) getPersistentData().get(STORED_ENERGY_KEY).orElse(0L);
+    }
   }
 
   /**
