@@ -1,7 +1,8 @@
-package studio.craftory.core.persistence;
+package studio.craftory.core.persistence.adapters;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.NonNull;
+import studio.craftory.core.persistence.PersistenceStorage;
 
 public interface DataAdapter<K> {
 
