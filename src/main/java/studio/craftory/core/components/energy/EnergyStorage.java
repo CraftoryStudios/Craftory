@@ -4,7 +4,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import lombok.Synchronized;
 import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.data.persitanceholders.PersistentDataHolder;
 import studio.craftory.core.data.persitanceholders.VolatileDataHolder;

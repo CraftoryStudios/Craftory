@@ -51,8 +51,8 @@ public class AsyncExecutionManager extends BukkitRunnable {
     }
   }
 
-  private void threadTask(HashSet<TickGroup> threadTasks, LongAdder currentTick,
-      HashMap<String, HashMap<Integer, ArrayList<Method>>> tickMethods) {
+  private void threadTask(@NonNull HashSet<TickGroup> threadTasks, @NonNull LongAdder currentTick,
+      @NonNull HashMap<String, HashMap<Integer, ArrayList<Method>>> tickMethods) {
     for (TickGroup tickGroup: threadTasks) {
       if (currentTick.intValue() % tickGroup.tick == 0) {
         for (Tickable tickableObject : tickGroup.tickables) {
@@ -122,7 +122,7 @@ public class AsyncExecutionManager extends BukkitRunnable {
 
   }
 
-  private int getExectionThread(String className) {
+  private int getExectionThread(@NonNull String className) {
     if (threadTaskDistribution.containsKey(className)) {
       ArrayList<Integer> threadWorkloads = threadTaskDistribution.get(className);
       int bestThread = 0;

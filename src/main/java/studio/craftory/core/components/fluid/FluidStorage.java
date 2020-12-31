@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Optional;
 import lombok.NonNull;
+import studio.craftory.core.components.energy.EnergyStorage.EnergyStorageData;
 import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.data.persitanceholders.PersistentDataHolder;
 import studio.craftory.core.utils.Reflections;
@@ -51,23 +52,7 @@ public interface FluidStorage extends PersistentDataHolder {
     if (!getStoredFluidType().isPresent()) {
       throw new IllegalStateException("Tried to set the amount of fluid in an empty storage!");
     }
-
-    long newAmount;
-    if (amount > getMaxFluidStored()) {
-      newAmount = getMaxFluidStored();
-    } else if (amount < 0) {
-      newAmount = 0;
-    } else {
-      newAmount = amount;
-    }
-
-    if (newAmount == 0) {
-      getPersistentData().remove(STORED_FLUID_TYPE);
-      getPersistentData().remove(STORED_FLUID_AMOUNT);
-      return;
-    }
-
-    getPersistentData().set(STORED_FLUID_AMOUNT, newAmount);
+      setStoredFluidInternal(amount);
   }
 
   default void increaseStoredFluidAmount(final long amount) {
@@ -79,6 +64,13 @@ public interface FluidStorage extends PersistentDataHolder {
   }
 
   default void setStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {
+    if (!setStoredFluidInternal(amount)) {
+      return;
+    }
+    getPersistentData().set(STORED_FLUID_TYPE, fluidType);
+  }
+
+  default boolean setStoredFluidInternal(long amount) {
     long newAmount;
     if (amount > getMaxFluidStored()) {
       newAmount = getMaxFluidStored();
@@ -91,11 +83,10 @@ public interface FluidStorage extends PersistentDataHolder {
     if (newAmount == 0) {
       getPersistentData().remove(STORED_FLUID_TYPE);
       getPersistentData().remove(STORED_FLUID_AMOUNT);
-      return;
+      return false;
     }
-
-    getPersistentData().set(STORED_FLUID_TYPE, fluidType);
     getPersistentData().set(STORED_FLUID_AMOUNT, newAmount);
+    return true;
   }
 
   default void increaseStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {

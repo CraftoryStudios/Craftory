@@ -15,8 +15,7 @@ public class CraftoryFluid {
   ItemStack representingItem;
   boolean gaseous;
 
-  @NonNull
-  public CraftoryFluid(Plugin plugin, String internalName, String displayName, ItemStack representingItem,
+  public CraftoryFluid(@NonNull Plugin plugin, @NonNull String internalName, @NonNull String displayName, @NonNull ItemStack representingItem,
       boolean gaseous) {
     this.id = new CraftoryKey(plugin, internalName);
     this.displayName = displayName;

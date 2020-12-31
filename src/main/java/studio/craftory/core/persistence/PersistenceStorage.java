@@ -4,11 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import lombok.Data;
 import lombok.NonNull;
-import studio.craftory.core.annotations.Persistent;
 import studio.craftory.core.persistence.adapters.DataAdapter;
-import studio.craftory.core.utils.Reflections;
 
 public class PersistenceStorage {
 
@@ -20,18 +17,15 @@ public class PersistenceStorage {
     interfaceConverters = new HashMap<>();
   }
 
-  @NonNull
-  public <T> void registerInterfaceConverter(Class<T> clazz, DataAdapter<? extends T> converter) {
+  public <T> void registerInterfaceConverter(@NonNull Class<T> clazz, @NonNull DataAdapter<? extends T> converter) {
     interfaceConverters.putIfAbsent(clazz, converter);
   }
 
-  @NonNull
-  public <T> void registerDataConverter(Class<T> clazz, DataAdapter<? extends T> converter) {
+  public <T> void registerDataConverter(@NonNull Class<T> clazz, @NonNull DataAdapter<? extends T> converter) {
     converters.putIfAbsent(clazz, converter);
   }
 
-  @NonNull
-  public void saveFields(Object object, JsonNode node) {
+  public void saveFields(@NonNull Object object, @NonNull JsonNode node) {
 //    Reflections.getFieldsRecursively(object.getClass(), Object.class).stream()
 //               .filter(field -> field.getAnnotation(Persistent.class) != null).forEach(field -> {
 //      field.setAccessible(true);
@@ -46,8 +40,7 @@ public class PersistenceStorage {
 //    });
   }
 
-  @NonNull
-  public Class<?> saveObject(Object data, JsonNode node) {
+  public Class<?> saveObject(@NonNull Object data, @NonNull JsonNode node) {
     Class<?> clazz = data.getClass();
 
     if (converters.containsKey(data.getClass())) {
