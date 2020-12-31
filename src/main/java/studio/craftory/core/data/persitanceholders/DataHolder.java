@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.Optional;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import studio.craftory.core.data.CraftoryKey;
+import studio.craftory.core.data.keys.CraftoryDataKey;
 
 @NoArgsConstructor
 public class DataHolder {
 
   //Data container for component data
   //@Persistent
-  private HashMap<CraftoryKey, Object> data = new HashMap<>();
+  private HashMap<CraftoryDataKey, Object> data = new HashMap<>();
 
   /**
    * Set the property value with the given key.
@@ -20,7 +20,7 @@ public class DataHolder {
    * @param value the value
    * @param <T>   the value type
    */
-  public <T> void set(@NonNull CraftoryKey key, T value) {
+  public <T> void set(@NonNull CraftoryDataKey key, T value) {
     data.put(key, value);
   }
 
@@ -29,7 +29,7 @@ public class DataHolder {
    *
    * @param key the property key
    */
-  public void remove(@NonNull CraftoryKey key) {
+  public void remove(@NonNull CraftoryDataKey key) {
     data.remove(key);
   }
 
@@ -37,11 +37,10 @@ public class DataHolder {
    * Get the property value with the given key.
    *
    * @param key  the property key
-   * @param type the expected object type
    * @return the saved value
    */
   @SuppressWarnings("unchecked")
-  public <T> Optional<T> get(@NonNull CraftoryKey key, Class<T> type) {
-    return Optional.ofNullable(type.cast(data.get(key)));
+  public <T> Optional<T> get(@NonNull CraftoryDataKey key) {
+    return (Optional<T>) Optional.ofNullable(key.getDataClass().cast(data.get(key)));
   }
 }

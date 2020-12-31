@@ -5,7 +5,7 @@ import lombok.NonNull;
 import lombok.Value;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import studio.craftory.core.data.CraftoryKey;
+import studio.craftory.core.data.keys.CraftoryKey;
 
 @Value
 public class CraftoryFluid {

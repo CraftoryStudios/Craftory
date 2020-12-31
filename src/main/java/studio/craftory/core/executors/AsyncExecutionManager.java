@@ -95,9 +95,9 @@ public class AsyncExecutionManager extends BukkitRunnable {
         tickMethods.put(syncTickable.ticks(), temp);
       }
     });
-
-    tickableMethods.put(clazz.getName(), tickMethods);
-
+    if (!tickMethods.isEmpty()) {
+      tickableMethods.put(clazz.getName(), tickMethods);
+    }
   }
 
   public void addTickableObject(@NonNull Tickable object) {

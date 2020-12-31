@@ -5,6 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import lombok.NonNull;
+import lombok.Synchronized;
 import studio.craftory.core.utils.Reflections;
 
 /**
@@ -18,12 +19,11 @@ public interface EnergyOutput extends EnergyStorage {
    * @param energyRequested Maximum amount of energy to extract
    * @return Amount of energy extracted
    */
+  @Synchronized
   default long extractEnergy(@NonNull final long energyRequested) {
-    synchronized (this) {
       long energyOutputted = Math.min(getEnergyStored(), Math.min(getMaxEnergyOutput(), energyRequested));
       decreaseStoredEnergy(energyOutputted);
       return energyOutputted;
-    }
   }
 
   /**

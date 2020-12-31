@@ -4,7 +4,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import studio.craftory.core.data.CraftoryKey;
+import lombok.Synchronized;
+import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.data.persitanceholders.PersistentDataHolder;
 import studio.craftory.core.data.persitanceholders.VolatileDataHolder;
 import studio.craftory.core.utils.Reflections;
@@ -15,7 +16,7 @@ import studio.craftory.core.utils.Reflections;
 public interface EnergyStorage extends PersistentDataHolder, VolatileDataHolder {
 
   //Data Storage Keys
-  CraftoryKey STORED_ENERGY_KEY = new CraftoryKey("CraftoryCore", "storedEnergy");
+  CraftoryDataKey STORED_ENERGY_KEY = new CraftoryDataKey("CraftoryCore", "storedEnergy", Long.class);
 
   //Annotations
   @Target(ElementType.TYPE)
@@ -36,10 +37,9 @@ public interface EnergyStorage extends PersistentDataHolder, VolatileDataHolder 
   /**
    * @return Current amount of energy stored in object or zero
    */
+  @Synchronized
   default long getEnergyStored() {
-    synchronized (this) {
-      return getPersistentData().get(STORED_ENERGY_KEY, Long.class).orElse(0L);
-    }
+      return (long) getPersistentData().get(STORED_ENERGY_KEY).orElse(0L);
   }
 
   /**

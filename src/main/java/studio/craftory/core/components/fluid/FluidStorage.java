@@ -6,16 +6,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Optional;
 import lombok.NonNull;
-import studio.craftory.core.components.energy.EnergyStorage.EnergyStorageData;
-import studio.craftory.core.data.CraftoryKey;
+import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.data.persitanceholders.PersistentDataHolder;
 import studio.craftory.core.utils.Reflections;
 
 public interface FluidStorage extends PersistentDataHolder {
 
   //Data Storage Keys
-  CraftoryKey STORED_FLUID_TYPE = new CraftoryKey("CraftoryCore", "storedFluidType");
-  CraftoryKey STORED_FLUID_AMOUNT = new CraftoryKey("CraftoryCore", "storedFluidAmount");
+  CraftoryDataKey STORED_FLUID_TYPE = new CraftoryDataKey("CraftoryCore", "storedFluidType", CraftoryFluid.class);
+  CraftoryDataKey STORED_FLUID_AMOUNT = new CraftoryDataKey("CraftoryCore", "storedFluidAmount", Long.class);
 
   /**
    * @return Maximum amount of fluid object can store
@@ -28,7 +27,7 @@ public interface FluidStorage extends PersistentDataHolder {
    * @return Current type of fluid object has stored
    */
   default Optional<CraftoryFluid> getStoredFluidType() {
-    return getPersistentData().get(STORED_FLUID_TYPE, CraftoryFluid.class);
+    return getPersistentData().get(STORED_FLUID_TYPE);
   }
 
   /**
@@ -36,7 +35,7 @@ public interface FluidStorage extends PersistentDataHolder {
    * @return Current amount of fluid object has stored
    */
   default long getStoredFluidAmount() {
-    return getPersistentData().get(STORED_FLUID_AMOUNT, Long.class).orElse(0L);
+    return (long) getPersistentData().get(STORED_FLUID_AMOUNT).orElse(0L);
   }
 
   default long getFreeSpace() {
@@ -45,6 +44,7 @@ public interface FluidStorage extends PersistentDataHolder {
 
   /**
    * Sets amount of
+   *
    * @param amount
    */
   default void setStoredFluidAmount(final long amount) {

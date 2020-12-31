@@ -1,4 +1,4 @@
-package studio.craftory.core.data;
+package studio.craftory.core.data.keys;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -6,13 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.Value;
 import org.bukkit.plugin.Plugin;
+import studio.craftory.core.data.SafePlugin;
 
 @Value
 @AllArgsConstructor
 public class CraftoryKey implements Serializable {
 
-  private String namespace;
-  private String name;
+  String namespace;
+  String name;
 
   public CraftoryKey(@NonNull final Plugin plugin, @NonNull final String name) {
     this.namespace = plugin.getName();
