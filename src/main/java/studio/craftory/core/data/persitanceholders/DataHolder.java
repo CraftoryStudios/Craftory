@@ -4,13 +4,14 @@ import java.util.HashMap;
 import java.util.Optional;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import studio.craftory.core.annotations.Persistent;
 import studio.craftory.core.data.keys.CraftoryDataKey;
 
 @NoArgsConstructor
 public class DataHolder {
 
   //Data container for component data
-  //@Persistent
+  @Persistent
   private HashMap<CraftoryDataKey, Object> data = new HashMap<>();
 
   /**
