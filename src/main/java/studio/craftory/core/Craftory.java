@@ -10,6 +10,7 @@ import studio.craftory.core.blocks.ComplexObject;
 import studio.craftory.core.blocks.SimpleObject;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.interfaces.Tickable;
+import studio.craftory.core.persistence.PersistenceManager;
 
 public final class Craftory extends JavaPlugin {
 
@@ -21,6 +22,9 @@ public final class Craftory extends JavaPlugin {
   public void onEnable() {
     // Plugin startup logic
     this.getLogger().info("Plugin now running! NOW");
+
+    PersistenceManager persistenceManager = new PersistenceManager();
+
 
     //Setup Executor
     AsyncExecutionManager syncExecutionManager = new AsyncExecutionManager(4);

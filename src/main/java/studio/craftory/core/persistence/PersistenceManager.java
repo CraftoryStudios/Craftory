@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import lombok.NonNull;
 import studio.craftory.core.annotations.Persistent;
 import studio.craftory.core.utils.Reflections;
 
 public class PersistenceManager {
+  @Getter
   ObjectMapper mapper = new ObjectMapper();
   Map<Class<?>, ArrayList<Field>> persistedFields = new HashMap<>();
 
