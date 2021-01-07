@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.Value;
 import org.bukkit.plugin.Plugin;
-import studio.craftory.core.data.SafePlugin;
+import studio.craftory.core.data.safecontainers.SafePlugin;
 
 @Value
 @AllArgsConstructor

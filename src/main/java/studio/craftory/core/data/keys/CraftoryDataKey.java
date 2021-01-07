@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.NonNull;
 import lombok.Value;
 import org.bukkit.plugin.Plugin;
-import studio.craftory.core.data.SafePlugin;
+import studio.craftory.core.data.safecontainers.SafePlugin;
 
 @Value
 public class CraftoryDataKey implements Serializable {
@@ -40,6 +40,11 @@ public class CraftoryDataKey implements Serializable {
 
   public Optional<Plugin> getPlugin() {
     return new SafePlugin(this.namespace).getPlugin();
+  }
+
+  @Override
+  public String toString() {
+    return namespace + ":" + name;
   }
 
 }
