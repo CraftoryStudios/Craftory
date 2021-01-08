@@ -1,10 +1,13 @@
 package studio.craftory.core.executors;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import studio.craftory.core.annotations.SyncTickable;
 import studio.craftory.core.executors.interfaces.Tickable;
@@ -38,4 +41,22 @@ public class ExecutorUtils {
       tickableMethods.put(clazz.getName(), tickMethods);
     }
   }
+
+  public static void runMethods(@NonNull Set<TickGroup> tickGroups, @NonNull int tick, @NonNull Map<String, HashMap<Integer,
+      ArrayList<Method>>> tickableMethods) {
+    for (TickGroup tickGroup : tickGroups) {
+      if (tick % tickGroup.tick == 0) {
+        for (Tickable tickable : tickGroup.getTickables()) {
+          for (Method method: tickableMethods.get(tickable.getClass().getName()).get(tickGroup.tick)) {
+            try {
+              method.invoke(tickable);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+      }
+    }
+  }
+
 }

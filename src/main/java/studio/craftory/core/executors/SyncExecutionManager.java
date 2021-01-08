@@ -1,13 +1,13 @@
 package studio.craftory.core.executors;
 
+import static studio.craftory.core.executors.ExecutorUtils.runMethods;
+
 import com.google.common.collect.Lists;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import lombok.NonNull;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -34,23 +34,11 @@ public class SyncExecutionManager extends BukkitRunnable {
     tick++;
     for (TickGroup tickGroup : tickGroups) {
       if (tick % tickGroup.tick == 0) {
-        for (Tickable tickable : tickGroup.getTickables()) {
-          runMethods(tickable, tickableMethods.get(tickable.getClass().getName()).get(tickGroup.tick));
-        }
+        runMethods(tickGroups, tick, tickableMethods);
       }
     }
     if (tick == maxTick) {
       tick = 0;
-    }
-  }
-
-  private void runMethods(Tickable tickable, List<Method> methods) {
-    for (Method method: methods) {
-      try {
-        method.invoke(tickable);
-      } catch (IllegalAccessException | InvocationTargetException e) {
-        e.printStackTrace();
-      }
     }
   }
 

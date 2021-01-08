@@ -2,13 +2,11 @@ package studio.craftory.core.executors;
 
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,30 +44,10 @@ public class AsyncExecutionManager extends BukkitRunnable {
     tick.increment();
     for (int threadID = 0; threadID < threadCount; threadID++) {
       HashSet<TickGroup> threadTasks = tickGroups.get(threadID);
-      executor.execute(() -> threadTask(threadTasks, tick, tickableMethods));
+      executor.execute(() -> ExecutorUtils.runMethods(threadTasks, tick.intValue(), tickableMethods));
     }
   }
 
-  private void threadTask(@NonNull HashSet<TickGroup> threadTasks, @NonNull LongAdder currentTick,
-      @NonNull HashMap<String, HashMap<Integer, ArrayList<Method>>> tickMethods) {
-    for (TickGroup tickGroup: threadTasks) {
-      if (currentTick.intValue() % tickGroup.tick == 0) {
-        for (Tickable tickableObject : tickGroup.getTickables()) {
-          runMethods(tickableObject, tickMethods.get(tickableObject.getClass().getName()).get(tickGroup.tick));
-        }
-      }
-    }
-  }
-
-  private void runMethods(Tickable tickable, List<Method> methods) {
-    for (Method method: methods) {
-      try {
-        method.invoke(tickable);
-      } catch (IllegalAccessException | InvocationTargetException e) {
-        e.printStackTrace();
-      }
-    }
-  }
   public void registerTickableClass(@NonNull Class<? extends Tickable> clazz) {
     ExecutorUtils.registerTickableClass(clazz, tickableMethods);
   }
