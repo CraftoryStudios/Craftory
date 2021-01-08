@@ -1,22 +1,17 @@
 package studio.craftory.core;
 
 import com.google.gson.JsonObject;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.bukkit.plugin.java.JavaPlugin;
-import studio.craftory.core.blocks.BaseCustomBlock;
 import studio.craftory.core.blocks.TestBlock;
 import studio.craftory.core.executors.interfaces.Tickable;
 import studio.craftory.core.persistence.PersistenceManager;
-import studio.craftory.core.renderers.Renderer;
 
 public final class Craftory extends JavaPlugin {
 
   public static ConcurrentMap<Integer, Tickable> tickableObjects = new ConcurrentHashMap<>();
-  public static HashMap<Class<BaseCustomBlock>, ArrayList<Renderer>> renderers = new HashMap<>();
   final int amount = 10;
   Random random = new Random();
 
