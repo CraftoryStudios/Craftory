@@ -40,9 +40,9 @@ public final class Craftory extends JavaPlugin {
     syncExecutionManager.registerTickableClass(ComplexObject.class);
 
     //Create Objects
-    for (int i = 0; i < amount; i++) {
+    for (int i = 0; i < AMOUNT; i++) {
       tickableObjects.put(i, new SimpleObject(i));
-      tickableObjects.put(i + amount, new ComplexObject());
+      tickableObjects.put(i + AMOUNT, new ComplexObject());
     }
 
     //Assign Objects Execution
@@ -57,12 +57,12 @@ public final class Craftory extends JavaPlugin {
     AtomicInteger checker = new AtomicInteger(0);
     //Check a value
     getServer().getScheduler().scheduleSyncRepeatingTask(this,() -> {
-      int indexs = getRandomNumber(0, amount - 1);
+      int indexs = getRandomNumber(0, AMOUNT - 1);
       int value = ((SimpleObject) tickableObjects.get(indexs)).getTestVar();
       this.getLogger().info("Value should be "+checker.get() * indexs+" but is "+value + " which is " + (value - (checker.get() * indexs)) + " different");
       checker.getAndAdd(500);
 
-      int index = getRandomNumber(amount + 1, amount * 2);
+      int index = getRandomNumber(AMOUNT + 1, AMOUNT * 2);
       ComplexObject object = ((ComplexObject) tickableObjects.get(index));
       ArrayList<Integer> testArray = object.getIntegers();
       this.getLogger().info(testArray.toString());
