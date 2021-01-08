@@ -5,7 +5,6 @@ import lombok.NonNull;
 import org.bukkit.Location;
 import studio.craftory.core.annotations.Persistent;
 import studio.craftory.core.data.CraftoryDirection;
-import studio.craftory.core.data.RenderData;
 import studio.craftory.core.data.persitanceholders.DataHolder;
 import studio.craftory.core.data.persitanceholders.PersistentDataHolder;
 import studio.craftory.core.data.persitanceholders.VolatileDataHolder;
@@ -38,8 +37,6 @@ public abstract class BaseCustomBlock implements VolatileDataHolder, PersistentD
   public void changeFacingDirection(CraftoryDirection facingDirection) {
     this.facingDirection = facingDirection;
   }
-
-  protected abstract RenderData getRenderData();
 
   @Override
   public DataHolder getPersistentData() {
