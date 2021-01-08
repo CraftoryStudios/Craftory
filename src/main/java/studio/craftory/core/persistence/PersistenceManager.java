@@ -19,7 +19,7 @@ public class PersistenceManager {
   Gson gson = new Gson();
   Map<Class<?>, ArrayList<Pair<String,Field>>> persistedFields = new HashMap<>();
 
-  public static Map<String, CraftoryDataKey> craftoryDataKeyMap = new HashMap<>();
+  protected static final Map<String, CraftoryDataKey> craftoryDataKeyMap = new HashMap<>();
 
   public void registerPersistedClass(Class<?> startClass, Class<?> endClass) {
     if (persistedFields.containsKey(startClass)) return;

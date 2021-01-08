@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import lombok.NonNull;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -33,24 +34,23 @@ public class SyncExecutionManager extends BukkitRunnable {
     tick++;
     for (TickGroup tickGroup : tickGroups) {
       if (tick % tickGroup.tick == 0) {
-
-        for (Tickable tickable : tickGroup.tickables) {
-          ArrayList<Method> tickMethods = tickableMethods.get(tickable.getClass().getName()).get(tickGroup.tick);
-          int length = tickMethods.size();
-
-          int x;
-          for (x = 0; x < length; x++) {
-            try {
-              tickMethods.get(x).invoke(tickable);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-              e.printStackTrace();
-            }
-          }
+        for (Tickable tickable : tickGroup.getTickables()) {
+          runMethods(tickable, tickableMethods.get(tickable.getClass().getName()).get(tickGroup.tick));
         }
       }
     }
     if (tick == maxTick) {
       tick = 0;
+    }
+  }
+
+  private void runMethods(Tickable tickable, List<Method> methods) {
+    for (Method method: methods) {
+      try {
+        method.invoke(tickable);
+      } catch (IllegalAccessException | InvocationTargetException e) {
+        e.printStackTrace();
+      }
     }
   }
 
@@ -69,7 +69,7 @@ public class SyncExecutionManager extends BukkitRunnable {
           tickGroup = new TickGroup(integer);
         }
 
-        tickGroup.tickables.add(object);
+        tickGroup.getTickables().add(object);
         tickGroups.add(tickGroup);
         tickGroupsMap.put(integer, tickGroup);
       }

@@ -11,8 +11,8 @@ import studio.craftory.core.persistence.PersistenceManager;
 
 public final class Craftory extends JavaPlugin {
 
-  public static ConcurrentMap<Integer, Tickable> tickableObjects = new ConcurrentHashMap<>();
-  final int amount = 10;
+  protected static final ConcurrentMap<Integer, Tickable> tickableObjects = new ConcurrentHashMap<>();
+  static final int AMOUNT = 10;
   Random random = new Random();
 
   @Override
@@ -27,7 +27,7 @@ public final class Craftory extends JavaPlugin {
 
     JsonObject object = (JsonObject) persistenceManager.saveFields(testBlock);
     root.add("test",object);
-    getServer().getLogger().info(persistenceManager.getGson().toJson(root));
+    getServer().getLogger().info(() -> persistenceManager.getGson().toJson(root));
 
     //Setup Executor
 //    AsyncExecutionManager syncExecutionManager = new AsyncExecutionManager(4);
@@ -65,9 +65,7 @@ public final class Craftory extends JavaPlugin {
 
   }
 
-  public int getRandomNumber(int min, int max) {
-    return (int) ((Math.random() * (max - min)) + min);
-  }
+  public int getRandomNumber(int min, int max) { return random.nextInt(max-min) + min; }
 
   @Override
   public void onDisable() {

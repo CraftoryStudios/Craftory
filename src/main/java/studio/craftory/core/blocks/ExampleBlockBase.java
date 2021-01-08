@@ -7,7 +7,7 @@ import studio.craftory.core.annotations.RenderData;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.Renderers;
 
-@CustomBlock(renders = {Renderers.BlockStateRender, Renderers.EntitySpawnerRender, Renderers.HeadRender})
+@CustomBlock(renders = {Renderers.BLOCKSTATERENDER, Renderers.ENTITYSPAWNERRENDER, Renderers.HEADRENDER})
 @RenderData(
     northFacingModel = "assets/blocks/northexample",
     southFacingModel = "assets/blocks/southexample",

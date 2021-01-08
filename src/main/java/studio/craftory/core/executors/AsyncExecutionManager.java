@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -53,25 +54,22 @@ public class AsyncExecutionManager extends BukkitRunnable {
       @NonNull HashMap<String, HashMap<Integer, ArrayList<Method>>> tickMethods) {
     for (TickGroup tickGroup: threadTasks) {
       if (currentTick.intValue() % tickGroup.tick == 0) {
-        for (Tickable tickableObject : tickGroup.tickables) {
-          final ArrayList<Method> methods = tickMethods.get(tickableObject.getClass().getName()).get(tickGroup.tick);
-          int length = methods.size();
-          if (length == 0) continue;
-
-          int x;
-          for (x = 0; x < length; x++) {
-            final Method method = methods.get(x);
-            try {
-              method.invoke(tickableObject);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-              e.printStackTrace();
-            }
-          }
+        for (Tickable tickableObject : tickGroup.getTickables()) {
+          runMethods(tickableObject, tickMethods.get(tickableObject.getClass().getName()).get(tickGroup.tick));
         }
       }
     }
   }
 
+  private void runMethods(Tickable tickable, List<Method> methods) {
+    for (Method method: methods) {
+      try {
+        method.invoke(tickable);
+      } catch (IllegalAccessException | InvocationTargetException e) {
+        e.printStackTrace();
+      }
+    }
+  }
   public void registerTickableClass(@NonNull Class<? extends Tickable> clazz) {
     ExecutorUtils.registerTickableClass(clazz, tickableMethods);
   }
@@ -90,7 +88,7 @@ public class AsyncExecutionManager extends BukkitRunnable {
           tickGroup = new TickGroup(integer);
         }
 
-        tickGroup.tickables.add(object);
+        tickGroup.getTickables().add(object);
         tickGroups.get(exectionThread).add(tickGroup);
         tickGroupsMap.get(exectionThread).put(integer, tickGroup);
       }

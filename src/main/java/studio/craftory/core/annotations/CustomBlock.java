@@ -9,5 +9,5 @@ import studio.craftory.core.data.Renderers;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
 public @interface CustomBlock {
-  Renderers[] renders() default {Renderers.BlockStateRender};
+  Renderers[] renders() default {Renderers.BLOCKSTATERENDER};
 }
