@@ -11,14 +11,10 @@ import studio.craftory.core.data.persitanceholders.VolatileDataHolder;
 import studio.craftory.core.data.safecontainers.SafeBlockLocation;
 import studio.craftory.core.executors.interfaces.Tickable;
 
-public abstract class BaseCustomBlock implements VolatileDataHolder, PersistentDataHolder, Tickable {
+public abstract class BaseCustomBlock {
 
   @Getter
   private SafeBlockLocation safeBlockLocation;
-
-  @Persistent()
-  private DataHolder persistentData = new DataHolder();
-  private DataHolder volatileData = new DataHolder();
 
   @Persistent
   @Getter
@@ -36,16 +32,6 @@ public abstract class BaseCustomBlock implements VolatileDataHolder, PersistentD
 
   public void changeFacingDirection(CraftoryDirection facingDirection) {
     this.facingDirection = facingDirection;
-  }
-
-  @Override
-  public DataHolder getPersistentData() {
-    return persistentData;
-  }
-
-  @Override
-  public DataHolder getVolatileData() {
-    return volatileData;
   }
 
 }

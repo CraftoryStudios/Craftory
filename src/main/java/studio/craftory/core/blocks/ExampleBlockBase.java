@@ -17,7 +17,7 @@ import studio.craftory.core.data.Renderers;
     downFacingModel = "assets/blocks/downexample",
     headModel = "assets/blocks/headexample"
 )
-public class ExampleBlockBase extends BaseCustomBlock {
+public class ExampleBlockBase extends ComplexCustomBlock {
 
   protected ExampleBlockBase(@NonNull Location location, @NonNull CraftoryDirection facingDirection) {
     super(location, facingDirection);
