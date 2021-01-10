@@ -16,6 +16,7 @@ import studio.craftory.core.persistence.PersistenceManager;
 
 public final class Craftory extends JavaPlugin {
 
+  private static ArrayList<JavaPlugin> addons = new ArrayList<>();
   protected static final ConcurrentMap<Integer, Tickable> tickableObjects = new ConcurrentHashMap<>();
   static final int AMOUNT = 10;
   Random random = new Random();
@@ -68,6 +69,10 @@ public final class Craftory extends JavaPlugin {
       this.getLogger().info(testArray.toString());
     }, 20L, 500L);
 
+  }
+
+  public static void registerCraftoryAddon(JavaPlugin addon) {
+    addons.add(addon);
   }
 
   public int getRandomNumber(int min, int max) { return random.nextInt(max-min) + min; }
