@@ -20,10 +20,6 @@ public abstract class ComplexCustomBlock extends BaseCustomBlock implements Pers
     super(location, facingDirection);
   }
 
-  protected ComplexCustomBlock(@NonNull Location location) {
-    super(location);
-  }
-
   @Override
   public DataHolder getPersistentData() {
     return persistentData;

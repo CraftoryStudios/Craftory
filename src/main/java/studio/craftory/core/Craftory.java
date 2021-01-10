@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.bukkit.plugin.java.JavaPlugin;
+import studio.craftory.core.blocks.BaseCustomBlock;
 import studio.craftory.core.blocks.ComplexObject;
 import studio.craftory.core.blocks.SimpleObject;
 import studio.craftory.core.blocks.TestBlock;
@@ -71,8 +72,8 @@ public final class Craftory extends JavaPlugin {
 
   }
 
-  public static void registerCraftoryAddon(JavaPlugin addon) {
-    addons.add(addon);
+  public static void registerCustomBlock(BaseCustomBlock customBlock) {
+    //Test
   }
 
   public int getRandomNumber(int min, int max) { return random.nextInt(max-min) + min; }

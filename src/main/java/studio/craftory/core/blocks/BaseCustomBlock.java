@@ -26,10 +26,6 @@ public abstract class BaseCustomBlock {
     this.facingDirection = facingDirection;
   }
 
-  protected BaseCustomBlock(@NonNull Location location) {
-    this(location, CraftoryDirection.NORTH);
-  }
-
   public void changeFacingDirection(CraftoryDirection facingDirection) {
     this.facingDirection = facingDirection;
   }

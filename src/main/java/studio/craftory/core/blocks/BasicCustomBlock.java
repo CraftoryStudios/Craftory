@@ -12,7 +12,4 @@ public abstract class BasicCustomBlock extends BaseCustomBlock {
     super(location, facingDirection);
   }
 
-  protected BasicCustomBlock(@NonNull Location location) {
-    super(location);
-  }
 }
