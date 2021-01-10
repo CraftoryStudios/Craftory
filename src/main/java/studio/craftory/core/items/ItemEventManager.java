@@ -3,6 +3,7 @@ package studio.craftory.core.items;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,15 +19,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class ItemEventManager implements Listener {
 
   private static final Map<String, Set<Method>> dumbEvents = new HashMap<>();
-  private static final Map<ItemSmartEvent, Map<String, Method>> smartEvents = new HashMap<>();
+  private static final Map<ItemSmartEvent, Map<String, Method>> smartEvents = new EnumMap<>(ItemSmartEvent.class);
   private static final Map<String, Collection<PotionEffect>> itemOnHoldEffects = new HashMap<>();
 
   public static void registerDumbEvent(Event event, Method method) {
@@ -135,7 +134,6 @@ public class ItemEventManager implements Listener {
 
   @EventHandler
   public void onPlayerItemDrop(PlayerDropItemEvent event) {
-    ItemStack itemStack = event.getItemDrop().getItemStack();
     Player player = event.getPlayer();
     // Replace with custom item name
     removePotionEffects(event.getItemDrop().getItemStack().getType().toString(), player);
