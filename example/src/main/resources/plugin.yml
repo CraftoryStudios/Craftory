@@ -1,0 +1,6 @@
+name: CraftoryExample
+main: studio.craftory.craftoryexample.CraftoryExamplePlugin
+version: ${project.version}
+api-version: 1.13
+authors: [Brett Saunders, Mathew Jones]
+softdepend: [Craftory]

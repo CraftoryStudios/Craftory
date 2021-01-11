@@ -1,4 +1,4 @@
-package studio.craftory.core.blocks;
+package studio.craftory.craftoryexample.persitence;
 
 import lombok.Getter;
 import studio.craftory.core.annotations.Persistent;
