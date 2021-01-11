@@ -32,11 +32,6 @@
 
     <!-- Google -->
     <auto-service.version>1.0-rc2</auto-service.version>
-
-    <!-- SonarCloud -->
-    <sonar.projectKey>CraftoryStudios_Craftory2</sonar.projectKey>
-    <sonar.organization>craftorystudios</sonar.organization>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   </properties>
 
 
