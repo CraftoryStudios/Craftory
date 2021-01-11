@@ -5,9 +5,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>studio.craftory</groupId>
-  <artifactId>core</artifactId>
+  <artifactId>craftory-parent</artifactId>
   <version>1.0.0</version>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
   <name>Craftory</name>
 
@@ -21,6 +21,11 @@
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   </properties>
   <url>craftory.studio</url>
+
+  <modules>
+    <module>api</module>
+    <module>example</module>
+  </modules>
 
   <build>
     <plugins>
@@ -52,7 +57,7 @@
     </plugins>
     <resources>
       <resource>
-        <directory>src/main/resources</directory>
+        <directory>api/src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
     </resources>
@@ -69,38 +74,47 @@
     </repository>
   </repositories>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>spigot-api</artifactId>
-      <version>1.16.4-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.16</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.jalu</groupId>
-      <artifactId>injector</artifactId>
-      <version>1.0</version>
-      <optional>true</optional>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.8.6</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.auto.service</groupId>
-      <artifactId>auto-service</artifactId>
-      <version>${auto-service.version}</version>
-      <scope>provided</scope>
-    </dependency>
+  <dependencyManagement>
+    <dependencies>
+      <!-- Own dependencies -->
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>craftory-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.spigotmc</groupId>
+        <artifactId>spigot-api</artifactId>
+        <version>1.16.4-R0.1-SNAPSHOT</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.16</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>ch.jalu</groupId>
+        <artifactId>injector</artifactId>
+        <version>1.0</version>
+        <optional>true</optional>
+      </dependency>
+      <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.8.6</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.auto.service</groupId>
+        <artifactId>auto-service</artifactId>
+        <version>${auto-service.version}</version>
+        <scope>provided</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 
-  </dependencies>
+
 </project>
