@@ -15,6 +15,7 @@ import studio.craftory.core.data.keys.CustomBlockKey;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
 import studio.craftory.core.executors.interfaces.Tickable;
+import studio.craftory.core.utils.Log;
 
 /**
  * Manages internally the registered CustomBlock types.
@@ -38,11 +39,10 @@ public class CustomBlockRegister {
         registerCustomBlockTickables((Class<? extends Tickable>) block);
       }
 
-
-      //Tracer.debug("CustomBlock Registert: " + block.getName());
+      Log.debug("CustomBlock Registert: " + block.getName());
       //Bukkit.getPluginManager().callEvent(new BlockRegisterEvent(new CustomBlockKey(plugin, name), block));
     } else {
-      //Tracer.warn("Trying to reregister known key: " + new CustomBlockKey(plugin, name).getName());
+      Log.warn("Trying to reregister known key: " + new CustomBlockKey(plugin, block).getName());
     }
   }
 
