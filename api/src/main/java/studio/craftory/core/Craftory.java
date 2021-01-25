@@ -2,13 +2,16 @@ package studio.craftory.core;
 
 import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
+import com.google.gson.Gson;
 import java.util.ArrayList;
 import lombok.Getter;
 import org.bukkit.Server;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import studio.craftory.core.blocks.BaseCustomBlock;
+import studio.craftory.core.blocks.CustomBlockRegister;
+import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.executors.AsyncExecutionManager;
+import studio.craftory.core.executors.SyncExecutionManager;
 import studio.craftory.core.persistence.PersistenceManager;
 
 public final class Craftory extends JavaPlugin {
@@ -20,9 +23,10 @@ public final class Craftory extends JavaPlugin {
   private Injector injector;
   private static ArrayList<JavaPlugin> addons = new ArrayList<>();
 
-  //External
-  @Getter
-  AsyncExecutionManager asyncExecutionManager;
+  private AsyncExecutionManager asyncExecutionManager;
+  private SyncExecutionManager syncExecutionManager;
+
+  //External API
   @Getter
   PersistenceManager persistenceManager;
 
@@ -38,11 +42,18 @@ public final class Craftory extends JavaPlugin {
     injector.register(Server.class, getServer());
     injector.register(PluginManager.class, getServer().getPluginManager());
 
-    //Executor
-    asyncExecutionManager = new AsyncExecutionManager(4);
+    //Libaries
+    injector.getSingleton(Gson.class);
+
+    //Executors
+    asyncExecutionManager = injector.getSingleton(AsyncExecutionManager.class);
+    syncExecutionManager = injector.getSingleton(SyncExecutionManager.class);
 
     //Persistence
-    persistenceManager = new PersistenceManager();
+    persistenceManager = injector.getSingleton(PersistenceManager.class);
+
+    //Custom Block
+    injector.getSingleton(CustomBlockRegister.class);
   }
 
   @Override
@@ -51,7 +62,7 @@ public final class Craftory extends JavaPlugin {
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
   }
 
-  public static void registerCustomBlock(BaseCustomBlock customBlock) {
+  public static void registerCustomBlock(Class<? extends BaseCustomBlock> customBlock) {
     //Test
   }
 }

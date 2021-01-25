@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import lombok.NonNull;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -17,7 +20,8 @@ public class SyncExecutionManager extends BukkitRunnable {
 
   private HashSet<TickGroup> tickGroups;
   private HashMap<Integer, TickGroup> tickGroupsMap;
-  private HashMap<String, HashMap<Integer, ArrayList<Method>>> tickableMethods;
+  private HashMap<Class<? extends Tickable>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
+  private Map<Integer, HashSet<Tickable>> removeBacklog;
   private int tick;
   private int maxTick;
 
@@ -25,6 +29,7 @@ public class SyncExecutionManager extends BukkitRunnable {
     tickGroups = new HashSet<>();
     tickGroupsMap = new HashMap<>();
     tickableMethods = new HashMap<>();
+    removeBacklog = new HashMap<>();
     tick = 0;
     maxTick = 0;
   }
@@ -37,6 +42,8 @@ public class SyncExecutionManager extends BukkitRunnable {
         runMethods(tickGroups, tick, tickableMethods);
       }
     }
+    cleanUpTickableObjects();
+
     if (tick == maxTick) {
       tick = 0;
     }
@@ -46,9 +53,40 @@ public class SyncExecutionManager extends BukkitRunnable {
     ExecutorUtils.registerTickableClass(clazz, tickableMethods);
   }
 
+  public void removeTickableObject(@NonNull Tickable tickableObject) {
+    Optional<Set<Integer>> tickKeys = getTickKeys(tickableObject);
+    if (!tickKeys.isPresent()) return;
+
+    for (Integer key : tickKeys.get()) {
+      removeBacklog.computeIfAbsent(key, a -> new HashSet<>())
+                   .add(tickableObject);
+    }
+  }
+
+  private void cleanUpTickableObjects() {
+    for (Entry<Integer, HashSet<Tickable>> entry : removeBacklog.entrySet()) {
+        TickGroup tickGroup = tickGroupsMap.get(entry.getKey());
+        for (Tickable tickable : entry.getValue()) {
+          tickGroup.getTickables().remove(tickable);
+        }
+
+        if (tickGroup.getTickables().isEmpty()) {
+          tickGroups.remove(tickGroup);
+          tickGroupsMap.remove(entry.getKey());
+        }
+    }
+  }
+
+  private Optional<Set<Integer>> getTickKeys(@NonNull Tickable tickableObject) {
+    if (!tickableMethods.containsKey(tickableObject.getClass())) return Optional.empty();
+    Set<Integer> tickKeys = tickableMethods.get(tickableObject.getClass()).keySet();
+    if (tickKeys.isEmpty()) return Optional.empty();
+    return Optional.of(tickKeys);
+  }
+
   public void addTickableObject(@NonNull Tickable object) {
-    if (tickableMethods.containsKey(object.getClass().getName())) {
-      Set<Integer> tickKeys = tickableMethods.get(object.getClass().getName()).keySet();
+    if (tickableMethods.containsKey(object.getClass())) {
+      Set<Integer> tickKeys = tickableMethods.get(object.getClass()).keySet();
       for (Integer integer : tickKeys) {
         TickGroup tickGroup;
         if (tickGroupsMap.containsKey(integer)) {

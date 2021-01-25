@@ -1,5 +1,6 @@
 package studio.craftory.craftoryexample;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.Random;
@@ -25,24 +26,26 @@ public final class CraftoryExamplePlugin extends JavaPlugin {
   public void onLoad() {
 
     //Executor
-    AsyncExecutionManager asyncExecutionManager = Craftory.getInstance().getAsyncExecutionManager();
-    asyncExecutionManager.registerTickableClass(SimpleObject.class);
-    asyncExecutionManager.registerTickableClass(ComplexObject.class);
+    //AsyncExecutionManager asyncExecutionManager = Craftory.getInstance().getAsyncExecutionManager();
+    //asyncExecutionManager.registerTickableClass(SimpleObject.class);
+    //asyncExecutionManager.registerTickableClass(ComplexObject.class);
 
     //Persistence
     PersistenceManager persistenceManager = Craftory.getInstance().getPersistenceManager();
     JsonObject root = new JsonObject();
     TestBlock testBlock = new TestBlock();
 
+    Gson gson = new Gson();
+
     JsonObject objectJSON = (JsonObject) persistenceManager.saveFields(testBlock);
     root.add(testBlock.getSafeBlockLocation().getX() + "," + testBlock.getSafeBlockLocation().getY() + "," + testBlock.getSafeBlockLocation().getZ(),objectJSON);
-    getServer().getLogger().info(() -> persistenceManager.getGson().toJson(root));
+    getServer().getLogger().info(() -> gson.toJson(root));
   }
 
   @Override
   public void onEnable() {
     //Test Executor
-    AsyncExecutionManager asyncExecutionManager = Craftory.getInstance().getAsyncExecutionManager();
+    //AsyncExecutionManager asyncExecutionManager = Craftory.getInstance().getAsyncExecutionManager();
 
     for (int i = 0; i < AMOUNT; i++) {
       tickableObjects.put(i, new SimpleObject(i));
@@ -50,9 +53,9 @@ public final class CraftoryExamplePlugin extends JavaPlugin {
     }
 
     //Assign Objects Execution
-    for (Tickable tickable : tickableObjects.values()) {
-      asyncExecutionManager.addTickableObject(tickable);
-    }
+//    for (Tickable tickable : tickableObjects.values()) {
+//      asyncExecutionManager.addTickableObject(tickable);
+//    }
 
 
     AtomicInteger checker = new AtomicInteger(0);

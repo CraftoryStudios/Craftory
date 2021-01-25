@@ -1,16 +1,20 @@
 package studio.craftory.core.data.persitanceholders;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import studio.craftory.core.data.keys.CraftoryDataKey;
 
+/** Class inspired by LogisticsCraft's Logistics-API and the DataHolder class **/
 @NoArgsConstructor
 public class DataHolder {
 
   //Data container for component data
-  private HashMap<CraftoryDataKey, Object> data = new HashMap<>();
+  @Getter
+  private Map<CraftoryDataKey, Object> data = new HashMap<>();
 
   /**
    * Set the property value with the given key.

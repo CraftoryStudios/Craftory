@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.NonNull;
 import lombok.Value;
 import org.bukkit.plugin.Plugin;
+import studio.craftory.core.Craftory;
 import studio.craftory.core.data.safecontainers.SafePlugin;
 
 @Value
@@ -18,15 +19,17 @@ public class CraftoryDataKey implements Serializable {
     this.namespace = plugin.getName();
     this.name = name;
     this.dataClass = dataClass;
+    register();
   }
 
   public CraftoryDataKey(@NonNull final String namespace, @NonNull final String name, @NonNull final Class<?> dataClass) {
     this.namespace = namespace;
     this.name = name;
     this.dataClass = dataClass;
+    register();
   }
 
-  public CraftoryDataKey(@NonNull final String key, @NonNull final Class<?> dataClass) {
+  public CraftoryDataKey(final String key, @NonNull final Class<?> dataClass) {
     this.dataClass = dataClass;
     String[] keySections = key.split(":",2);
     if (keySections.length == 2) {
@@ -36,6 +39,11 @@ public class CraftoryDataKey implements Serializable {
       this.namespace = "Unknown";
       this.name = key.replace(":","");
     }
+    register();
+  }
+
+  private void register() {
+    Craftory.getInstance().getPersistenceManager().registerDataKey(namespace + ":" + name, dataClass);
   }
 
   public Optional<Plugin> getPlugin() {

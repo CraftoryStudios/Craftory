@@ -1,6 +1,10 @@
-package studio.craftory.core;
+package studio.craftory.core.processors;
 
 import com.google.auto.service.AutoService;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
+import java.io.Writer;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -19,6 +23,8 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
+import javax.tools.JavaFileObject;
+import lombok.SneakyThrows;
 import studio.craftory.core.annotations.CustomBlock;
 
 @SupportedAnnotationTypes("studio.craftory.core.annotations.CustomBlock")
@@ -40,18 +46,40 @@ public class CustomBlockProcessor extends AbstractProcessor {
     messager = processingEnv.getMessager();
   }
 
+  @SneakyThrows
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    messager.printMessage(Kind.NOTE, "asd");
-    for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(CustomBlock.class)) {
-      if (annotatedElement.getKind() == ElementKind.CLASS) {
-        TypeElement typeElement = (TypeElement) annotatedElement;
-        return isValidClass(typeElement);
-
-
+    messager.printMessage(Kind.MANDATORY_WARNING, "asd");
+    for (TypeElement annotation : annotations) {
+      for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(annotation)) {
+        messager.printMessage(Kind.MANDATORY_WARNING, annotatedElement.getSimpleName());
       }
     }
-    return false;
+    for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(CustomBlock.class)) {
+      messager.printMessage(Kind.MANDATORY_WARNING, "test");
+      if (annotatedElement.getKind() == ElementKind.CLASS) {
+        TypeElement typeElement = (TypeElement) annotatedElement;
+        if (isValidClass(typeElement)) {
+          messager.printMessage(Kind.MANDATORY_WARNING, typeElement.getQualifiedName().toString());
+          MethodSpec register = MethodSpec.methodBuilder("register")
+              .addModifiers(Modifier.PUBLIC)
+              .returns(void.class)
+              .addStatement("Craftory.registerCustomBlock(Class.forName(\""+typeElement.getQualifiedName().toString()+"\"))")
+              .build();
+
+          TypeSpec registerClass = TypeSpec
+              .classBuilder("RegisterUtils")
+              .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+              .addMethod(register)
+              .build();
+
+          JavaFile.builder("com.test", registerClass)
+                  .build()
+                  .writeTo(filer);
+        }
+      }
+    }
+    return true;
   }
 
   private boolean isValidClass(TypeElement blockElement) {

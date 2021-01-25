@@ -1,23 +1,20 @@
-package studio.craftory.core.blocks;
+package studio.craftory.core.blocks.templates;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import org.bukkit.Location;
 import studio.craftory.core.annotations.Persistent;
 import studio.craftory.core.data.CraftoryDirection;
-import studio.craftory.core.data.persitanceholders.DataHolder;
-import studio.craftory.core.data.persitanceholders.PersistentDataHolder;
-import studio.craftory.core.data.persitanceholders.VolatileDataHolder;
 import studio.craftory.core.data.safecontainers.SafeBlockLocation;
-import studio.craftory.core.executors.interfaces.Tickable;
 
 public abstract class BaseCustomBlock {
 
   @Getter
   private SafeBlockLocation safeBlockLocation;
 
-  @Persistent
   @Getter
+  @Setter
   private CraftoryDirection facingDirection;
 
 
@@ -26,8 +23,8 @@ public abstract class BaseCustomBlock {
     this.facingDirection = facingDirection;
   }
 
-  public void changeFacingDirection(CraftoryDirection facingDirection) {
-    this.facingDirection = facingDirection;
+  public void renderCustomBlock() {
+
   }
 
 }

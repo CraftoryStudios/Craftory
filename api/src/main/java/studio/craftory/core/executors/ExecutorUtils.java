@@ -17,7 +17,7 @@ import studio.craftory.core.utils.Reflections;
 public class ExecutorUtils {
 
   public static void registerTickableClass(Class<? extends Tickable> clazz,
-      Map<String, HashMap<Integer, ArrayList<Method>>> tickableMethods) {
+      Map<Class<? extends Tickable>, HashMap<Integer, ArrayList<Method>>> tickableMethods) {
 
     HashMap<Integer, ArrayList<Method>> tickMethods = new HashMap<>();
 
@@ -38,16 +38,16 @@ public class ExecutorUtils {
     });
 
     if (!tickMethods.isEmpty()) {
-      tickableMethods.put(clazz.getName(), tickMethods);
+      tickableMethods.put(clazz, tickMethods);
     }
   }
 
-  public static void runMethods(@NonNull Set<TickGroup> tickGroups, @NonNull int tick, @NonNull Map<String, HashMap<Integer,
+  public static void runMethods(@NonNull Set<TickGroup> tickGroups, @NonNull int tick, @NonNull Map<Class<? extends Tickable>, HashMap<Integer,
       ArrayList<Method>>> tickableMethods) {
     for (TickGroup tickGroup : tickGroups) {
       if (tick % tickGroup.tick == 0) {
         for (Tickable tickable : tickGroup.getTickables()) {
-          for (Method method: tickableMethods.get(tickable.getClass().getName()).get(tickGroup.tick)) {
+          for (Method method: tickableMethods.get(tickable.getClass()).get(tickGroup.tick)) {
             try {
               method.invoke(tickable);
             } catch (IllegalAccessException | InvocationTargetException e) {

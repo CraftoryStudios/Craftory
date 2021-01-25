@@ -1,13 +1,14 @@
-package studio.craftory.core.blocks;
+package studio.craftory.craftoryexample.blocks;
 
 import lombok.NonNull;
 import org.bukkit.Location;
 import studio.craftory.core.annotations.CustomBlock;
 import studio.craftory.core.annotations.RenderData;
+import studio.craftory.core.blocks.templates.ComplexCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
-import studio.craftory.core.data.Renderers;
+import studio.craftory.core.blocks.renders.Renderers;
 
-@CustomBlock(renders = {Renderers.BLOCKSTATERENDER, Renderers.ENTITYSPAWNERRENDER, Renderers.HEADRENDER})
+@CustomBlock(renders = {Renderers.BLOCK_STATE_RENDER, Renderers.ENTITY_SPAWNER_RENDER, Renderers.HEAD_RENDER})
 @RenderData(
     northFacingModel = "assets/blocks/northexample",
     southFacingModel = "assets/blocks/southexample",
