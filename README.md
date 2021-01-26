@@ -12,6 +12,8 @@ git config core.hooksPath .githooks
 
 Run this command in a terminal in the root directory of this project.
 
+Some GUI based Git clients might not work with this, in this case you can copy the file commit-msg found in project-root/.githooks to project-root/.git/hooks folder (this folder may be hidden).
+
 ### Making a Git Commit
 When making a commit we use a convention for all our commit messages which can be found here [Conventional Commits Specification](https://www.conventionalcommits.org/en/v1.0.0/).
 
