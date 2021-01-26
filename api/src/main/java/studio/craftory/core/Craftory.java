@@ -8,6 +8,7 @@ import lombok.Getter;
 import org.bukkit.Server;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import studio.craftory.core.blocks.CustomBlockManager;
 import studio.craftory.core.blocks.CustomBlockRegister;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.executors.AsyncExecutionManager;
@@ -54,6 +55,7 @@ public final class Craftory extends JavaPlugin {
 
     //Custom Block
     injector.getSingleton(CustomBlockRegister.class);
+    injector.getSingleton(CustomBlockManager.class);
   }
 
   @Override
