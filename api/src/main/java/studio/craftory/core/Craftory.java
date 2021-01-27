@@ -3,11 +3,14 @@ package studio.craftory.core;
 import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
 import com.google.gson.Gson;
+import java.io.File;
 import java.util.ArrayList;
 import lombok.Getter;
 import org.bukkit.Server;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import studio.craftory.core.blocks.CustomBlockManager;
 import studio.craftory.core.blocks.CustomBlockRegister;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
@@ -30,6 +33,8 @@ public final class Craftory extends JavaPlugin {
   //External API
   @Getter
   PersistenceManager persistenceManager;
+  @Getter
+  Gson gson = new Gson();
 
 
 
@@ -42,9 +47,6 @@ public final class Craftory extends JavaPlugin {
     injector.register(Craftory.class, instance);
     injector.register(Server.class, getServer());
     injector.register(PluginManager.class, getServer().getPluginManager());
-
-    //Libaries
-    injector.getSingleton(Gson.class);
 
     //Executors
     asyncExecutionManager = injector.getSingleton(AsyncExecutionManager.class);
@@ -66,5 +68,13 @@ public final class Craftory extends JavaPlugin {
 
   public static void registerCustomBlock(Class<? extends BaseCustomBlock> customBlock) {
     //Test
+  }
+
+  public Craftory() {
+    super();
+  }
+
+  public Craftory(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+    super(loader, description, dataFolder, file);
   }
 }

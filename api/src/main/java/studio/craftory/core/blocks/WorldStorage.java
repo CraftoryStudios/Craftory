@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import lombok.NonNull;
 import org.bukkit.Chunk;
 import org.bukkit.World;
+import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.blocks.templates.ComplexCustomBlock;
 import studio.craftory.core.data.keys.CraftoryDataKey;
@@ -28,11 +29,11 @@ public class WorldStorage {
   private PersistenceManager persistenceManager;
   private World world;
   private JsonObject rootNode;
-  @Inject
   private Gson gson;
 
   public WorldStorage(@NonNull final World world) {
     this.world = world;
+    this.gson = Craftory.getInstance().getGson();
 
     try {
       Reader reader = new FileReader(new File(world.getWorldFolder(), "craftory/blocks.json"));
