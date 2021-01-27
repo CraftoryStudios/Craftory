@@ -7,13 +7,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Inject;
-import lombok.Getter;
 import lombok.NonNull;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.annotations.Persistent;
 import studio.craftory.core.data.Pair;
-import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.utils.Reflections;
 
 /** Class inspired by LogisticsCraft's Logistics-API and the PersistenceManager class **/
