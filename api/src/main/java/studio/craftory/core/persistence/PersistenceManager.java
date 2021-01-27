@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import lombok.Getter;
 import lombok.NonNull;
+import studio.craftory.core.Craftory;
 import studio.craftory.core.annotations.Persistent;
 import studio.craftory.core.data.Pair;
 import studio.craftory.core.data.keys.CraftoryDataKey;
@@ -17,10 +18,15 @@ import studio.craftory.core.utils.Reflections;
 
 /** Class inspired by LogisticsCraft's Logistics-API and the PersistenceManager class **/
 public class PersistenceManager {
-  @Inject
   private Gson gson;
-  private Map<Class<?>, ArrayList<Pair<String,Field>>> persistedFields = new HashMap<>();
-  private Map<String, Class<?>> craftoryDataKeyMap = new HashMap<>();
+  private Map<Class<?>, ArrayList<Pair<String,Field>>> persistedFields;
+  private Map<String, Class<?>> craftoryDataKeyMap;
+
+  public PersistenceManager() {
+    this.gson = Craftory.getInstance().getGson();
+    persistedFields = new HashMap<>();
+    craftoryDataKeyMap = new HashMap<>();
+  }
 
   public void registerPersistedClass(Class<?> startClass, Class<?> endClass) {
     if (persistedFields.containsKey(startClass)) return;
