@@ -16,6 +16,7 @@ import studio.craftory.core.blocks.CustomBlockRegister;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
+import studio.craftory.core.items.ItemEventManager;
 import studio.craftory.core.persistence.PersistenceManager;
 
 public final class Craftory extends JavaPlugin {
@@ -64,6 +65,8 @@ public final class Craftory extends JavaPlugin {
   public void onEnable() {
     //Executor
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
+    getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
+
   }
 
   public static void registerCustomBlock(Class<? extends BaseCustomBlock> customBlock) {
