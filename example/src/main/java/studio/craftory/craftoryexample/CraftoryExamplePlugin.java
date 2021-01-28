@@ -7,14 +7,20 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import studio.craftory.core.Craftory;
+import studio.craftory.core.data.keys.CraftoryKey;
 import studio.craftory.core.executors.interfaces.Tickable;
-import studio.craftory.craftoryexample.persitence.TestBlock;
-import studio.craftory.core.executors.AsyncExecutionManager;
+import studio.craftory.core.items.CustomItemManager;
+import studio.craftory.core.items.ItemEventManager;
 import studio.craftory.core.persistence.PersistenceManager;
 import studio.craftory.craftoryexample.executor.ComplexObject;
 import studio.craftory.craftoryexample.executor.SimpleObject;
+import studio.craftory.craftoryexample.items.Wrench;
+import studio.craftory.craftoryexample.persitence.TestBlock;
 
 public final class CraftoryExamplePlugin extends JavaPlugin {
 
@@ -40,6 +46,16 @@ public final class CraftoryExamplePlugin extends JavaPlugin {
     JsonObject objectJSON = (JsonObject) persistenceManager.saveFields(testBlock);
     root.add(testBlock.getSafeBlockLocation().getX() + "," + testBlock.getSafeBlockLocation().getY() + "," + testBlock.getSafeBlockLocation().getZ(),objectJSON);
     getServer().getLogger().info(() -> gson.toJson(root));
+
+    CraftoryKey itemKey = new CraftoryKey("example","wrench");
+    ItemStack wrench = new ItemStack(Material.STICK);
+    ItemMeta itemMeta = wrench.getItemMeta();
+    itemMeta.setDisplayName("A WRENCH");
+    wrench.setItemMeta(itemMeta);
+    CustomItemManager.registerCustomItem(itemKey, wrench);
+
+    ItemEventManager.registerDumbEvent("PlayerInteractEvent", Wrench::onClick);
+
   }
 
   @Override
