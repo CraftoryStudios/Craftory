@@ -1,6 +1,5 @@
 package studio.craftory.core.items;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -28,20 +27,19 @@ import org.bukkit.potion.PotionEffect;
 public class ItemEventManager implements Listener {
 
   private static final Map<String, Set<Consumer<Event>>> dumbEvents = new HashMap<>();
-  private static final Map<ItemSmartEvent, Map<String, Method>> smartEvents = new EnumMap<>(ItemSmartEvent.class);
+  private static final Map<ItemSmartEvent, Map<String, Consumer<Event>>> smartEvents = new EnumMap<>(ItemSmartEvent.class);
   private static final Map<String, Collection<PotionEffect>> itemOnHoldEffects = new HashMap<>();
 
-  public static void registerDumbEvent(String eventName, Consumer<Event> method) {
-    Set<Consumer<Event>> temp = dumbEvents.getOrDefault(eventName,new HashSet<>());
+  public static void registerDumbEvent(Class event, Consumer<Event> method) {
+    Set<Consumer<Event>> temp = dumbEvents.getOrDefault(event.getSimpleName(),new HashSet<>());
     temp.add(method);
-    dumbEvents.put(eventName, temp);
+    dumbEvents.put(event.getSimpleName(), temp);
   }
 
-  public static boolean registerSmartEvent(Event event, String triggerItemName, Method method) {
-    Class<?> eventClass = event.getClass();
-    if (ItemSmartEvent.isValid(eventClass)) {
-      ItemSmartEvent itemSmartEvent = ItemSmartEvent.fromClass(eventClass);
-      Map<String, Method> temp = smartEvents.getOrDefault(itemSmartEvent, new HashMap<>());
+  public static boolean registerSmartEvent(Class event, String triggerItemName, Consumer<Event> method) {
+    if (ItemSmartEvent.isValid(event)) {
+      ItemSmartEvent itemSmartEvent = ItemSmartEvent.fromClass(event);
+      Map<String, Consumer<Event>> temp = smartEvents.getOrDefault(itemSmartEvent, new HashMap<>());
       temp.put(triggerItemName, method);
       smartEvents.put(itemSmartEvent, temp);
       return true;
@@ -53,22 +51,16 @@ public class ItemEventManager implements Listener {
     itemOnHoldEffects.put(itemName, effects);
   }
 
-  //@EventHandler
-  //public void onEvent(Event event) {
-  //  handleDumbEvents(event);
-  //  handleSmartEvent(event);
-  //}
-
-
 
   @EventHandler
   public void onRightClickTest(PlayerInteractEvent event) {
     System.out.println("EVENT");
     if(event.getHand().equals(EquipmentSlot.HAND) && event.getAction()== Action.RIGHT_CLICK_BLOCK && event.getItem()==null) {
       System.out.println("IN IF");
-      event.getPlayer().getInventory().setItemInMainHand(CustomItemManager.getCustomItem("example:wrench"));
+      event.getPlayer().getInventory().setItemInMainHand(CustomItemManager.getCustomItem("example:drill"));
     }
     handleDumbEvents(event);
+    handleSmartEvent(event);
   }
 
   /**
@@ -95,7 +87,7 @@ public class ItemEventManager implements Listener {
         String triggerItemName = itemSmartEvent.getValidationString(event);
         if(smartEvents.get(itemSmartEvent).containsKey(triggerItemName)){
             try {
-              smartEvents.get(itemSmartEvent).get(triggerItemName).invoke(eventClass.cast(event));
+              smartEvents.get(itemSmartEvent).get(triggerItemName).accept(event);
             } catch (Exception e) {
               e.printStackTrace();
             }
@@ -107,20 +99,19 @@ public class ItemEventManager implements Listener {
   @EventHandler
   public void onInventoryClose(InventoryCloseEvent event) {
     // Replace with custom item name
-    addPotionEffects(event.getPlayer().getInventory().getItemInMainHand().getType().toString(),
+    addPotionEffects(event.getPlayer().getInventory().getItemInMainHand(),
         (Player) event.getPlayer());
   }
 
   @EventHandler
   public void onPlayerItemHeld(PlayerItemHeldEvent event) {
-    // Replace with custom item name
     ItemStack oldItem = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
     ItemStack newItem = event.getPlayer().getInventory().getItem(event.getNewSlot());
     if(oldItem!=null) {
-      removePotionEffects(oldItem.getType().toString(), event.getPlayer());
+      removePotionEffects(oldItem, event.getPlayer());
     }
     if(newItem!=null) {
-      addPotionEffects(newItem.getType().toString(), event.getPlayer());
+      addPotionEffects(newItem, event.getPlayer());
     }
   }
 
@@ -130,20 +121,17 @@ public class ItemEventManager implements Listener {
     PlayerInventory inventory = player.getInventory();
     if(event.isShiftClick()) {
       if(player.getInventory().getHeldItemSlot()==event.getSlot()){
-        // Replace with custom item name
-        removePotionEffects(inventory.getItemInMainHand().getType().toString() ,player);
+        removePotionEffects(inventory.getItemInMainHand() ,player);
       }
       return;
     }
     if(event.getHotbarButton()!=-1){
       if(player.getInventory().getHeldItemSlot()==event.getHotbarButton()) { //Moving item in
-        // Replace with custom item name
-        removePotionEffects(player.getInventory().getItemInMainHand().getType().toString(), player);
+        removePotionEffects(player.getInventory().getItemInMainHand(), player);
       }
     } else {
       if(player.getInventory().getHeldItemSlot()==event.getSlot()) { //Moving item in
-        // Replace with custom item name
-        removePotionEffects(player.getInventory().getItem(event.getSlot()).getType().toString(), player);
+        removePotionEffects(player.getInventory().getItem(event.getSlot()), player);
       }
     }
   }
@@ -152,8 +140,8 @@ public class ItemEventManager implements Listener {
   public void onPlayerItemDrop(PlayerDropItemEvent event) {
     Player player = event.getPlayer();
     // Replace with custom item name
-    removePotionEffects(event.getItemDrop().getItemStack().getType().toString(), player);
-    addPotionEffects(player.getInventory().getItemInMainHand().getType().toString(), player);
+    removePotionEffects(event.getItemDrop().getItemStack(), player);
+    addPotionEffects(player.getInventory().getItemInMainHand(), player);
   }
 
   @EventHandler
@@ -171,17 +159,21 @@ public class ItemEventManager implements Listener {
     }
     if(onlyHeldFree) {
       // Replace with custom item name
-      addPotionEffects(event.getItem().getItemStack().getType().toString() , player);
+      addPotionEffects(event.getItem().getItemStack(), player);
     }
   }
 
-  private void addPotionEffects(String itemName, Player player) {
+  private void addPotionEffects(ItemStack item, Player player) {
+    if(item==null) return;
+    String itemName = CustomItemManager.getItemName(item);
     if(itemOnHoldEffects.containsKey(itemName)) {
       player.addPotionEffects(itemOnHoldEffects.get(itemName));
     }
   }
 
-  private void removePotionEffects(String itemName, Player player) {
+  private void removePotionEffects(ItemStack item, Player player) {
+    if(item==null) return;
+    String itemName = CustomItemManager.getItemName(item);
     if(itemOnHoldEffects.containsKey(itemName)) {
       for(PotionEffect effect: itemOnHoldEffects.get(itemName)) {
         player.removePotionEffect(effect.getType());
