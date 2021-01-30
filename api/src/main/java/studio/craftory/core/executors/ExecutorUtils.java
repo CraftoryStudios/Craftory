@@ -10,14 +10,15 @@ import java.util.Set;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import studio.craftory.core.annotations.SyncTickable;
+import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.executors.interfaces.Tickable;
 import studio.craftory.core.utils.Reflections;
 
 @UtilityClass
 public class ExecutorUtils {
 
-  public static void registerTickableClass(Class<? extends Tickable> clazz,
-      Map<Class<? extends Tickable>, HashMap<Integer, ArrayList<Method>>> tickableMethods) {
+  public static void registerTickableClass(Class<? extends BaseCustomBlock> clazz,
+      Map<Class<? extends BaseCustomBlock>, HashMap<Integer, ArrayList<Method>>> tickableMethods) {
 
     HashMap<Integer, ArrayList<Method>> tickMethods = new HashMap<>();
 
@@ -42,11 +43,11 @@ public class ExecutorUtils {
     }
   }
 
-  public static void runMethods(@NonNull Set<TickGroup> tickGroups, @NonNull int tick, @NonNull Map<Class<? extends Tickable>, HashMap<Integer,
+  public static void runMethods(@NonNull Set<TickGroup> tickGroups, @NonNull int tick, @NonNull Map<Class<? extends BaseCustomBlock>, HashMap<Integer,
       ArrayList<Method>>> tickableMethods) {
     for (TickGroup tickGroup : tickGroups) {
       if (tick % tickGroup.tick == 0) {
-        for (Tickable tickable : tickGroup.getTickables()) {
+        for (BaseCustomBlock tickable : tickGroup.getTickables()) {
           for (Method method: tickableMethods.get(tickable.getClass()).get(tickGroup.tick)) {
             try {
               method.invoke(tickable);
