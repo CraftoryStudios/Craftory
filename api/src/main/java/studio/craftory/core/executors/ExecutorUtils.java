@@ -11,7 +11,6 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import studio.craftory.core.annotations.SyncTickable;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
-import studio.craftory.core.executors.interfaces.Tickable;
 import studio.craftory.core.utils.Reflections;
 
 @UtilityClass

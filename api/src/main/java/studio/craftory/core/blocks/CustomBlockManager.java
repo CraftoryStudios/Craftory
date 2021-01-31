@@ -39,27 +39,28 @@ public class CustomBlockManager {
   }
 
   /**
-   * Loads a Custom Block, this method should be called only when a new block is placed or when
-   * a stored block is loaded from the disk.
+   * Loads a Custom Block, into memory and executor when a new block is placed or loaded from file
    *
-   * @param block the block
-   * @throws IllegalArgumentException if the given block location isn't loaded
+   * @param customBlock which should be loaded into memory
    */
-  public void loadCustomBlock(@NonNull final BaseCustomBlock block) {
-    if (!blockRegister.isBlockRegistered(block)) {
-      throw new IllegalArgumentException("The class " + block.getClass().getName() + " is not registered!");
-    }
-    Location location = block.getSafeBlockLocation().getLocation()
-                             .orElseThrow(() -> new IllegalArgumentException("The provided block must be loaded!"));
-    Chunk chunk = location.getChunk();
-    //pluginManager.callEvent(new CustomBlockLoadEvent(location, block));
-    if (customBlocks.computeIfAbsent(chunk, k -> new ConcurrentHashMap<>())
-                      .putIfAbsent(location, block) == null) {
-      addToExecutorSchedule(block);
+  public boolean loadCustomBlock(@NonNull final BaseCustomBlock customBlock) {
+    Location location = customBlock.getSafeBlockLocation().getLocation()
+                             .orElseThrow(() -> new IllegalArgumentException("The provided customBlock must be loaded!"));
+    //pluginManager.callEvent(new CustomBlockLoadEvent(location, customBlock));
+
+    if (customBlocks.computeIfAbsent(location.getChunk(), k -> new ConcurrentHashMap<>())
+                      .putIfAbsent(location, customBlock) == null) {
+
+      if (location.getChunk().isLoaded()) {
+        addToExecutorSchedule(customBlock);
+      }
+
       Log.debug("Block loaded: " + location.toString());
+      return true;
     } else {
-      Log.warn("Trying to load a block at occupied location: " + location.toString());
+      Log.warn("Trying to load a customBlock at occupied location: " + location.toString());
     }
+    return false;
   }
 
   /**
@@ -89,6 +90,7 @@ public class CustomBlockManager {
 
     removeFromExecutorSchedule(customBlock);
 
+
     if (save) {
       //pluginManager.callEvent(new CustomBlockSaveEvent(location, customBlock));
       //worldStorage.get(location.getWorld()).saveCustomBlock(customBlock);
@@ -96,17 +98,8 @@ public class CustomBlockManager {
       //pluginManager.callEvent(new CustomBlockUnloadEvent(location, customBlock));
       //worldStorage.get(location.getWorld()).removeCustomBlock(customBlock);
     }
+
     customBlocks.get(location.getChunk()).remove(location);
-  }
-
-  private void addToExecutorSchedule(@NonNull final BaseCustomBlock block) {
-      asyncExecutionManager.addTickableObject( block);
-      syncExecutionManager.addTickableObject(block);
-  }
-
-  private void removeFromExecutorSchedule(@NonNull final BaseCustomBlock block) {
-    asyncExecutionManager.removeTickableObject(block);
-    syncExecutionManager.removeTickableObject(block);
   }
 
   /**
@@ -149,8 +142,16 @@ public class CustomBlockManager {
     return Collections.unmodifiableMap(customBlocks.get(chunk));
   }
 
-  @Synchronized
-  public Optional<BaseCustomBlock> placeCustomBlock(@NonNull CustomBlockKey customBlockKey, @NonNull SafeBlockLocation location,
+  /**
+   * Place a custom block at a given location and then load into memory
+   * and also into the executor
+   *
+   * @param customBlockKey key representing the type of custom block to place
+   * @param location in the world to place the block
+   * @param direction the block is facing
+   * @return instance of the newly created Custom Block or Optional.empty if failed
+   */
+  public Optional<BaseCustomBlock> placeCustomBlock(@NonNull CustomBlockKey customBlockKey, @NonNull Location location,
   @NonNull CraftoryDirection direction) {
     Optional<BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(customBlockKey, location, direction);
 
@@ -159,10 +160,21 @@ public class CustomBlockManager {
       return Optional.empty();
     }
 
-    //Register for Execution
-    addToExecutorSchedule(customBlock.get());
+    if (loadCustomBlock(customBlock.get())) {
+      return customBlock;
+    }
 
-    return customBlock;
+    return Optional.empty();
+  }
+
+  private void addToExecutorSchedule(@NonNull final BaseCustomBlock block) {
+    asyncExecutionManager.addTickableObject( block);
+    syncExecutionManager.addTickableObject(block);
+  }
+
+  private void removeFromExecutorSchedule(@NonNull final BaseCustomBlock block) {
+    asyncExecutionManager.removeTickableObject(block);
+    syncExecutionManager.removeTickableObject(block);
   }
 
 

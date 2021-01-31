@@ -18,7 +18,6 @@ import studio.craftory.core.data.keys.CustomBlockKey;
 import studio.craftory.core.data.safecontainers.SafeBlockLocation;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
-import studio.craftory.core.executors.interfaces.Tickable;
 import studio.craftory.core.utils.Log;
 
 /** Class based on LogisticsCraft's Logistics-API (MIT) and the LogisticsTypeRegister class **/
@@ -42,9 +41,7 @@ public class CustomBlockRegister {
 
           blockTypes.put(customBlockKey, constructor.get());
 
-          if (Tickable.class.isAssignableFrom(block)) {
-            registerCustomBlockTickables((Class<? extends Tickable>) block);
-          }
+          registerCustomBlockTickables(block);
           Log.debug("CustomBlock Register: " + block.getName());
         } else {
           Log.warn("Couldn't get constructor for custom block: " + customBlockKey.getName());
@@ -56,7 +53,7 @@ public class CustomBlockRegister {
     }
   }
 
-  private void registerCustomBlockTickables(Class<? extends Tickable> block) {
+  private void registerCustomBlockTickables(Class<? extends BaseCustomBlock> block) {
     asyncExecutionManager.registerTickableClass(block);
     syncExecutionManager.registerTickableClass(block);
   }
@@ -67,14 +64,14 @@ public class CustomBlockRegister {
     return constructor.filter(blockTypes::containsValue).isPresent();
   }
 
-  @Synchronized
-  public Optional<BaseCustomBlock> getNewCustomBlockInstance(@NonNull CustomBlockKey key,  @NonNull SafeBlockLocation location,
+  public Optional<BaseCustomBlock> getNewCustomBlockInstance(@NonNull CustomBlockKey key,  @NonNull Location location,
       @NonNull CraftoryDirection direction) {
     Optional<Constructor<? extends BaseCustomBlock>> constructor = Optional.ofNullable(blockTypes.get(key));
 
     if (constructor.isPresent()) {
       try {
-        return Optional.of(constructor.get().newInstance(location, direction));
+        SafeBlockLocation safeLocation = new SafeBlockLocation(location);
+        return Optional.of(constructor.get().newInstance(safeLocation, direction));
       } catch (Exception e) {
         Log.error("Couldn't create custom block of type: "+key.getName() + " at location: "+location);
         return Optional.empty();
