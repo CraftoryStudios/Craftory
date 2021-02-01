@@ -161,6 +161,7 @@ public class CustomBlockManager {
     }
 
     if (loadCustomBlock(customBlock.get())) {
+      //TODO Render Custom Block
       return customBlock;
     }
 

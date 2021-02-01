@@ -7,9 +7,8 @@ import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.persitanceholders.DataHolder;
 import studio.craftory.core.data.persitanceholders.PersistentDataHolder;
 import studio.craftory.core.data.persitanceholders.VolatileDataHolder;
-import studio.craftory.core.executors.interfaces.Tickable;
 
-public abstract class ComplexCustomBlock extends BaseCustomBlock implements PersistentDataHolder, VolatileDataHolder, Tickable {
+public abstract class ComplexCustomBlock extends BaseCustomBlock implements PersistentDataHolder, VolatileDataHolder {
 
   @Persistent()
   private DataHolder persistentData = new DataHolder();

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import javax.inject.Inject;
+import jdk.nashorn.internal.ir.IfNode;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -30,6 +31,7 @@ public class CustomBlockRegister {
   private SyncExecutionManager syncExecutionManager;
 
   private final Map<CustomBlockKey, Constructor<? extends BaseCustomBlock>> blockTypes = new HashMap<>();
+  private final Map<Class<? extends BaseCustomBlock>, CustomBlockKey> blockKeys = new HashMap<>();
 
   @Synchronized
   public void registerCustomBlock(@NonNull Plugin plugin, @NonNull Class<? extends BaseCustomBlock> block) {
@@ -39,7 +41,7 @@ public class CustomBlockRegister {
         Optional<Constructor<? extends BaseCustomBlock>> constructor = getConstructor(block);
         if (constructor.isPresent()) {
 
-          blockTypes.put(customBlockKey, constructor.get());
+          addCustomBlockKeys(block, constructor.get(),customBlockKey);
 
           registerCustomBlockTickables(block);
           Log.debug("CustomBlock Register: " + block.getName());
@@ -53,15 +55,9 @@ public class CustomBlockRegister {
     }
   }
 
-  private void registerCustomBlockTickables(Class<? extends BaseCustomBlock> block) {
-    asyncExecutionManager.registerTickableClass(block);
-    syncExecutionManager.registerTickableClass(block);
-  }
-
   @Synchronized
   public boolean isBlockRegistered(@NonNull BaseCustomBlock block) {
-    Optional<Constructor<? extends BaseCustomBlock>> constructor = getConstructor(block.getClass());
-    return constructor.filter(blockTypes::containsValue).isPresent();
+    return blockKeys.containsKey(block.getClass());
   }
 
   public Optional<BaseCustomBlock> getNewCustomBlockInstance(@NonNull CustomBlockKey key,  @NonNull Location location,
@@ -95,11 +91,17 @@ public class CustomBlockRegister {
 
   @Synchronized
   public Optional<CustomBlockKey> getKey(@NonNull Class<? extends BaseCustomBlock> block) {
-    for (Entry<CustomBlockKey, Constructor<? extends BaseCustomBlock>> entry : blockTypes.entrySet()) {
-      if (entry.getValue().getDeclaringClass() == block) {
-        return Optional.of(entry.getKey());
-      }
-    }
-    return Optional.empty();
+    return Optional.ofNullable(blockKeys.get(block));
   }
+
+  private void addCustomBlockKeys(Class<? extends BaseCustomBlock> clazz, Constructor<? extends BaseCustomBlock> constructor, CustomBlockKey key) {
+    blockTypes.put(key, constructor);
+    blockKeys.put(clazz, key);
+  }
+
+  private void registerCustomBlockTickables(Class<? extends BaseCustomBlock> block) {
+    asyncExecutionManager.registerTickableClass(block);
+    syncExecutionManager.registerTickableClass(block);
+  }
+
 }
