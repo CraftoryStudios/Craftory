@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,12 +20,15 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Synchronized;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.World;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.blocks.templates.ComplexCustomBlock;
+import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.data.keys.CustomBlockKey;
+import studio.craftory.core.data.safecontainers.SafeBlockLocation;
 import studio.craftory.core.persistence.PersistenceManager;
 import studio.craftory.core.utils.Log;
 
@@ -89,7 +93,7 @@ public class WorldStorage {
     objectRoot.addProperty("type", key.get().toString());
 
     //Save block direction
-    objectRoot.addProperty("direction", customBlock.getFacingDirection().toString());
+    objectRoot.addProperty("direction", customBlock.getFacingDirection().label);
 
     //Save Complex Block Persistent Data
     if (ComplexCustomBlock.class.isAssignableFrom(customBlock.getClass())) {
@@ -100,16 +104,64 @@ public class WorldStorage {
       objectRoot.add("persistentData",persistentData);
     }
 
-    chunkRoot.add(customBlock.getSafeBlockLocation().getLocation().get().toString(), objectRoot);
+    Location location = customBlock.getLocation().getLocation().get();
+    chunkRoot.add(((int)location.getX()) + ";" + ((int)location.getY()) + ";" + ((int)location.getBlockZ()), objectRoot);
   }
 
   @Synchronized
   public void removeCustomBlock(@NonNull final BaseCustomBlock customBlock) {
     JsonObject chunks = rootNode.getAsJsonObject("chunks");
-    
+    if (chunks == null) return;
+    SafeBlockLocation location = customBlock.getLocation();
+
+    JsonObject chunkData = chunks.getAsJsonObject(location.getChunkX() + ";" + location.getChunkZ());
+    if (chunkData == null) return;
+    if (chunkData.has(location.getX()+";"+ location.getY()+";"+ location.getZ())) {
+      chunkData.remove(location.getX()+";"+ location.getY()+";"+ location.getZ());
+    }
+    if (chunkData.keySet().isEmpty()) {
+      chunks.remove(location.getChunkX() + ";" + location.getChunkZ());
+    }
+  }
+
+  @Synchronized
+  public void removeChunk(@NonNull final Chunk chunk) {
+    JsonObject chunks = rootNode.getAsJsonObject("chunks");
+    if (chunks == null) return;
+
+    if (chunks.has(chunk.getX() + ";" + chunk.getZ())) {
+     chunks.remove(chunk.getX() + ";" + chunk.getZ()) ;
+    }
   }
 
   public Optional<Set<? extends BaseCustomBlock>> getSavedBlocksInChunk(@NonNull final Chunk chunk) {
-    return Optional.empty();
+    JsonObject chunks = rootNode.getAsJsonObject("chunks");
+    if (chunks == null || chunks.keySet().isEmpty()) return Optional.empty();
+    JsonObject chunkData = chunks.getAsJsonObject(chunk.getX() + ";" + chunk.getZ());
+    if (chunkData == null || chunkData.keySet().isEmpty()) return Optional.empty();
+
+    Set<BaseCustomBlock> customBlocks = new HashSet<>();
+    JsonObject blockData;
+    for (String key : chunkData.keySet()) {
+      blockData = chunkData.getAsJsonObject(key);
+
+      //Get Block Values
+      CustomBlockKey customBlockKey = new CustomBlockKey(blockData.get("type").getAsString());
+      String[] splitKey = key.split(":");
+      Location location = new Location(chunk.getWorld(), Double.parseDouble(splitKey[0]), Double.parseDouble(splitKey[1]),
+          Double.parseDouble(splitKey[2]));
+      CraftoryDirection direction = CraftoryDirection.valueOfLabel(blockData.get("direction").getAsByte());
+
+      Optional<BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(customBlockKey, location, direction);
+      if (!customBlock.isPresent()) return Optional.empty();
+
+      //Inject Persistent Data
+
+      customBlocks.add(customBlock.get());
+    }
+
+    if (customBlocks.isEmpty()) return Optional.empty();
+
+    return Optional.of(customBlocks);
   }
 }

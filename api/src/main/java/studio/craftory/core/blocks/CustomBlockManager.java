@@ -13,7 +13,6 @@ import org.bukkit.World;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.keys.CustomBlockKey;
-import studio.craftory.core.data.safecontainers.SafeBlockLocation;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
 import studio.craftory.core.utils.Log;
@@ -44,8 +43,8 @@ public class CustomBlockManager {
    * @param customBlock which should be loaded into memory
    */
   public boolean loadCustomBlock(@NonNull final BaseCustomBlock customBlock) {
-    Location location = customBlock.getSafeBlockLocation().getLocation()
-                             .orElseThrow(() -> new IllegalArgumentException("The provided customBlock must be loaded!"));
+    Location location = customBlock.getLocation().getLocation()
+                                   .orElseThrow(() -> new IllegalArgumentException("The provided customBlock must be loaded!"));
     //pluginManager.callEvent(new CustomBlockLoadEvent(location, customBlock));
 
     if (customBlocks.computeIfAbsent(location.getChunk(), k -> new ConcurrentHashMap<>())

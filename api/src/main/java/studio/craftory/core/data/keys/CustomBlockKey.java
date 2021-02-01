@@ -19,6 +19,12 @@ public class CustomBlockKey {
     this.name = block.getSimpleName();
   }
 
+  public CustomBlockKey(String key) {
+    String[] keySplit = key.split(":");
+    this.namespace = keySplit[0];
+    this.name = keySplit[1];
+  }
+
   public Optional<Plugin> getPlugin() {
     return new SafePlugin(this.namespace).getPlugin();
   }
