@@ -15,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
+import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.data.keys.CustomBlockKey;
 import studio.craftory.core.data.safecontainers.SafeBlockLocation;
 import studio.craftory.core.executors.AsyncExecutionManager;
@@ -32,6 +33,7 @@ public class CustomBlockRegister {
 
   private final Map<CustomBlockKey, Constructor<? extends BaseCustomBlock>> blockTypes = new HashMap<>();
   private final Map<Class<? extends BaseCustomBlock>, CustomBlockKey> blockKeys = new HashMap<>();
+  private final Map<String, CraftoryDataKey> craftoryDataKeyMap = new HashMap<>();
 
   @Synchronized
   public void registerCustomBlock(@NonNull Plugin plugin, @NonNull Class<? extends BaseCustomBlock> block) {
@@ -92,6 +94,14 @@ public class CustomBlockRegister {
   @Synchronized
   public Optional<CustomBlockKey> getKey(@NonNull Class<? extends BaseCustomBlock> block) {
     return Optional.ofNullable(blockKeys.get(block));
+  }
+
+  public void registerDataKey(String key, CraftoryDataKey dataKey) {
+    craftoryDataKeyMap.putIfAbsent(key, dataKey);
+  }
+
+  public Optional<CraftoryDataKey> getDataType(@NonNull String key) {
+    return Optional.of(craftoryDataKeyMap.get(key));
   }
 
   private void addCustomBlockKeys(Class<? extends BaseCustomBlock> clazz, Constructor<? extends BaseCustomBlock> constructor, CustomBlockKey key) {

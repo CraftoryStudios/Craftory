@@ -20,12 +20,10 @@ import studio.craftory.core.utils.Reflections;
 public class PersistenceManager {
   private Gson gson;
   private Map<Class<?>, ArrayList<Pair<String,Field>>> persistedFields;
-  private Map<String, Class<?>> craftoryDataKeyMap;
 
   public PersistenceManager() {
     this.gson = Craftory.getInstance().getGson();
     persistedFields = new HashMap<>();
-    craftoryDataKeyMap = new HashMap<>();
   }
 
   public void registerPersistedClass(Class<?> startClass, Class<?> endClass) {
@@ -41,10 +39,6 @@ public class PersistenceManager {
                });
 
     persistedFields.put(startClass, fields);
-  }
-
-  public void registerDataKey(String key, Class<?> dataType) {
-    craftoryDataKeyMap.putIfAbsent(key, dataType);
   }
 
   public JsonElement saveFields(@NonNull Object object) {

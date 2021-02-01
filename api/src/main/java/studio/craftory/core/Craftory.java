@@ -36,6 +36,8 @@ public final class Craftory extends JavaPlugin {
   PersistenceManager persistenceManager;
   @Getter
   Gson gson = new Gson();
+  @Getter
+  CustomBlockRegister register;
 
 
 
@@ -57,7 +59,7 @@ public final class Craftory extends JavaPlugin {
     persistenceManager = injector.getSingleton(PersistenceManager.class);
 
     //Custom Block
-    injector.getSingleton(CustomBlockRegister.class);
+    register = injector.getSingleton(CustomBlockRegister.class);
     injector.getSingleton(CustomBlockManager.class);
   }
 

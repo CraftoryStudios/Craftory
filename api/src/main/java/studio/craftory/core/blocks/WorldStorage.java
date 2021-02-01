@@ -105,7 +105,7 @@ public class WorldStorage {
     }
 
     Location location = customBlock.getLocation().getLocation().get();
-    chunkRoot.add(((int)location.getX()) + ";" + ((int)location.getY()) + ";" + ((int)location.getBlockZ()), objectRoot);
+    chunkRoot.add(((int)location.getX()) + ";" + ((int)location.getY()) + ";" + ((int)location.getZ()), objectRoot);
   }
 
   @Synchronized
@@ -134,7 +134,7 @@ public class WorldStorage {
     }
   }
 
-  public Optional<Set<? extends BaseCustomBlock>> getSavedBlocksInChunk(@NonNull final Chunk chunk) {
+  public Optional<Set<BaseCustomBlock>> getSavedBlocksInChunk(@NonNull final Chunk chunk) {
     JsonObject chunks = rootNode.getAsJsonObject("chunks");
     if (chunks == null || chunks.keySet().isEmpty()) return Optional.empty();
     JsonObject chunkData = chunks.getAsJsonObject(chunk.getX() + ";" + chunk.getZ());
@@ -152,10 +152,24 @@ public class WorldStorage {
           Double.parseDouble(splitKey[2]));
       CraftoryDirection direction = CraftoryDirection.valueOfLabel(blockData.get("direction").getAsByte());
 
-      Optional<BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(customBlockKey, location, direction);
+      Optional<? extends BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(customBlockKey, location, direction);
       if (!customBlock.isPresent()) return Optional.empty();
 
       //Inject Persistent Data
+      if (ComplexCustomBlock.class.isAssignableFrom(customBlock.getClass())) {
+        JsonObject persistentData = blockData.getAsJsonObject("persistentData");
+        if (persistentData != null) {
+          for (String dataKey : persistentData.keySet()) {
+            Optional<CraftoryDataKey> datatype = blockRegister.getDataType(dataKey);
+            if (datatype.isPresent()) {
+              ((ComplexCustomBlock)customBlock.get()).getPersistentData().set(datatype.get(), gson.fromJson(persistentData.get(dataKey),
+                  datatype.get().getDataClass()));
+            }
+
+          }
+        }
+
+      }
 
       customBlocks.add(customBlock.get());
     }
