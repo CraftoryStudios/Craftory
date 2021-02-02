@@ -71,10 +71,6 @@ public final class Craftory extends JavaPlugin {
 
   }
 
-  public static void registerCustomBlock(Class<? extends BaseCustomBlock> customBlock) {
-    //Test
-  }
-
   public Craftory() {
     super();
   }

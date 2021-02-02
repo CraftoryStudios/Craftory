@@ -4,3 +4,9 @@ version: ${project.version}
 api-version: 1.13
 authors: [Brett Saunders, Mathew Jones]
 softdepend: [Craftory]
+
+commands:
+  simplegen:
+    description: Spawans a new Simple Generator Block above your head
+    usage: /<command>
+    permission: craftoryexample.simplegen

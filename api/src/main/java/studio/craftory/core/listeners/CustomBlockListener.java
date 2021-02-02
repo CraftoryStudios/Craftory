@@ -1,16 +1,23 @@
 package studio.craftory.core.listeners;
 
+import java.util.Optional;
+import javax.inject.Inject;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import studio.craftory.core.Craftory;
+import studio.craftory.core.blocks.CustomBlockManager;
+import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
 
 public class CustomBlockListener {
 
+  @Inject
+  private CustomBlockManager customBlockManager;
   private NamespacedKey blockItemKey = new NamespacedKey(Craftory.getInstance(), "blockItemKey");
 
   @EventHandler
@@ -29,6 +36,12 @@ public class CustomBlockListener {
     //Create Custom Block
 
     //Render Custom Block
+  }
+
+  @EventHandler
+  public void onCustomBlockClick(PlayerInteractEvent playerInteractEvent) {
+    Optional<BaseCustomBlock> customBlock = customBlockManager.getLoadedCustomBlockAt(playerInteractEvent.getClickedBlock().getLocation());
+    customBlock.ifPresent(baseCustomBlock -> baseCustomBlock.onPlayerClick(playerInteractEvent));
   }
 
   private CraftoryDirection getDirection(Player player) {

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.bukkit.Location;
+import org.bukkit.event.player.PlayerInteractEvent;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.safecontainers.SafeBlockLocation;
 
@@ -23,6 +24,10 @@ public abstract class BaseCustomBlock {
   }
 
   public void renderCustomBlock() {
+
+  }
+
+  public void onPlayerClick(PlayerInteractEvent playerInteractEvent) {
 
   }
 

@@ -4,7 +4,6 @@ import java.util.Optional;
 import javax.inject.Inject;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 import studio.craftory.core.blocks.CustomBlockManager;
@@ -12,6 +11,7 @@ import studio.craftory.core.blocks.CustomBlockRegister;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.keys.CustomBlockKey;
+import studio.craftory.core.utils.Log;
 
 @UtilityClass
 public class CustomBlockAPI {
@@ -25,13 +25,18 @@ public class CustomBlockAPI {
     customBlockRegister.registerCustomBlock(plugin, customBlock);
   }
 
-  public Optional<BaseCustomBlock> placeCustomBlock(@NonNull Location location, @NonNull CustomBlockKey customBlockKey,
+  public Optional<BaseCustomBlock> placeCustomBlock(@NonNull Location location, @NonNull Class<? extends BaseCustomBlock> customBlockClazz,
   @NonNull CraftoryDirection craftoryDirection) {
-    throw new NotImplementedException();
+    Optional<CustomBlockKey> key = customBlockRegister.getKey(customBlockClazz);
+    if (!key.isPresent()) {
+      Log.warn("Tried to place a custom block that doesn't exist or isn't registered");
+      return Optional.empty();
+    }
+    return customBlockManager.placeCustomBlock(key.get(),location,craftoryDirection);
   }
 
-  public Optional<BaseCustomBlock> placeCustomBlock(@NonNull Location location, @NonNull CustomBlockKey customBlockKey) {
-    return placeCustomBlock(location, customBlockKey, CraftoryDirection.NORTH);
+  public Optional<BaseCustomBlock> placeCustomBlock(@NonNull Location location, @NonNull Class<? extends BaseCustomBlock> customBlockClazz) {
+    return placeCustomBlock(location, customBlockClazz, CraftoryDirection.NORTH);
   }
 
 }

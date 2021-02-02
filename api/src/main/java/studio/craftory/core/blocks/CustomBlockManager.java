@@ -9,6 +9,7 @@ import lombok.NonNull;
 import lombok.Synchronized;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
@@ -161,6 +162,7 @@ public class CustomBlockManager {
 
     if (loadCustomBlock(customBlock.get())) {
       //TODO Render Custom Block
+      location.getBlock().setType(Material.GLASS);
       return customBlock;
     }
 
