@@ -9,7 +9,9 @@ import studio.craftory.core.annotations.SyncTickable;
 import studio.craftory.core.blocks.renders.Renderers;
 import studio.craftory.core.blocks.templates.ComplexCustomBlock;
 import studio.craftory.core.components.energy.EnergyOutput;
+import studio.craftory.core.components.energy.EnergyOutput.EnergyOutputData;
 import studio.craftory.core.components.energy.EnergyStorage;
+import studio.craftory.core.components.energy.EnergyStorage.EnergyStorageData;
 import studio.craftory.core.data.CraftoryDirection;
 
 @CustomBlock(renders = {Renderers.BLOCK_STATE_RENDER, Renderers.ENTITY_SPAWNER_RENDER, Renderers.HEAD_RENDER})
@@ -19,9 +21,11 @@ import studio.craftory.core.data.CraftoryDirection;
     upFacingModel = "assets/blocks/upexample", downFacingModel = "assets/blocks/downexample",
     headModel = "assets/blocks/headexample"
 )
+@EnergyOutputData(maxExtract = 100)
+@EnergyStorageData(capacity = 100000)
 public class SimpleGenerator extends ComplexCustomBlock implements EnergyOutput {
 
-  protected SimpleGenerator(@NonNull Location location, @NonNull CraftoryDirection facingDirection) {
+  public SimpleGenerator(@NonNull Location location, @NonNull CraftoryDirection facingDirection) {
     super(location, facingDirection);
   }
 

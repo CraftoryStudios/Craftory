@@ -1,4 +1,4 @@
-package studio.craftory.core.processors;
+/**package studio.craftory.core.processors;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.JavaFile;
@@ -108,3 +108,4 @@ public class CustomBlockProcessor extends AbstractProcessor {
     return false;
   }
 }
+**/

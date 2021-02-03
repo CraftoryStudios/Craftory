@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -14,7 +15,7 @@ import studio.craftory.core.blocks.CustomBlockManager;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
 
-public class CustomBlockListener {
+public class CustomBlockListener implements Listener {
 
   @Inject
   private CustomBlockManager customBlockManager;
@@ -40,7 +41,7 @@ public class CustomBlockListener {
 
   @EventHandler
   public void onCustomBlockClick(PlayerInteractEvent playerInteractEvent) {
-    Optional<BaseCustomBlock> customBlock = customBlockManager.getLoadedCustomBlockAt(playerInteractEvent.getClickedBlock().getLocation());
+    Optional<BaseCustomBlock> customBlock = Craftory.getInstance().getCustomBlockManager().getLoadedCustomBlockAt(playerInteractEvent.getClickedBlock().getLocation());
     customBlock.ifPresent(baseCustomBlock -> baseCustomBlock.onPlayerClick(playerInteractEvent));
   }
 

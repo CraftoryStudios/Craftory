@@ -4,10 +4,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import studio.craftory.core.Craftory;
 import studio.craftory.core.CraftoryAddon;
 import studio.craftory.core.api.CustomBlockAPI;
-import studio.craftory.core.blocks.CustomBlockManager;
 import studio.craftory.core.data.keys.CraftoryKey;
 import studio.craftory.core.items.CustomItemManager;
 import studio.craftory.core.items.ItemEventManager;
@@ -21,7 +19,7 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
   public void onLoad() {
 
     /* Custom Item */
-    CraftoryKey itemKey = new CraftoryKey(this,"wrench");
+    /*CraftoryKey itemKey = new CraftoryKey(this,"wrench");
     ItemStack wrench = new ItemStack(Material.STICK);
     ItemMeta itemMeta = wrench.getItemMeta();
     itemMeta.setDisplayName("A WRENCH");
@@ -31,11 +29,12 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
     ItemEventManager.registerDumbEvent("PlayerInteractEvent", Wrench::onClick);
 
     /* Custom Blocks */
-    CustomBlockAPI.registerCustomBlock(this, SimpleGenerator.class);
+
   }
 
   @Override
   public void onEnable() {
+    CustomBlockAPI.registerCustomBlock(this, SimpleGenerator.class);
     this.getCommand("simplegen").setExecutor(new SpawnGeneratorCommand());
   }
 

@@ -14,7 +14,7 @@ public class CustomBlockKey {
   String namespace;
   String name;
 
-  public CustomBlockKey(Plugin plugin, Class<? extends BaseCustomBlock> block) {
+  public CustomBlockKey(Plugin plugin, Class<?> block) {
     this.namespace = plugin.getName();
     this.name = block.getSimpleName();
   }

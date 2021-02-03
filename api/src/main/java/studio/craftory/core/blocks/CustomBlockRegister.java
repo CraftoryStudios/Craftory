@@ -36,16 +36,16 @@ public class CustomBlockRegister {
   private final Map<String, CraftoryDataKey> craftoryDataKeyMap = new HashMap<>();
 
   @Synchronized
-  public void registerCustomBlock(@NonNull Plugin plugin, @NonNull Class<? extends BaseCustomBlock> block) {
+  public void registerCustomBlock(@NonNull Plugin plugin, @NonNull Class<?> block) {
     CustomBlockKey customBlockKey = new CustomBlockKey(plugin, block);
     if (!blockTypes.containsKey(customBlockKey)) {
 
-        Optional<Constructor<? extends BaseCustomBlock>> constructor = getConstructor(block);
+        Optional<Constructor<?>> constructor = getConstructor(block);
         if (constructor.isPresent()) {
 
-          addCustomBlockKeys(block, constructor.get(),customBlockKey);
+          addCustomBlockKeys((Class<? extends BaseCustomBlock>) block, (Constructor<? extends BaseCustomBlock>) constructor.get(),customBlockKey);
 
-          registerCustomBlockTickables(block);
+          registerCustomBlockTickables((Class<? extends BaseCustomBlock>) block);
           Log.debug("CustomBlock Register: " + block.getName());
         } else {
           Log.warn("Couldn't get constructor for custom block: " + customBlockKey.getName());
@@ -68,8 +68,7 @@ public class CustomBlockRegister {
 
     if (constructor.isPresent()) {
       try {
-        SafeBlockLocation safeLocation = new SafeBlockLocation(location);
-        return Optional.of(constructor.get().newInstance(safeLocation, direction));
+        return Optional.of(constructor.get().newInstance(location, direction));
       } catch (Exception e) {
         Log.error("Couldn't create custom block of type: "+key.getName() + " at location: "+location);
         return Optional.empty();
@@ -83,9 +82,9 @@ public class CustomBlockRegister {
     return getKey(block.getClass());
   }
 
-  private Optional<Constructor<? extends BaseCustomBlock>> getConstructor(@NonNull Class<? extends BaseCustomBlock> block) {
+  private Optional<Constructor<?>> getConstructor(@NonNull Class<?> clazz) {
     try {
-      return Optional.of(block.getDeclaredConstructor(SafeBlockLocation.class, CraftoryDirection.class));
+      return Optional.of(clazz.getDeclaredConstructor(Location.class, CraftoryDirection.class));
     } catch(NoSuchMethodException e) {
       return Optional.empty();
     }

@@ -17,6 +17,7 @@ import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
 import studio.craftory.core.items.ItemEventManager;
+import studio.craftory.core.listeners.CustomBlockListener;
 import studio.craftory.core.persistence.PersistenceManager;
 
 public final class Craftory extends JavaPlugin {
@@ -38,6 +39,8 @@ public final class Craftory extends JavaPlugin {
   Gson gson = new Gson();
   @Getter
   CustomBlockRegister register;
+  @Getter
+  CustomBlockManager customBlockManager;
 
 
 
@@ -60,12 +63,13 @@ public final class Craftory extends JavaPlugin {
 
     //Custom Block
     register = injector.getSingleton(CustomBlockRegister.class);
-    injector.getSingleton(CustomBlockManager.class);
+    customBlockManager = injector.getSingleton(CustomBlockManager.class);
   }
 
   @Override
   public void onEnable() {
     //Executor
+    getServer().getPluginManager().registerEvents(new CustomBlockListener(), this);
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
     getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
 

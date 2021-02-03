@@ -14,7 +14,7 @@ public abstract class ComplexCustomBlock extends BaseCustomBlock implements Pers
   private DataHolder persistentData = new DataHolder();
   private DataHolder volatileData = new DataHolder();
 
-  protected ComplexCustomBlock(@NonNull Location location,
+  public ComplexCustomBlock(@NonNull Location location,
       @NonNull CraftoryDirection facingDirection) {
     super(location, facingDirection);
   }

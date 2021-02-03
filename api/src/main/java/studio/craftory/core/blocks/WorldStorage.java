@@ -29,13 +29,10 @@ import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.data.keys.CustomBlockKey;
 import studio.craftory.core.data.safecontainers.SafeBlockLocation;
-import studio.craftory.core.persistence.PersistenceManager;
 import studio.craftory.core.utils.Log;
 
 public class WorldStorage {
 
-  @Inject
-  private PersistenceManager persistenceManager;
   @Inject
   private CustomBlockRegister blockRegister;
   private Gson gson;
@@ -161,10 +158,9 @@ public class WorldStorage {
         if (persistentData != null) {
           for (String dataKey : persistentData.keySet()) {
             Optional<CraftoryDataKey> datatype = blockRegister.getDataType(dataKey);
-            if (datatype.isPresent()) {
-              ((ComplexCustomBlock)customBlock.get()).getPersistentData().set(datatype.get(), gson.fromJson(persistentData.get(dataKey),
-                  datatype.get().getDataClass()));
-            }
+            datatype.ifPresent(craftoryDataKey -> ((ComplexCustomBlock) customBlock.get()).getPersistentData().set(craftoryDataKey,
+                gson.fromJson(persistentData.get(dataKey),
+                    craftoryDataKey.getDataClass())));
 
           }
         }
