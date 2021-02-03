@@ -50,7 +50,7 @@ public class SyncExecutionManager extends BukkitRunnable {
   }
 
   public void registerTickableClass(@NonNull Class<? extends BaseCustomBlock> clazz) {
-    ExecutorUtils.registerTickableClass(clazz, tickableMethods);
+    ExecutorUtils.registerTickableClass(clazz, tickableMethods, false);
   }
 
   public void removeTickableObject(@NonNull BaseCustomBlock tickableObject) {

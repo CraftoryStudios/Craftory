@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import studio.craftory.core.Craftory;
 import studio.craftory.core.CraftoryAddon;
 import studio.craftory.core.api.CustomBlockAPI;
 import studio.craftory.core.data.keys.CraftoryKey;
@@ -34,7 +35,7 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
 
   @Override
   public void onEnable() {
-    CustomBlockAPI.registerCustomBlock(this, SimpleGenerator.class);
+    Craftory.getInstance().getCustomBlockAPI().registerCustomBlock(this, SimpleGenerator.class);
     this.getCommand("simplegen").setExecutor(new SpawnGeneratorCommand());
   }
 

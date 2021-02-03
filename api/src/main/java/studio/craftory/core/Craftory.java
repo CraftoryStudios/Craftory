@@ -11,6 +11,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
+import studio.craftory.core.api.CustomBlockAPI;
 import studio.craftory.core.blocks.CustomBlockManager;
 import studio.craftory.core.blocks.CustomBlockRegister;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
@@ -27,20 +28,14 @@ public final class Craftory extends JavaPlugin {
 
   //Internal
   private Injector injector;
-  private static ArrayList<JavaPlugin> addons = new ArrayList<>();
-
   private AsyncExecutionManager asyncExecutionManager;
   private SyncExecutionManager syncExecutionManager;
 
   //External API
   @Getter
-  PersistenceManager persistenceManager;
-  @Getter
   Gson gson = new Gson();
   @Getter
-  CustomBlockRegister register;
-  @Getter
-  CustomBlockManager customBlockManager;
+  CustomBlockAPI customBlockAPI;
 
 
 
@@ -59,11 +54,14 @@ public final class Craftory extends JavaPlugin {
     syncExecutionManager = injector.getSingleton(SyncExecutionManager.class);
 
     //Persistence
-    persistenceManager = injector.getSingleton(PersistenceManager.class);
+    injector.getSingleton(PersistenceManager.class);
 
     //Custom Block
-    register = injector.getSingleton(CustomBlockRegister.class);
-    customBlockManager = injector.getSingleton(CustomBlockManager.class);
+    injector.getSingleton(CustomBlockRegister.class);
+    injector.getSingleton(CustomBlockManager.class);
+
+    //API
+    customBlockAPI = injector.getSingleton(CustomBlockAPI.class);
   }
 
   @Override
@@ -71,6 +69,7 @@ public final class Craftory extends JavaPlugin {
     //Executor
     getServer().getPluginManager().registerEvents(new CustomBlockListener(), this);
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
+    syncExecutionManager.runTaskTimer(this, 20L,1L);
     getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
 
   }

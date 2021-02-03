@@ -5,12 +5,11 @@ import org.bukkit.Location;
 import org.bukkit.event.player.PlayerInteractEvent;
 import studio.craftory.core.annotations.CustomBlock;
 import studio.craftory.core.annotations.RenderData;
-import studio.craftory.core.annotations.SyncTickable;
+import studio.craftory.core.annotations.Tickable;
 import studio.craftory.core.blocks.renders.Renderers;
 import studio.craftory.core.blocks.templates.ComplexCustomBlock;
 import studio.craftory.core.components.energy.EnergyOutput;
 import studio.craftory.core.components.energy.EnergyOutput.EnergyOutputData;
-import studio.craftory.core.components.energy.EnergyStorage;
 import studio.craftory.core.components.energy.EnergyStorage.EnergyStorageData;
 import studio.craftory.core.data.CraftoryDirection;
 
@@ -29,7 +28,7 @@ public class SimpleGenerator extends ComplexCustomBlock implements EnergyOutput 
     super(location, facingDirection);
   }
 
-  @SyncTickable(ticks = 5)
+  @Tickable(ticks = 1)
   public void generateEnergy() {
     increaseStoredEnergy(100);
   }
