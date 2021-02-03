@@ -10,6 +10,7 @@ import studio.craftory.core.blocks.CustomBlockManager;
 import studio.craftory.core.blocks.CustomBlockRegister;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
+import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.data.keys.CustomBlockKey;
 import studio.craftory.core.utils.Log;
 
@@ -36,6 +37,10 @@ public class CustomBlockAPI {
 
   public Optional<BaseCustomBlock> placeCustomBlock(@NonNull Location location, @NonNull Class<? extends BaseCustomBlock> customBlockClazz) {
     return placeCustomBlock(location, customBlockClazz, CraftoryDirection.NORTH);
+  }
+
+  public void registerDataKey(@NonNull CraftoryDataKey craftoryDataKey) {
+    blockRegister.registerDataKey(craftoryDataKey.toString(), craftoryDataKey);
   }
 
 }

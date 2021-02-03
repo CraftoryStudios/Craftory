@@ -1,9 +1,13 @@
 package studio.craftory.core.blocks;
 
+import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import lombok.NonNull;
 import lombok.Synchronized;
@@ -167,6 +171,49 @@ public class CustomBlockManager {
     }
 
     return Optional.empty();
+  }
+
+
+  @Synchronized
+  public void registerWorld(@NonNull World world) {
+    WorldStorage currentWorld = new WorldStorage(world);
+    worldStorage.put(world, currentWorld);
+    for (Chunk chunk : world.getLoadedChunks()) {
+      currentWorld.getSavedBlocksInChunk(chunk).ifPresent(blocks ->
+          blocks.forEach(this::loadCustomBlock));
+    }
+  }
+
+  @Synchronized
+  public Set<Chunk> getChunksWithCustomBlocksInWorld(@NonNull World world) {
+    HashSet<Chunk> chunks = customBlocks.keySet().stream().filter(chunk -> chunk.getWorld().equals(world))
+                                          .collect(Collectors.toCollection(HashSet::new));
+    return Collections.unmodifiableSet(chunks);
+  }
+
+  @Synchronized
+  public void loadSavedBlocks(@NonNull Chunk chunk) {
+    WorldStorage storage = worldStorage.get(chunk.getWorld());
+    if (storage == null) {
+      return;
+    }
+    storage.getSavedBlocksInChunk(chunk)
+           .ifPresent(blocks -> blocks.forEach(this::loadCustomBlock));
+  }
+
+  @Synchronized
+  public void unregisterWorld(@NonNull World world) {
+    if (worldStorage.containsKey(world)) {
+      getChunksWithCustomBlocksInWorld(world).forEach(chunk ->
+          getLoadedCustomBlocksInChunk(chunk).forEach((key, value) -> unloadCustomBlock(key, true)));
+      WorldStorage storage = worldStorage.get(world);
+      try {
+        storage.save();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      worldStorage.remove(world);
+    }
   }
 
   private void addToExecutorSchedule(@NonNull final BaseCustomBlock block) {

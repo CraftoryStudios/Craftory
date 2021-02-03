@@ -12,10 +12,6 @@ import studio.craftory.core.data.safecontainers.SafePlugin;
 
 @Value
 public class CraftoryDataKey implements Serializable {
-
-  @Inject
-  private CustomBlockRegister blockRegister;
-
   String namespace;
   String name;
   Class<?> dataClass;
@@ -48,7 +44,7 @@ public class CraftoryDataKey implements Serializable {
   }
 
   private void register() {
-    blockRegister.registerDataKey(toString(), this);
+    Craftory.getInstance().getCustomBlockAPI().registerDataKey(this);
   }
 
   public Optional<Plugin> getPlugin() {
