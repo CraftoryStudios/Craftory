@@ -1,9 +1,13 @@
 package studio.craftory.core.blocks;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -68,6 +72,29 @@ public class CustomBlockManager {
   }
 
   /**
+   * Unloads a chunk of custom blocks
+   *
+   * @param chunk the block location
+   * @param save     if the block should be saved
+   * @throws IllegalArgumentException if the given location isn't loaded
+   */
+  @Synchronized
+  public void unloadCustomBlockChunk(@NonNull final Chunk chunk, boolean save) {
+    Map<Location, BaseCustomBlock> customBlockMap = getLoadedCustomBlocksInChunk(chunk);
+    if (customBlockMap.isEmpty()) return;
+
+    if (save) {
+      Collection<BaseCustomBlock> blocks = customBlockMap.values();
+      worldStorage.get(chunk.getWorld()).writeChunk(chunk, blocks);
+    }
+
+    for (Entry<Location, BaseCustomBlock> entry : customBlockMap.entrySet()) {
+      removeFromExecutorSchedule(entry.getValue());
+      customBlocks.get(chunk).remove(entry.getKey());
+    }
+  }
+
+  /**
    * Unloads a CustomBlock, this method should be called only when a block is destroyed or when
    * a chunk is unloaded.
    *
@@ -100,7 +127,7 @@ public class CustomBlockManager {
       //worldStorage.get(location.getWorld()).saveCustomBlock(customBlock);
     } else {
       //pluginManager.callEvent(new CustomBlockUnloadEvent(location, customBlock));
-      //worldStorage.get(location.getWorld()).removeCustomBlock(customBlock);
+      worldStorage.get(location.getWorld()).removeCustomBlock(customBlock);
     }
 
     customBlocks.get(location.getChunk()).remove(location);
@@ -176,7 +203,7 @@ public class CustomBlockManager {
 
   @Synchronized
   public void registerWorld(@NonNull World world) {
-    WorldStorage currentWorld = new WorldStorage(world);
+    WorldStorage currentWorld = new WorldStorage(world, blockRegister);
     worldStorage.put(world, currentWorld);
     for (Chunk chunk : world.getLoadedChunks()) {
       currentWorld.getSavedBlocksInChunk(chunk).ifPresent(blocks ->
@@ -204,8 +231,7 @@ public class CustomBlockManager {
   @Synchronized
   public void unregisterWorld(@NonNull World world) {
     if (worldStorage.containsKey(world)) {
-      getChunksWithCustomBlocksInWorld(world).forEach(chunk ->
-          getLoadedCustomBlocksInChunk(chunk).forEach((key, value) -> unloadCustomBlock(key, true)));
+      getChunksWithCustomBlocksInWorld(world).forEach(chunk -> unloadCustomBlockChunk(chunk, true));
       WorldStorage storage = worldStorage.get(world);
       try {
         storage.save();

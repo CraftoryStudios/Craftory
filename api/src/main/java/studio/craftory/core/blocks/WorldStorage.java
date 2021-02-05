@@ -10,8 +10,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -33,17 +33,17 @@ import studio.craftory.core.utils.Log;
 
 public class WorldStorage {
 
-  @Inject
-  private CustomBlockRegister blockRegister;
+  private final CustomBlockRegister blockRegister;
   private Gson gson;
 
   @Getter
   private World world;
   private JsonObject rootNode;
 
-  public WorldStorage(@NonNull final World world) {
+  public WorldStorage(@NonNull final World world, CustomBlockRegister blockRegister) {
     this.world = world;
     this.gson = Craftory.getInstance().getGson();
+    this.blockRegister = blockRegister;
 
     try {
       Reader reader = new FileReader(new File(world.getWorldFolder(), "craftory/blocks.json"));
@@ -60,7 +60,7 @@ public class WorldStorage {
   }
 
   @Synchronized
-  public void writeChunk(@NonNull final Chunk chunk, @NonNull final List<BaseCustomBlock> customBlocks) {
+  public void writeChunk(@NonNull final Chunk chunk, @NonNull final Collection<BaseCustomBlock> customBlocks) {
     JsonObject chunks = rootNode.getAsJsonObject("chunks");
     JsonObject chunkData;
     String chunkKey = chunk.getX() + ";" + chunk.getZ();
@@ -133,7 +133,7 @@ public class WorldStorage {
 
   public Optional<Set<BaseCustomBlock>> getSavedBlocksInChunk(@NonNull final Chunk chunk) {
     JsonObject chunks = rootNode.getAsJsonObject("chunks");
-    if (chunks == null || chunks.keySet().isEmpty()) return Optional.empty();
+    if (chunks == null) return Optional.empty();
     JsonObject chunkData = chunks.getAsJsonObject(chunk.getX() + ";" + chunk.getZ());
     if (chunkData == null || chunkData.keySet().isEmpty()) return Optional.empty();
 

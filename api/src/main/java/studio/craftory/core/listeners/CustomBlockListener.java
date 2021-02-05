@@ -41,7 +41,7 @@ public class CustomBlockListener implements Listener {
 
   @EventHandler
   public void onCustomBlockClick(PlayerInteractEvent playerInteractEvent) {
-    Optional<BaseCustomBlock> customBlock = Craftory.getInstance().getCustomBlockManager().getLoadedCustomBlockAt(playerInteractEvent.getClickedBlock().getLocation());
+    Optional<BaseCustomBlock> customBlock = customBlockManager.getLoadedCustomBlockAt(playerInteractEvent.getClickedBlock().getLocation());
     customBlock.ifPresent(baseCustomBlock -> baseCustomBlock.onPlayerClick(playerInteractEvent));
   }
 

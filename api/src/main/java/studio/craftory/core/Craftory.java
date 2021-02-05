@@ -73,15 +73,15 @@ public final class Craftory extends JavaPlugin {
     });
 
     //Register Events
-    getServer().getPluginManager().registerEvents(new CustomBlockListener(), this);
-    getServer().getPluginManager().registerEvents(new WorldListener(), this);
-    getServer().getPluginManager().registerEvents(new ChunkListener(), this);
+    PluginManager pluginManager = getServer().getPluginManager();
+    pluginManager.registerEvents(injector.getSingleton(CustomBlockListener.class), instance);
+    pluginManager.registerEvents(injector.getSingleton(WorldListener.class), instance);
+    pluginManager.registerEvents(injector.getSingleton(ChunkListener.class), instance);
+    pluginManager.registerEvents(injector.getSingleton(ItemEventManager.class), instance);
 
     //Executor
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
     syncExecutionManager.runTaskTimer(this, 20L,1L);
-    getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
-
   }
 
   public Craftory() {

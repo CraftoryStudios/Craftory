@@ -19,7 +19,6 @@ public class ChunkListener implements Listener {
 
   @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
   public void onChunkUnload(ChunkUnloadEvent event) {
-    customBlockManager.getLoadedCustomBlocksInChunk(event.getChunk())
-              .forEach((location, block) -> customBlockManager.unloadCustomBlock(location, true));
+    customBlockManager.unloadCustomBlockChunk(event.getChunk(), true);
   }
 }

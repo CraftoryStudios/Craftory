@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -64,10 +65,18 @@ public class SyncExecutionManager extends BukkitRunnable {
   }
 
   private void cleanUpTickableObjects() {
-    for (Entry<Integer, HashSet<BaseCustomBlock>> entry : removeBacklog.entrySet()) {
+    for (Iterator<Map.Entry<Integer, HashSet<BaseCustomBlock>>> it = removeBacklog.entrySet().iterator(); it.hasNext();) {
+      Map.Entry<Integer, HashSet<BaseCustomBlock>> entry = it.next();
         TickGroup tickGroup = tickGroupsMap.get(entry.getKey());
-        for (BaseCustomBlock tickable : entry.getValue()) {
-          tickGroup.getTickables().remove(tickable);
+
+        for (Iterator<BaseCustomBlock> iterator = entry.getValue().iterator(); iterator.hasNext();) {
+          BaseCustomBlock customBlock = iterator.next();
+          tickGroup.getTickables().remove(customBlock);
+          iterator.remove();
+        }
+
+        if (entry.getValue().isEmpty()) {
+          it.remove();
         }
 
         if (tickGroup.getTickables().isEmpty()) {
