@@ -86,6 +86,11 @@ public class CustomBlockManager {
     if (save) {
       Collection<BaseCustomBlock> blocks = customBlockMap.values();
       worldStorage.get(chunk.getWorld()).writeChunk(chunk, blocks);
+      try {
+        worldStorage.get(chunk.getWorld()).save();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
 
     for (Entry<Location, BaseCustomBlock> entry : customBlockMap.entrySet()) {

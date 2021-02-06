@@ -2,20 +2,18 @@ package studio.craftory.core.blocks;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import javax.inject.Inject;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Synchronized;
@@ -39,24 +37,40 @@ public class WorldStorage {
   @Getter
   private World world;
   private JsonObject rootNode;
+  private File file;
 
   public WorldStorage(@NonNull final World world, CustomBlockRegister blockRegister) {
     this.world = world;
     this.gson = Craftory.getInstance().getGson();
     this.blockRegister = blockRegister;
+    file = new File(world.getWorldFolder(), "craftory");
+
+    if (!file.exists()) {
+      file.mkdirs();
+    }
+    file = new File(file, "blocks.json");
 
     try {
-      Reader reader = new FileReader(new File(world.getWorldFolder(), "craftory/blocks.json"));
-      rootNode = JsonParser.parseReader(reader).getAsJsonObject();
+      JsonReader reader = new JsonReader(new FileReader(file));
+      rootNode = gson.fromJson(reader, JsonObject.class);
     } catch (FileNotFoundException | IllegalStateException e) {
       rootNode = new JsonObject();
+      try {
+        file.createNewFile();
+      } catch (IOException ioException) {
+        ioException.printStackTrace();
+      }
+    }
+
+    if (!rootNode.has("chunks")) {
       rootNode.add("chunks", new JsonObject());
     }
   }
 
   public void save() throws IOException {
-    Writer writer = new FileWriter(new File(world.getWorldFolder(), "craftory/blocks.json"));
-    gson.toJson(rootNode, writer);
+    try (Writer writer = new FileWriter(file)) {
+      gson.toJson(rootNode, writer);
+    }
   }
 
   @Synchronized
@@ -135,7 +149,7 @@ public class WorldStorage {
     JsonObject chunks = rootNode.getAsJsonObject("chunks");
     if (chunks == null) return Optional.empty();
     JsonObject chunkData = chunks.getAsJsonObject(chunk.getX() + ";" + chunk.getZ());
-    if (chunkData == null || chunkData.keySet().isEmpty()) return Optional.empty();
+    if (chunkData == null) return Optional.empty();
 
     Set<BaseCustomBlock> customBlocks = new HashSet<>();
     JsonObject blockData;
