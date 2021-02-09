@@ -2,7 +2,7 @@ package studio.craftory.core;
 
 import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import lombok.Getter;
 import org.bukkit.Chunk;
@@ -34,7 +34,7 @@ public final class Craftory extends JavaPlugin {
 
   //External API
   @Getter
-  Gson gson = new Gson();
+  ObjectMapper mapper = new ObjectMapper();
   @Getter
   CustomBlockAPI customBlockAPI;
 

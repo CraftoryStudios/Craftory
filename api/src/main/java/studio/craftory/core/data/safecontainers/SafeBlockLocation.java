@@ -16,7 +16,6 @@ import org.bukkit.block.Block;
 public class SafeBlockLocation {
 
   @NonNull
-  @SerializedName(value = "world")
   private SafeWorld safeWorld;
   @NonNull
   private int x;
