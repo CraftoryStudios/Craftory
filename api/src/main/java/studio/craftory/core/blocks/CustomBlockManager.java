@@ -1,11 +1,9 @@
 package studio.craftory.core.blocks;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -95,7 +93,7 @@ public class CustomBlockManager {
 
     for (Entry<Location, BaseCustomBlock> entry : customBlockMap.entrySet()) {
       removeFromExecutorSchedule(entry.getValue());
-      customBlocks.get(chunk).remove(entry.getKey());
+      customBlocks.remove(chunk);
     }
   }
 

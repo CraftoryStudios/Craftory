@@ -142,9 +142,9 @@ public class WorldStorage {
       field = fields.next();
       //Get Block Values
       CustomBlockKey customBlockKey = new CustomBlockKey(field.getValue().get("type").asText());
-      String[] splitKey = field.getKey().split(":");
-      Location location = new Location(chunk.getWorld(), Double.parseDouble(splitKey[0]), Double.parseDouble(splitKey[1]),
-          Double.parseDouble(splitKey[2]));
+      String[] splitKey = field.getKey().split(";");
+      Location location = new Location(chunk.getWorld(), Integer.parseInt(splitKey[0]), Integer.parseInt(splitKey[1]),
+          Integer.parseInt(splitKey[2]));
       CraftoryDirection direction = CraftoryDirection.valueOfLabel((byte) field.getValue().get("direction").asInt());
 
       Optional<? extends BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(customBlockKey, location, direction);
