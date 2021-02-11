@@ -6,12 +6,11 @@ import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerInteractEvent;
 import studio.craftory.core.data.CraftoryDirection;
-import studio.craftory.core.data.safecontainers.SafeBlockLocation;
 
 public abstract class BaseCustomBlock {
 
   @Getter
-  private SafeBlockLocation location;
+  private final Location location;
 
   @Getter
   @Setter
@@ -19,7 +18,7 @@ public abstract class BaseCustomBlock {
 
 
   protected BaseCustomBlock(@NonNull Location location, @NonNull CraftoryDirection facingDirection) {
-    this.location = new SafeBlockLocation(location);
+    this.location = location;
     this.facingDirection = facingDirection;
   }
 

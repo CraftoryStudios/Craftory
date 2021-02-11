@@ -5,9 +5,8 @@ import javax.inject.Inject;
 import lombok.NonNull;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
-import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.CustomBlockManager;
-import studio.craftory.core.blocks.CustomBlockRegister;
+import studio.craftory.core.blocks.CustomBlockRegistry;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.keys.CraftoryDataKey;
@@ -17,7 +16,7 @@ import studio.craftory.core.utils.Log;
 public class CustomBlockAPI {
 
   @Inject
-  public CustomBlockRegister blockRegister;
+  public CustomBlockRegistry blockRegister;
   @Inject
   public CustomBlockManager customBlockManager;
 

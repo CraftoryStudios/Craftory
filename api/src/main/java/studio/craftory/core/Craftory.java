@@ -2,7 +2,6 @@ package studio.craftory.core;
 
 import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import lombok.Getter;
 import org.bukkit.Chunk;
@@ -13,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import studio.craftory.core.api.CustomBlockAPI;
 import studio.craftory.core.blocks.CustomBlockManager;
-import studio.craftory.core.blocks.CustomBlockRegister;
+import studio.craftory.core.blocks.CustomBlockRegistry;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
 import studio.craftory.core.items.ItemEventManager;
@@ -34,8 +33,6 @@ public final class Craftory extends JavaPlugin {
 
   //External API
   @Getter
-  ObjectMapper mapper = new ObjectMapper();
-  @Getter
   CustomBlockAPI customBlockAPI;
 
 
@@ -55,7 +52,7 @@ public final class Craftory extends JavaPlugin {
     syncExecutionManager = injector.getSingleton(SyncExecutionManager.class);
 
     //Custom Block
-    injector.getSingleton(CustomBlockRegister.class);
+    injector.getSingleton(CustomBlockRegistry.class);
     customBlockManager = injector.getSingleton(CustomBlockManager.class);
 
     //API

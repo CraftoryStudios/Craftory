@@ -2,12 +2,10 @@ package studio.craftory.core.data.keys;
 
 import java.io.Serializable;
 import java.util.Optional;
-import javax.inject.Inject;
 import lombok.NonNull;
 import lombok.Value;
 import org.bukkit.plugin.Plugin;
 import studio.craftory.core.Craftory;
-import studio.craftory.core.blocks.CustomBlockRegister;
 import studio.craftory.core.data.safecontainers.SafePlugin;
 
 @Value

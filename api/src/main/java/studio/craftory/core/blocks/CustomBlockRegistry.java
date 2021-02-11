@@ -21,7 +21,7 @@ import studio.craftory.core.utils.Log;
 
 /** Class based on LogisticsCraft's Logistics-API (MIT) and the LogisticsTypeRegister class **/
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-public class CustomBlockRegister {
+public class CustomBlockRegistry {
 
   @Inject
   private AsyncExecutionManager asyncExecutionManager;
@@ -48,7 +48,6 @@ public class CustomBlockRegister {
           Log.warn("Couldn't get constructor for custom block: " + customBlockKey.getName());
         }
 
-      //Bukkit.getPluginManager().callEvent(new BlockRegisterEvent(new CustomBlockKey(plugin, name), block));
     } else {
       Log.warn("Trying to re-register known key of Custom Block: " + customBlockKey.getName());
     }

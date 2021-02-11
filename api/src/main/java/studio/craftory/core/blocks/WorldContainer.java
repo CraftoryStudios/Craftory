@@ -18,7 +18,6 @@ import lombok.Synchronized;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
-import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.blocks.templates.ComplexCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
@@ -27,20 +26,20 @@ import studio.craftory.core.data.keys.CustomBlockKey;
 import studio.craftory.core.data.safecontainers.SafeBlockLocation;
 import studio.craftory.core.utils.Log;
 
-public class WorldStorage {
+public class WorldContainer {
 
-  private final CustomBlockRegister blockRegister;
-  private ObjectMapper mapper;
+  private final CustomBlockRegistry blockRegister;
+  private final ObjectMapper mapper;
 
   @Getter
   private World world;
   private ObjectNode rootNode;
   private File file;
 
-  public WorldStorage(@NonNull final World world, CustomBlockRegister blockRegister) {
+  public WorldContainer(@NonNull final World world, CustomBlockRegistry blockRegister) {
     this.world = world;
-    this.mapper = Craftory.getInstance().getMapper();
     this.blockRegister = blockRegister;
+    this.mapper = new ObjectMapper();
     file = new File(world.getWorldFolder(), "craftory");
 
     if (!file.exists()) {
@@ -61,8 +60,13 @@ public class WorldStorage {
     }
   }
 
-  public void save() throws IOException {
-    mapper.writeValue(file, rootNode);
+  public void save() {
+    try {
+      mapper.writeValue(file, rootNode);
+    } catch (IOException e) {
+      Log.error("Failed to save world: "+ world.getName());
+      Log.debug(rootNode.asText());
+    }
   }
 
   @Synchronized
