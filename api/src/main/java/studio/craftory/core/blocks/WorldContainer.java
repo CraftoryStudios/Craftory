@@ -51,9 +51,11 @@ public class WorldContainer {
     if (!file.exists()) {
       file.mkdirs();
       try {
-        file.createNewFile();
+        if(!file.createNewFile()) {
+          Log.error("Couldn't create save file");
+        }
       } catch (IOException e) {
-        e.printStackTrace();
+        Log.error("Couldn't create save file");
       }
     }
     file = new File(file, "blocks.json");
@@ -143,14 +145,14 @@ public class WorldContainer {
       String[] splitKey = field.getKey().split(";");
       Location location = new Location(chunk.getWorld(), Integer.parseInt(splitKey[0]), Integer.parseInt(splitKey[1]),
           Integer.parseInt(splitKey[2]));
-      CraftoryDirection direction = CraftoryDirection.valueOfLabel((byte) field.getValue().get("direction").asInt());
+      CraftoryDirection direction = CraftoryDirection.valueOfLabel((byte) field.getValue().get(CUSTOMBLOCK_DIRECTION_KEY).asInt());
 
       Optional<? extends BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(customBlockKey, location, direction);
       if (!customBlock.isPresent()) return Optional.empty();
 
       //Inject Persistent Data
       if (ComplexCustomBlock.class.isAssignableFrom(customBlock.getClass())) {
-        JsonNode persistentData = field.getValue().get("persistentData");
+        JsonNode persistentData = field.getValue().get(CUSTOMBLOCK_PERSISTENT_DATA_KEY);
         if (persistentData != null) {
           Iterator<Map.Entry<String, JsonNode>> iterator = chunkData.fields();
           Map.Entry<String, JsonNode> data;

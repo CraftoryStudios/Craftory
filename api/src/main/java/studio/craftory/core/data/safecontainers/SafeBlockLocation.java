@@ -1,6 +1,5 @@
 package studio.craftory.core.data.safecontainers;
 
-import com.google.gson.annotations.SerializedName;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.AllArgsConstructor;

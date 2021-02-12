@@ -4,7 +4,6 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import org.bukkit.plugin.Plugin;
-import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.safecontainers.SafePlugin;
 
 @Value

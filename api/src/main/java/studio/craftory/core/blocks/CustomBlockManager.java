@@ -101,9 +101,7 @@ public class CustomBlockManager {
   public void unloadCustomBlock(@NonNull final Location location, boolean save) {
 
     Optional<BaseCustomBlock> customBlockOptional = Optional.ofNullable(customBlocks.get(location.getChunk()).get(location));
-    customBlockOptional.ifPresent(customBlock -> {
-      unloadCustomBlock(customBlock, save);
-    });
+    customBlockOptional.ifPresent(customBlock -> unloadCustomBlock(customBlock, save));
   }
 
   /**

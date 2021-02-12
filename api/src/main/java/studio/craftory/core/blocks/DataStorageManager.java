@@ -3,7 +3,6 @@ package studio.craftory.core.blocks;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
 import lombok.Synchronized;

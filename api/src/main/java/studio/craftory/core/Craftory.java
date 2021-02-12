@@ -4,7 +4,6 @@ import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
 import java.io.File;
 import lombok.Getter;
-import org.bukkit.Chunk;
 import org.bukkit.Server;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
@@ -19,7 +18,6 @@ import studio.craftory.core.items.ItemEventManager;
 import studio.craftory.core.listeners.ChunkListener;
 import studio.craftory.core.listeners.CustomBlockListener;
 import studio.craftory.core.listeners.WorldListener;
-import studio.craftory.core.items.ItemEventManager;
 
 public final class Craftory extends JavaPlugin {
 
@@ -83,8 +81,6 @@ public final class Craftory extends JavaPlugin {
   public void onDisable() {
     customBlockManager.getDataStorageManager().writeAll();
     customBlockManager.getDataStorageManager().saveAll();
-
-    instance = null;
   }
 
   public Craftory() {

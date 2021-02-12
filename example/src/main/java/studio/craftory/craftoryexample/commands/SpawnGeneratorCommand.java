@@ -6,7 +6,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import studio.craftory.core.Craftory;
-import studio.craftory.core.api.CustomBlockAPI;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.craftoryexample.blocks.SimpleGenerator;
 
