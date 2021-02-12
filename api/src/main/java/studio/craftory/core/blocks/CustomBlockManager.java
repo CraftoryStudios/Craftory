@@ -31,6 +31,7 @@ public class CustomBlockManager {
   @Getter
   private DataStorageManager dataStorageManager;
 
+  @Getter
   private Map<Chunk,Map<Location, BaseCustomBlock>> customBlocks;
 
   @Inject

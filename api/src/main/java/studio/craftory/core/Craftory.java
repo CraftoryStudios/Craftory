@@ -79,6 +79,14 @@ public final class Craftory extends JavaPlugin {
 
   }
 
+  @Override
+  public void onDisable() {
+    customBlockManager.getDataStorageManager().writeAll();
+    customBlockManager.getDataStorageManager().saveAll();
+
+    instance = null;
+  }
+
   public Craftory() {
     super();
   }

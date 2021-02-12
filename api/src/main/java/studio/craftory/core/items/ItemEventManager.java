@@ -1,10 +1,5 @@
 package studio.craftory.core.items;
 
-<<<<<<<
-import java.lang.reflect.Method;
-=======
-
->>>>>>>
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;

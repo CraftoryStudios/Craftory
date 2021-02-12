@@ -61,10 +61,11 @@ public class CustomBlockRegistry {
   public Optional<BaseCustomBlock> getNewCustomBlockInstance(@NonNull CustomBlockKey key,  @NonNull Location location,
       @NonNull CraftoryDirection direction) {
     Optional<Constructor<? extends BaseCustomBlock>> constructor = Optional.ofNullable(blockTypes.get(key));
+    Location blockLocation = location.getBlock().getLocation();
 
     if (constructor.isPresent()) {
       try {
-        return Optional.of(constructor.get().newInstance(location, direction));
+        return Optional.of(constructor.get().newInstance(blockLocation, direction));
       } catch (Exception e) {
         Log.error("Couldn't create custom block of type: "+key.getName() + " at location: "+location);
         return Optional.empty();

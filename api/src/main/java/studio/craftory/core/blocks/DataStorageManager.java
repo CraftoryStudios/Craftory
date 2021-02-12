@@ -2,10 +2,13 @@ package studio.craftory.core.blocks;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
 import lombok.Synchronized;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.World;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 
@@ -27,6 +30,25 @@ public class DataStorageManager {
     World world = chunk.getWorld();
     worldsStorage.get(world).writeChunk(chunk, blocks);
     worldsStorage.get(world).save();
+  }
+
+  public void writeChunk(Chunk chunk, Collection<BaseCustomBlock> blocks) {
+    World world = chunk.getWorld();
+    worldsStorage.get(world).writeChunk(chunk, blocks);
+  }
+
+  public void writeAll() {
+    Map<Chunk, Map<Location, BaseCustomBlock>> customBlocks = customBlockManager.getCustomBlocks();
+    for (Entry<Chunk, Map<Location, BaseCustomBlock>> chunkData : customBlocks.entrySet()) {
+      writeChunk(chunkData.getKey(), chunkData.getValue().values());
+    }
+
+  }
+
+  public void saveAll() {
+    for (WorldContainer worldContainer : worldsStorage.values()) {
+      worldContainer.save();
+    }
   }
 
   public void writeBlockAndSave(BaseCustomBlock customBlock) {
