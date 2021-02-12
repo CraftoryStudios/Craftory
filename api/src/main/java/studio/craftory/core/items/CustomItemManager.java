@@ -38,15 +38,11 @@ public class CustomItemManager {
 
   /* Registering */
   public static void registerCustomItem(CraftoryKey itemKey, ItemStack baseStateItem) {
-    String itemName = getNameFromKey(itemKey);
+    String itemName = itemKey.toString();
     ItemMeta itemMeta = baseStateItem.getItemMeta();
     itemMeta.getPersistentDataContainer().set(ITEM_NAME_NAMESPACED_KEY, PersistentDataType.STRING, itemName);
     baseStateItem.setItemMeta(itemMeta);
     customItemCache.put(itemName, baseStateItem);
-  }
-
-  public static String getNameFromKey(CraftoryKey itemKey) {
-    return itemKey.getNamespace() + ":" + itemKey.getName();
   }
 
   /* Utility Methods */
@@ -70,6 +66,7 @@ public class CustomItemManager {
   }
 
   public static ItemStack getCustomItem(String name) {
+    System.out.println(customItemCache.keySet().toString());
     if (customItemCache.containsKey(name)) {
       return customItemCache.get(name).clone();
     }

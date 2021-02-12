@@ -35,4 +35,7 @@ public class CraftoryKey implements Serializable {
     return new SafePlugin(this.namespace).getPlugin();
   }
 
+  @Override
+  public String toString() { return namespace + ":" + name; }
+
 }

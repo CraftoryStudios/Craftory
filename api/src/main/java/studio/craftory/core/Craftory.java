@@ -19,6 +19,7 @@ import studio.craftory.core.items.ItemEventManager;
 import studio.craftory.core.listeners.ChunkListener;
 import studio.craftory.core.listeners.CustomBlockListener;
 import studio.craftory.core.listeners.WorldListener;
+import studio.craftory.core.items.ItemEventManager;
 
 public final class Craftory extends JavaPlugin {
 
@@ -74,6 +75,8 @@ public final class Craftory extends JavaPlugin {
     //Executor
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
     syncExecutionManager.runTaskTimer(this, 20L,1L);
+    getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
+
   }
 
   public Craftory() {
