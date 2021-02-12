@@ -12,7 +12,7 @@
 
   <properties>
     <!-- SonarCloud -->
-    <sonar.projectKey>craftorystudios_Craftory_Example</sonar.projectKey>
+    <sonar.projectKey>craftorystudios_Craftory_Core</sonar.projectKey>
     <sonar.organization>craftorystudios</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   </properties>

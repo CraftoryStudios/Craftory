@@ -32,7 +32,10 @@
 
     <!-- Google -->
     <auto-service.version>1.0-rc2</auto-service.version>
+
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.organization>craftorystudios</sonar.organization>
+    <sonar.projectKey>craftorystudios_Craftory_Parent</sonar.projectKey>
   </properties>
 
 
