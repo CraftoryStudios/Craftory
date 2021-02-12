@@ -14,11 +14,11 @@ public class WorldListener implements Listener {
 
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onWorldLoad(WorldLoadEvent event) {
-    customBlockManager.registerWorld(event.getWorld());
+    customBlockManager.getDataStorageManager().registerWorld(event.getWorld());
   }
 
   @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
   public void onWorldUnload(WorldUnloadEvent event) {
-    customBlockManager.unregisterWorld(event.getWorld());
+    customBlockManager.getDataStorageManager().unregisterWorld(event.getWorld());
   }
 }

@@ -14,7 +14,7 @@ public class ChunkListener implements Listener {
 
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onChunkLoad(ChunkLoadEvent event) {
-    customBlockManager.loadSavedBlocks(event.getChunk());
+    customBlockManager.getDataStorageManager().loadSavedBlocks(event.getChunk());
   }
 
   @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

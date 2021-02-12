@@ -70,7 +70,6 @@ public class CustomItemManager {
   }
 
   public static ItemStack getCustomItem(String name) {
-    System.out.println(customItemCache.keySet().toString());
     if (customItemCache.containsKey(name)) {
       return customItemCache.get(name).clone();
     }

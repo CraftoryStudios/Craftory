@@ -23,11 +23,14 @@ import studio.craftory.core.blocks.templates.ComplexCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.data.keys.CustomBlockKey;
-import studio.craftory.core.data.safecontainers.SafeBlockLocation;
 import studio.craftory.core.utils.Log;
 
 public class WorldContainer {
 
+  private static final String CUSTOMBLOCK_TYPE_KEY = "type";
+  private static final String CUSTOMBLOCK_DIRECTION_KEY = "direction";
+  private static final String CUSTOMBLOCK_PERSISTENT_DATA_KEY = "persistentData";
+  private static final String CHUNKS_KEY = "chunks";
   private final CustomBlockRegistry blockRegister;
   private final ObjectMapper mapper;
 
@@ -41,7 +44,10 @@ public class WorldContainer {
     this.blockRegister = blockRegister;
     this.mapper = new ObjectMapper();
     file = new File(world.getWorldFolder(), "craftory");
+    setupSaveFile();
+  }
 
+  private void setupSaveFile() {
     if (!file.exists()) {
       file.mkdirs();
       try {
@@ -71,15 +77,7 @@ public class WorldContainer {
 
   @Synchronized
   public void writeChunk(@NonNull final Chunk chunk, @NonNull final Collection<BaseCustomBlock> customBlocks) {
-    ObjectNode chunkData;
-    String chunkKey = chunk.getX() + ";" + chunk.getZ();
-
-    if (rootNode.with("chunks").has(chunkKey)) {
-      chunkData = (ObjectNode) rootNode.with("chunks").get(chunkKey);
-    } else {
-      chunkData = mapper.createObjectNode();
-      rootNode.with("chunks").set(chunkKey, chunkData);
-    }
+    ObjectNode chunkData = getChunkNode(chunk);
 
     for (BaseCustomBlock customBlock : customBlocks) {
       writeCustomBlock(chunkData, customBlock);
@@ -87,56 +85,52 @@ public class WorldContainer {
   }
 
   @Synchronized
+  public void writeCustomBlock(@NonNull final BaseCustomBlock customBlock) {
+    ObjectNode chunkData = getChunkNode(customBlock.getLocation().getChunk());
+    writeCustomBlock(chunkData, customBlock);
+  }
+
+  @Synchronized
   private void writeCustomBlock(@NonNull final ObjectNode chunkRoot, @NonNull final BaseCustomBlock customBlock) {
     ObjectNode objectRoot = mapper.createObjectNode();
 
-    //Save block type
+    //Get block type key
     Optional<CustomBlockKey> key = blockRegister.getKey(customBlock);
     if (!key.isPresent())  {
       Log.warn("Error saving block");
       throw new IllegalStateException("Custom Block can't be saved as it isn't registered");
     }
-    objectRoot.put("type", key.get().toString());
 
-    //Save block direction
-    objectRoot.put("direction", customBlock.getFacingDirection().label);
-
-    //Save Complex Block Persistent Data
+    //Write Custom Block data to JSON Node
+    objectRoot.put(CUSTOMBLOCK_TYPE_KEY, key.get().toString());
+    objectRoot.put(CUSTOMBLOCK_DIRECTION_KEY, customBlock.getFacingDirection().label);
     if (ComplexCustomBlock.class.isAssignableFrom(customBlock.getClass())) {
-      ObjectNode persistentData = mapper.createObjectNode();
-      for (Map.Entry<CraftoryDataKey, Object> entry : ((ComplexCustomBlock) customBlock).getPersistentData().getData().entrySet()) {
-        persistentData.set(entry.getKey().toString(), mapper.valueToTree(entry.getValue()));
-      }
-      objectRoot.set("persistentData",persistentData);
+      objectRoot.set(CUSTOMBLOCK_PERSISTENT_DATA_KEY, persistentDataToNode((ComplexCustomBlock) customBlock));
     }
 
-    Location location = customBlock.getLocation().getLocation().get();
-    chunkRoot.set(((int)location.getX()) + ";" + ((int)location.getY()) + ";" + ((int)location.getZ()), objectRoot);
+    chunkRoot.set(getLocationKey(customBlock.getLocation()), objectRoot);
   }
 
   @Synchronized
   public void removeCustomBlock(@NonNull final BaseCustomBlock customBlock) {
-    SafeBlockLocation location = customBlock.getLocation();
+    Location location = customBlock.getLocation();
 
-    ObjectNode chunkData = (ObjectNode) rootNode.with("chunks").get(location.getChunkX() + ";" + location.getChunkZ());
+    ObjectNode chunkData = (ObjectNode) rootNode.with(CHUNKS_KEY).get(getChunkKey(location.getChunk()));
     if (chunkData == null) return;
-    if (chunkData.has(location.getX()+";"+ location.getY()+";"+ location.getZ())) {
-      chunkData.remove(location.getX()+";"+ location.getY()+";"+ location.getZ());
-    }
+    chunkData.remove(getLocationKey(location));
+
     if (chunkData.isEmpty()) {
-      removeChunk(location.getChunk().get());
+      removeChunk(location.getChunk());
     }
   }
 
   @Synchronized
   public void removeChunk(@NonNull final Chunk chunk) {
-    if (rootNode.with("chunks").has(chunk.getX() + ";" + chunk.getZ())) {
-      rootNode.with("chunks").remove(chunk.getX() + ";" + chunk.getZ()) ;
-    }
+    rootNode.with(CHUNKS_KEY).remove(getChunkKey(chunk)) ;
   }
 
   public Optional<Set<BaseCustomBlock>> getSavedBlocksInChunk(@NonNull final Chunk chunk) {
-    ObjectNode chunkData = (ObjectNode) rootNode.with("chunks").get(chunk.getX() + ";" + chunk.getZ());
+    ObjectNode chunkData = (ObjectNode) rootNode.with(CHUNKS_KEY).get(getChunkKey(chunk));
     if (chunkData == null || chunkData.isEmpty()) return Optional.empty();
 
     Set<BaseCustomBlock> customBlocks = new HashSet<>();
@@ -162,7 +156,7 @@ public class WorldContainer {
           Map.Entry<String, JsonNode> data;
           while (iterator.hasNext()) {
             data = iterator.next();
-            Optional<CraftoryDataKey> datatype = blockRegister.getDataType(data.getKey());
+            Optional<CraftoryDataKey> datatype = blockRegister.getDataKey(data.getKey());
             Map.Entry<String, JsonNode> finalData = data;
             datatype.ifPresent(craftoryDataKey -> {
               try {
@@ -184,5 +178,34 @@ public class WorldContainer {
     if (customBlocks.isEmpty()) return Optional.empty();
 
     return Optional.of(customBlocks);
+  }
+
+  private ObjectNode getChunkNode(Chunk chunk) {
+    ObjectNode chunkData;
+    String chunkKey = getChunkKey(chunk);
+
+    if (rootNode.with(CHUNKS_KEY).has(chunkKey)) {
+      chunkData = (ObjectNode) rootNode.with(CHUNKS_KEY).get(chunkKey);
+    } else {
+      chunkData = mapper.createObjectNode();
+      rootNode.with(CHUNKS_KEY).set(chunkKey, chunkData);
+    }
+    return chunkData;
+  }
+
+  private String getLocationKey(@NonNull Location location) {
+    return ((int) location.getX()) + ";" + ((int) location.getY()) + ";" + ((int) location.getZ());
+  }
+
+  private ObjectNode persistentDataToNode(ComplexCustomBlock customBlock) {
+    ObjectNode persistentData = mapper.createObjectNode();
+    for (Map.Entry<CraftoryDataKey, Object> entry : customBlock.getPersistentData().getData().entrySet()) {
+      persistentData.set(entry.getKey().toString(), mapper.valueToTree(entry.getValue()));
+    }
+    return persistentData;
+  }
+
+  private String getChunkKey(Chunk chunk) {
+    return chunk.getX() + ";" + chunk.getZ();
   }
 }

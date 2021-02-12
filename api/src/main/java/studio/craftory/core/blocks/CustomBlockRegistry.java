@@ -95,7 +95,7 @@ public class CustomBlockRegistry {
     craftoryDataKeyMap.putIfAbsent(key, dataKey);
   }
 
-  public Optional<CraftoryDataKey> getDataType(@NonNull String key) {
+  public Optional<CraftoryDataKey> getDataKey(@NonNull String key) {
     return Optional.of(craftoryDataKeyMap.get(key));
   }
 

@@ -1,22 +1,24 @@
 package studio.craftory.core.blocks;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
 import lombok.Synchronized;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
-import studio.craftory.core.utils.Log;
 
 public class DataStorageManager {
 
+  private final CustomBlockManager customBlockManager;
+  private final CustomBlockRegistry blockRegister;
+
   private Map<World, WorldContainer> worldsStorage;
 
-  public DataStorageManager() {
+  public DataStorageManager(CustomBlockManager customBlockManager, CustomBlockRegistry blockRegister) {
+    this.customBlockManager = customBlockManager;
+    this.blockRegister = blockRegister;
     this.worldsStorage = new ConcurrentHashMap<>();
   }
 
@@ -40,34 +42,30 @@ public class DataStorageManager {
   @Synchronized
   public void registerWorld(@NonNull World world) {
     WorldContainer currentWorld = new WorldContainer(world, blockRegister);
-    worldStorage.put(world, currentWorld);
+    worldsStorage.put(world, currentWorld);
     for (Chunk chunk : world.getLoadedChunks()) {
-      currentWorld.getSavedBlocksInChunk(chunk).ifPresent(blocks ->
-          blocks.forEach(this::loadCustomBlock));
+      loadSavedBlocks(chunk);
     }
   }
 
   @Synchronized
   public void loadSavedBlocks(@NonNull Chunk chunk) {
-    WorldContainer storage = worldStorage.get(chunk.getWorld());
+    WorldContainer storage = worldsStorage.get(chunk.getWorld());
     if (storage == null) {
       return;
     }
     storage.getSavedBlocksInChunk(chunk)
-           .ifPresent(blocks -> blocks.forEach(this::loadCustomBlock));
+           .ifPresent(blocks -> blocks.forEach(customBlockManager::loadCustomBlock));
   }
 
   @Synchronized
   public void unregisterWorld(@NonNull World world) {
-    if (worldStorage.containsKey(world)) {
-      getChunksWithCustomBlocksInWorld(world).forEach(chunk -> unloadCustomChunk(chunk, true));
-      WorldContainer storage = worldStorage.get(world);
-      try {
-        storage.save();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      worldStorage.remove(world);
+    if (worldsStorage.containsKey(world)) {
+      customBlockManager.getCustomChunksInWorld(world)
+                        .forEach(chunk -> customBlockManager.unloadCustomChunk(chunk, true));
+      WorldContainer storage = worldsStorage.get(world);
+      storage.save();
+      worldsStorage.remove(world);
     }
   }
 }

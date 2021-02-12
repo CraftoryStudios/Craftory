@@ -63,9 +63,7 @@ public class ItemEventManager implements Listener {
 
   @EventHandler
   public void onRightClickTest(PlayerInteractEvent event) {
-    System.out.println("EVENT");
     if(event.getHand().equals(EquipmentSlot.HAND) && event.getAction()== Action.RIGHT_CLICK_BLOCK && event.getItem()==null) {
-      System.out.println("IN IF");
       event.getPlayer().getInventory().setItemInMainHand(CustomItemManager.getCustomItem("example:wrench"));
     }
     handleDumbEvents(event);

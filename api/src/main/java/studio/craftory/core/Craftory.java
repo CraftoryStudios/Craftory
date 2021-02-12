@@ -62,12 +62,7 @@ public final class Craftory extends JavaPlugin {
   @Override
   public void onEnable() {
     //Load Data
-    getServer().getWorlds().forEach(world -> {
-      customBlockManager.registerWorld(world);
-      for (Chunk chunk : world.getLoadedChunks()) {
-        customBlockManager.loadSavedBlocks(chunk);
-      }
-    });
+    getServer().getWorlds().forEach(world -> customBlockManager.getDataStorageManager().registerWorld(world));
 
     //Register Events
     PluginManager pluginManager = getServer().getPluginManager();

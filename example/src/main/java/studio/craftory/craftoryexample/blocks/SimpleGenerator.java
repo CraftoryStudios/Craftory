@@ -21,14 +21,14 @@ import studio.craftory.core.data.CraftoryDirection;
     headModel = "assets/blocks/headexample"
 )
 @EnergyOutputData(maxExtract = 100)
-@EnergyStorageData(capacity = 100000)
+@EnergyStorageData(capacity = 1000000)
 public class SimpleGenerator extends ComplexCustomBlock implements EnergyOutput {
 
   public SimpleGenerator(@NonNull Location location, @NonNull CraftoryDirection facingDirection) {
     super(location, facingDirection);
   }
 
-  @Tickable(ticks = 1)
+  @Tickable(ticks = 2)
   public void generateEnergy() {
     increaseStoredEnergy(100);
   }

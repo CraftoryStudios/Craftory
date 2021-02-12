@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.Synchronized;
 import org.bukkit.Chunk;
@@ -27,6 +28,7 @@ public class CustomBlockManager {
   private CustomBlockRegistry blockRegister;
   private AsyncExecutionManager asyncExecutionManager;
   private SyncExecutionManager syncExecutionManager;
+  @Getter
   private DataStorageManager dataStorageManager;
 
   private Map<Chunk,Map<Location, BaseCustomBlock>> customBlocks;
@@ -36,7 +38,7 @@ public class CustomBlockManager {
     this.blockRegister = blockRegister;
     this.syncExecutionManager = syncExecutionManager;
     this.asyncExecutionManager = asyncExecutionManager;
-    this.dataStorageManager = new DataStorageManager();
+    this.dataStorageManager = new DataStorageManager(this, blockRegister);
 
     this.customBlocks = new ConcurrentHashMap<>();
   }
@@ -198,7 +200,7 @@ public class CustomBlockManager {
   }
 
   @Synchronized
-  public Set<Chunk> getChunksWithCustomBlocksInWorld(@NonNull World world) {
+  public Set<Chunk> getCustomChunksInWorld(@NonNull World world) {
     HashSet<Chunk> chunks = customBlocks.keySet().stream().filter(chunk -> chunk.getWorld().equals(world))
                                           .collect(Collectors.toCollection(HashSet::new));
     return Collections.unmodifiableSet(chunks);
