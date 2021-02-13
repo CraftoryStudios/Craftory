@@ -19,13 +19,14 @@ public interface FluidOutput extends FluidStorage {
    * @return Entry of Fluid Type extracted and amount extracted
    */
   default Optional<Entry<CraftoryFluid, Long>> extractFluid(final long limit) {
-    if (!getStoredFluidType().isPresent()) {
-      return Optional.empty();
-    }
+    Optional<CraftoryFluid> fluidOptional = getStoredFluidType();
+    if (fluidOptional.isPresent()) {
 
-    long amountExtracted = Math.min(getStoredFluidAmount(), Math.min(getMaxFluidExtract(), limit));
-    decreaseStoredFluidAmount(amountExtracted);
-    return Optional.of(Maps.immutableEntry(getStoredFluidType().get(), amountExtracted));
+      long amountExtracted = Math.min(getStoredFluidAmount(), Math.min(getMaxFluidExtract(), limit));
+      decreaseStoredFluidAmount(amountExtracted);
+      return Optional.of(Maps.immutableEntry(fluidOptional.get(), amountExtracted));
+    }
+    return Optional.empty();
   }
 
   /**
@@ -36,7 +37,8 @@ public interface FluidOutput extends FluidStorage {
    * @return Amount of fluid extracted
    */
   default long extractFluid(@NonNull final CraftoryFluid fluidType, final long limit) {
-    if (!getStoredFluidType().isPresent() || !getStoredFluidType().get().equals(fluidType)) {
+    Optional<CraftoryFluid> fluidOptional = getStoredFluidType();
+    if (!fluidOptional.isPresent() || !fluidOptional.get().equals(fluidType)) {
       return 0L;
     }
 
