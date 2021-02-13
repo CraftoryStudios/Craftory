@@ -1,15 +1,18 @@
 package studio.craftory.core.utils;
 
 import java.text.DecimalFormat;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class StringUtils {
   private static final String UNIT_ENERGY = "Re";
   private static final String UNIT_FLUID = "B";
   private static final DecimalFormat df = new DecimalFormat("###.###");
 
-  public static String rawEnergyToPrefixed(Integer energy) {
+  public static String rawEnergyToPrefixed(int energy) {
     String s = Integer.toString(energy);
     int length = s.length();
+
     if (length < 6) {
       return s + " " + UNIT_ENERGY;
     }
@@ -34,7 +37,7 @@ public class StringUtils {
     return "A bukkit load";
   }
 
-  public static String rawFluidToPrefixed(Integer amount) {
+  public static String rawFluidToPrefixed(int amount) {
     String s = Integer.toString(amount);
     int length = s.length();
     if (length < 6) {

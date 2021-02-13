@@ -30,13 +30,13 @@ public class ItemEventManager implements Listener {
   private static final Map<ItemSmartEvent, Map<String, Consumer<Event>>> smartEvents = new EnumMap<>(ItemSmartEvent.class);
   private static final Map<String, Collection<PotionEffect>> itemOnHoldEffects = new HashMap<>();
 
-  public static void registerDumbEvent(Class event, Consumer<Event> method) {
+  public static void registerDumbEvent(Class<?> event, Consumer<Event> method) {
     Set<Consumer<Event>> temp = dumbEvents.getOrDefault(event.getSimpleName(),new HashSet<>());
     temp.add(method);
     dumbEvents.put(event.getSimpleName(), temp);
   }
 
-  public static boolean registerSmartEvent(Class event, String triggerItemName, Consumer<Event> method) {
+  public static boolean registerSmartEvent(Class<?> event, String triggerItemName, Consumer<Event> method) {
     if (ItemSmartEvent.isValid(event)) {
       ItemSmartEvent itemSmartEvent = ItemSmartEvent.fromClass(event);
       Map<String, Consumer<Event>> temp = smartEvents.getOrDefault(itemSmartEvent, new HashMap<>());

@@ -24,10 +24,10 @@ public class CustomBlockListener implements Listener {
 
   @EventHandler
   public void onCustomBlockPlace(BlockPlaceEvent blockPlaceEvent) {
-
     //Check is Custom Block Being Placed
     if (!blockPlaceEvent.getItemInHand().hasItemMeta()) return;
-      PersistentDataContainer dataHolder = blockPlaceEvent.getItemInHand().getItemMeta().getPersistentDataContainer();
+
+    PersistentDataContainer dataHolder = blockPlaceEvent.getItemInHand().getItemMeta().getPersistentDataContainer();
     if (!dataHolder.has(blockItemKey, PersistentDataType.STRING)) return;
 
     //Get Custom Block Data

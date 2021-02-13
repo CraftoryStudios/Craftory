@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import studio.craftory.core.Craftory;
 
@@ -40,7 +38,7 @@ public final class Log {
   public static void debug(@NonNull String... logMessages) {
     if (debug) {
       for (String logMessage : logMessages) {
-        logger.info(ChatColor.YELLOW + "Debug: " + ChatColor.ITALIC + logMessage);
+        logger.info(DEBUG_PREFIX + DEBUG_COLOR + logMessage);
       }
     }
   }
