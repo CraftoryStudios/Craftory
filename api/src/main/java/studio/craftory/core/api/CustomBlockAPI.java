@@ -10,7 +10,7 @@ import studio.craftory.core.blocks.CustomBlockRegistry;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.keys.CraftoryDataKey;
-import studio.craftory.core.data.keys.CustomBlockKey;
+import studio.craftory.core.data.keys.CraftoryBlockKey;
 import studio.craftory.core.utils.Log;
 
 public class CustomBlockAPI {
@@ -21,12 +21,12 @@ public class CustomBlockAPI {
   public CustomBlockManager customBlockManager;
 
   public void registerCustomBlock(@NonNull Plugin plugin, @NonNull Class<? extends BaseCustomBlock> customBlock) {
-    blockRegister.registerCustomBlock(plugin, customBlock);
+    blockRegister.registerCustomBlockClass(plugin, customBlock);
   }
 
   public Optional<BaseCustomBlock> placeCustomBlock(@NonNull Location location, @NonNull Class<? extends BaseCustomBlock> customBlockClazz,
   @NonNull CraftoryDirection craftoryDirection) {
-    Optional<CustomBlockKey> key = blockRegister.getKey(customBlockClazz);
+    Optional<CraftoryBlockKey> key = blockRegister.getBlockKey(customBlockClazz);
     if (!key.isPresent()) {
       Log.warn("Tried to place a custom block that doesn't exist or isn't registered");
       return Optional.empty();

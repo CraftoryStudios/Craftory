@@ -13,13 +13,18 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.CustomBlockManager;
+import studio.craftory.core.blocks.CustomBlockRegistry;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
+import studio.craftory.core.data.keys.CraftoryBlockKey;
+import studio.craftory.core.utils.Log;
 
 public class CustomBlockListener implements Listener {
 
   @Inject
   private CustomBlockManager customBlockManager;
+  @Inject
+  private CustomBlockRegistry blockRegistry;
   private NamespacedKey blockItemKey = new NamespacedKey(Craftory.getInstance(), "blockItemKey");
 
   @EventHandler
@@ -31,13 +36,16 @@ public class CustomBlockListener implements Listener {
     if (!dataHolder.has(blockItemKey, PersistentDataType.STRING)) return;
 
     //Get Custom Block Data
-    String blockID = dataHolder.get(blockItemKey, PersistentDataType.STRING);
-    CraftoryDirection facing = getDirection(blockPlaceEvent.getPlayer());
+    CraftoryDirection direction = getDirection(blockPlaceEvent.getPlayer());
+    String blockKey = dataHolder.get(blockItemKey, PersistentDataType.STRING);
 
+    Optional<CraftoryBlockKey> blockKeyOptional = blockRegistry.getBlockKey(blockKey);
+    if (blockKeyOptional.isPresent()) {
+      blockPlaceEvent.setCancelled(true);
+      customBlockManager.placeCustomBlock(blockKeyOptional.get(), blockPlaceEvent.getBlock().getLocation(), direction);
+    }
 
-    //Create Custom Block
-
-    //Render Custom Block
+    Log.warn("Unable to place custom block");
   }
 
   @EventHandler

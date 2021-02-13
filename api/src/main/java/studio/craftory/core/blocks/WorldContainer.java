@@ -22,7 +22,7 @@ import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.blocks.templates.ComplexCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.keys.CraftoryDataKey;
-import studio.craftory.core.data.keys.CustomBlockKey;
+import studio.craftory.core.data.keys.CraftoryBlockKey;
 import studio.craftory.core.utils.Log;
 
 public class WorldContainer {
@@ -97,7 +97,7 @@ public class WorldContainer {
     ObjectNode objectRoot = mapper.createObjectNode();
 
     //Get block type key
-    Optional<CustomBlockKey> key = blockRegister.getKey(customBlock);
+    Optional<CraftoryBlockKey> key = blockRegister.getBlockKey(customBlock);
     if (!key.isPresent())  {
       Log.warn("Error saving block");
       throw new IllegalStateException("Custom Block can't be saved as it isn't registered");
@@ -141,13 +141,13 @@ public class WorldContainer {
     while (fields.hasNext()) {
       field = fields.next();
       //Get Block Values
-      CustomBlockKey customBlockKey = new CustomBlockKey(field.getValue().get("type").asText());
+      CraftoryBlockKey craftoryBlockKey = new CraftoryBlockKey(field.getValue().get("type").asText());
       String[] splitKey = field.getKey().split(";");
       Location location = new Location(chunk.getWorld(), Integer.parseInt(splitKey[0]), Integer.parseInt(splitKey[1]),
           Integer.parseInt(splitKey[2]));
       CraftoryDirection direction = CraftoryDirection.valueOfLabel((byte) field.getValue().get(CUSTOMBLOCK_DIRECTION_KEY).asInt());
 
-      Optional<? extends BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(customBlockKey, location, direction);
+      Optional<? extends BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(craftoryBlockKey, location, direction);
       if (!customBlock.isPresent()) return Optional.empty();
 
       //Inject Persistent Data

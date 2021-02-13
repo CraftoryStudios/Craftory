@@ -8,17 +8,17 @@ import studio.craftory.core.data.safecontainers.SafePlugin;
 
 @Value
 @AllArgsConstructor
-public class CustomBlockKey {
+public class CraftoryBlockKey {
 
   String namespace;
   String name;
 
-  public CustomBlockKey(Plugin plugin, Class<?> block) {
+  public CraftoryBlockKey(Plugin plugin, Class<?> block) {
     this.namespace = plugin.getName();
     this.name = block.getSimpleName();
   }
 
-  public CustomBlockKey(String key) {
+  public CraftoryBlockKey(String key) {
     String[] keySplit = key.split(":");
     this.namespace = keySplit[0];
     this.name = keySplit[1];
