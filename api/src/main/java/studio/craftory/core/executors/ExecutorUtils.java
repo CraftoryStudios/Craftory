@@ -9,31 +9,33 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import studio.craftory.core.annotations.SyncTickable;
-import studio.craftory.core.executors.interfaces.Tickable;
+import studio.craftory.core.annotations.Tickable;
+import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.utils.Reflections;
 
 @UtilityClass
 public class ExecutorUtils {
 
-  public static void registerTickableClass(Class<? extends Tickable> clazz,
-      Map<Class<? extends Tickable>, HashMap<Integer, ArrayList<Method>>> tickableMethods) {
+  public static void registerTickableClass(Class<? extends BaseCustomBlock> clazz,
+      Map<Class<? extends BaseCustomBlock>, HashMap<Integer, ArrayList<Method>>> tickableMethods, boolean async) {
 
     HashMap<Integer, ArrayList<Method>> tickMethods = new HashMap<>();
 
+
     Reflections.getMethodsRecursively(clazz, Object.class).forEach(method -> {
-      SyncTickable syncTickable = method.getAnnotation(SyncTickable.class);
-      if (Objects.nonNull(syncTickable) && method.getParameterCount() == 0) {
+      Tickable tickable = method.getAnnotation(Tickable.class);
+
+      if (Objects.nonNull(tickable) && tickable.async() == async && method.getParameterCount() == 0) {
 
         ArrayList<Method> temp;
-        if (tickMethods.containsKey(syncTickable.ticks())) {
-          temp = tickMethods.get(syncTickable.ticks());
+        if (tickMethods.containsKey(tickable.ticks())) {
+          temp = tickMethods.get(tickable.ticks());
         } else {
           temp = new ArrayList<>();
         }
 
         temp.add(method);
-        tickMethods.put(syncTickable.ticks(), temp);
+        tickMethods.put(tickable.ticks(), temp);
       }
     });
 
@@ -42,11 +44,11 @@ public class ExecutorUtils {
     }
   }
 
-  public static void runMethods(@NonNull Set<TickGroup> tickGroups, @NonNull int tick, @NonNull Map<Class<? extends Tickable>, HashMap<Integer,
+  public static void runMethods(@NonNull Set<TickGroup> tickGroups, @NonNull int tick, @NonNull Map<Class<? extends BaseCustomBlock>, HashMap<Integer,
       ArrayList<Method>>> tickableMethods) {
     for (TickGroup tickGroup : tickGroups) {
       if (tick % tickGroup.tick == 0) {
-        for (Tickable tickable : tickGroup.getTickables()) {
+        for (BaseCustomBlock tickable : tickGroup.getTickables()) {
           for (Method method: tickableMethods.get(tickable.getClass()).get(tickGroup.tick)) {
             try {
               method.invoke(tickable);

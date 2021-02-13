@@ -27,6 +27,5 @@ public class TestPluginClass {
   @DisplayName("Test plugin getters return a value")
   void testGetters() {
     Assertions.assertNotNull(Craftory.getInstance());
-    Assertions.assertNotNull(Craftory.getInstance().getPersistenceManager());
   }
 }

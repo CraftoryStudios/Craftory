@@ -32,7 +32,9 @@
 
     <!-- Google -->
     <auto-service.version>1.0-rc2</auto-service.version>
-
+    
+    <!-- Other -->
+    <jackson.version>2.12.0</jackson.version>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.organization>craftorystudios</sonar.organization>
     <sonar.projectKey>craftorystudios_Craftory_Parent</sonar.projectKey>
@@ -214,9 +216,9 @@
       </dependency>
       <!-- Data Saving -->
       <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>2.8.6</version>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
       </dependency>
 
       <!-- Annotations -->

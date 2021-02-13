@@ -8,20 +8,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import lombok.NonNull;
 import org.bukkit.scheduler.BukkitRunnable;
-import studio.craftory.core.executors.interfaces.Tickable;
+import studio.craftory.core.blocks.templates.BaseCustomBlock;
 
 public class SyncExecutionManager extends BukkitRunnable {
 
   private HashSet<TickGroup> tickGroups;
   private HashMap<Integer, TickGroup> tickGroupsMap;
-  private HashMap<Class<? extends Tickable>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
-  private Map<Integer, HashSet<Tickable>> removeBacklog;
+  private HashMap<Class<? extends BaseCustomBlock>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
+  private Map<Integer, HashSet<BaseCustomBlock>> removeBacklog;
   private int tick;
   private int maxTick;
 
@@ -49,11 +49,11 @@ public class SyncExecutionManager extends BukkitRunnable {
     }
   }
 
-  public void registerTickableClass(@NonNull Class<? extends Tickable> clazz) {
-    ExecutorUtils.registerTickableClass(clazz, tickableMethods);
+  public void registerTickableClass(@NonNull Class<? extends BaseCustomBlock> clazz) {
+    ExecutorUtils.registerTickableClass(clazz, tickableMethods, false);
   }
 
-  public void removeTickableObject(@NonNull Tickable tickableObject) {
+  public void removeTickableObject(@NonNull BaseCustomBlock tickableObject) {
     Optional<Set<Integer>> tickKeys = getTickKeys(tickableObject);
     if (!tickKeys.isPresent()) return;
 
@@ -64,10 +64,18 @@ public class SyncExecutionManager extends BukkitRunnable {
   }
 
   private void cleanUpTickableObjects() {
-    for (Entry<Integer, HashSet<Tickable>> entry : removeBacklog.entrySet()) {
+    for (Iterator<Map.Entry<Integer, HashSet<BaseCustomBlock>>> it = removeBacklog.entrySet().iterator(); it.hasNext();) {
+      Map.Entry<Integer, HashSet<BaseCustomBlock>> entry = it.next();
         TickGroup tickGroup = tickGroupsMap.get(entry.getKey());
-        for (Tickable tickable : entry.getValue()) {
-          tickGroup.getTickables().remove(tickable);
+
+        for (Iterator<BaseCustomBlock> iterator = entry.getValue().iterator(); iterator.hasNext();) {
+          BaseCustomBlock customBlock = iterator.next();
+          tickGroup.getTickables().remove(customBlock);
+          iterator.remove();
+        }
+
+        if (entry.getValue().isEmpty()) {
+          it.remove();
         }
 
         if (tickGroup.getTickables().isEmpty()) {
@@ -77,16 +85,16 @@ public class SyncExecutionManager extends BukkitRunnable {
     }
   }
 
-  private Optional<Set<Integer>> getTickKeys(@NonNull Tickable tickableObject) {
+  private Optional<Set<Integer>> getTickKeys(@NonNull BaseCustomBlock tickableObject) {
     if (!tickableMethods.containsKey(tickableObject.getClass())) return Optional.empty();
     Set<Integer> tickKeys = tickableMethods.get(tickableObject.getClass()).keySet();
     if (tickKeys.isEmpty()) return Optional.empty();
     return Optional.of(tickKeys);
   }
 
-  public void addTickableObject(@NonNull Tickable object) {
-    if (tickableMethods.containsKey(object.getClass())) {
-      Set<Integer> tickKeys = tickableMethods.get(object.getClass()).keySet();
+  public void addTickableObject(@NonNull BaseCustomBlock tickableObject) {
+    if (tickableMethods.containsKey(tickableObject.getClass())) {
+      Set<Integer> tickKeys = tickableMethods.get(tickableObject.getClass()).keySet();
       for (Integer integer : tickKeys) {
         TickGroup tickGroup;
         if (tickGroupsMap.containsKey(integer)) {
@@ -95,7 +103,7 @@ public class SyncExecutionManager extends BukkitRunnable {
           tickGroup = new TickGroup(integer);
         }
 
-        tickGroup.getTickables().add(object);
+        tickGroup.getTickables().add(tickableObject);
         tickGroups.add(tickGroup);
         tickGroupsMap.put(integer, tickGroup);
       }

@@ -1,72 +1,97 @@
 package studio.craftory.core.blocks;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.Synchronized;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.plugin.PluginManager;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
+import studio.craftory.core.data.CraftoryDirection;
+import studio.craftory.core.data.keys.CustomBlockKey;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
-import studio.craftory.core.executors.interfaces.Tickable;
 import studio.craftory.core.utils.Log;
 
-/** Class based on LogisticsCraft's Logistics-API (MIT) and the LogisticBlockCache class **/
 public class CustomBlockManager {
 
-  private CustomBlockRegister blockRegister;
-  private PluginManager pluginManager;
+  private CustomBlockRegistry blockRegister;
   private AsyncExecutionManager asyncExecutionManager;
   private SyncExecutionManager syncExecutionManager;
+  @Getter
+  private DataStorageManager dataStorageManager;
 
+  @Getter
   private Map<Chunk,Map<Location, BaseCustomBlock>> customBlocks;
-  private Map<World, WorldStorage> worldStorage;
 
   @Inject
-  public CustomBlockManager (CustomBlockRegister blockRegister, PluginManager pluginManager, AsyncExecutionManager asyncExecutionManager,
-      SyncExecutionManager syncExecutionManager) {
+  public CustomBlockManager (CustomBlockRegistry blockRegister, AsyncExecutionManager asyncExecutionManager, SyncExecutionManager syncExecutionManager) {
     this.blockRegister = blockRegister;
-    this.pluginManager = pluginManager;
     this.syncExecutionManager = syncExecutionManager;
     this.asyncExecutionManager = asyncExecutionManager;
+    this.dataStorageManager = new DataStorageManager(this, blockRegister);
 
     this.customBlocks = new ConcurrentHashMap<>();
-    this.worldStorage = new ConcurrentHashMap<>();
   }
 
   /**
-   * Loads a Custom Block, this method should be called only when a new block is placed or when
-   * a stored block is loaded from the disk.
+   * Loads a Custom Block, into memory and executor when a new block is placed or loaded from file
    *
-   * @param block the block
-   * @throws IllegalArgumentException if the given block location isn't loaded
+   * @param customBlock which should be loaded into memory
    */
-  public void loadCustomBlock(@NonNull final BaseCustomBlock block) {
-    if (!blockRegister.isBlockRegistered(block)) {
-      throw new IllegalArgumentException("The class " + block.getClass().getName() + " is not registered!");
-    }
-    Location location = block.getSafeBlockLocation().getLocation()
-                             .orElseThrow(() -> new IllegalArgumentException("The provided block must be loaded!"));
-    Chunk chunk = location.getChunk();
-    //pluginManager.callEvent(new CustomBlockLoadEvent(location, block));
-    if (customBlocks.computeIfAbsent(chunk, k -> new ConcurrentHashMap<>())
-                      .putIfAbsent(location, block) == null) {
-      addToExecutorSchedule(block);
+  public boolean loadCustomBlock(@NonNull final BaseCustomBlock customBlock) {
+    Location location = customBlock.getLocation();
+
+    if (customBlocks.computeIfAbsent(location.getChunk(), k -> new ConcurrentHashMap<>())
+                      .putIfAbsent(location, customBlock) == null) {
+
+      if (location.getChunk().isLoaded()) {
+        addToExecutorSchedule(customBlock);
+      }
+
       Log.debug("Block loaded: " + location.toString());
+      return true;
     } else {
-      Log.warn("Trying to load a block at occupied location: " + location.toString());
+      Log.warn("Trying to load a customBlock at occupied location: " + location.toString());
     }
+    return false;
   }
 
   /**
-   * Unloads a CustomBlock, this method should be called only when a block is destroyed or when
-   * a chunk is unloaded.
+   * Unloads a chunk of custom blocks
+   *
+   * @param chunk the block location
+   * @param save     if the block should be saved
+   * @throws IllegalArgumentException if the given location isn't loaded
+   */
+  @Synchronized
+  public void unloadCustomChunk(@NonNull final Chunk chunk, boolean save) {
+    Map<Location, BaseCustomBlock> customBlockMap = getLoadedCustomBlocksInChunk(chunk);
+    if (customBlockMap.isEmpty()) return;
+
+    if (save) {
+      Collection<BaseCustomBlock> blocks = customBlockMap.values();
+      dataStorageManager.writeChunkAndSave(chunk, blocks);
+    }
+
+    for (BaseCustomBlock block : customBlockMap.values()) {
+      removeFromExecutorSchedule(block);
+    }
+    customBlocks.remove(chunk);
+  }
+
+  /**
+   * Unloads a CustomBlock from memory
    *
    * @param location the block location
    * @param save     if the block should be saved
@@ -74,47 +99,40 @@ public class CustomBlockManager {
    */
   @Synchronized
   public void unloadCustomBlock(@NonNull final Location location, boolean save) {
-    Chunk chunk = location.getChunk();
-    if (!chunk.isLoaded()) {
-      throw new IllegalArgumentException("The provided location must be loaded!");
-    }
-    Map<Location, BaseCustomBlock> loadedBlocksInChunk = customBlocks.get(chunk);
-    if (loadedBlocksInChunk == null) {
-      Log.warn("Attempt to unregister an unloaded CustomBlock: " + location.toString());
-      return;
-    }
-    BaseCustomBlock customBlock = loadedBlocksInChunk.get(location);
-    if (customBlock == null) {
-      Log.warn("Attempt to unregister an unknown CustomBlock: " + location.toString());
-      return;
-    }
 
-    if (Tickable.class.isAssignableFrom(customBlock.getClass())) {
-      asyncExecutionManager.removeTickableObject((Tickable) customBlock);
-      syncExecutionManager.removeTickableObject((Tickable) customBlock);
-    }
-
-
-
-    if (save) {
-      //pluginManager.callEvent(new CustomBlockSaveEvent(location, customBlock));
-      //worldStorage.get(location.getWorld()).saveCustomBlock(customBlock);
-    } else {
-      //pluginManager.callEvent(new CustomBlockUnloadEvent(location, customBlock));
-      //worldStorage.get(location.getWorld()).removeCustomBlock(customBlock);
-    }
-    customBlocks.get(location.getChunk()).remove(location);
-  }
-
-  private void addToExecutorSchedule(@NonNull final BaseCustomBlock block) {
-    if (Tickable.class.isAssignableFrom(block.getClass())) {
-      asyncExecutionManager.addTickableObject((Tickable) block);
-      syncExecutionManager.addTickableObject((Tickable) block);
-    }
+    Optional<BaseCustomBlock> customBlockOptional = Optional.ofNullable(customBlocks.get(location.getChunk()).get(location));
+    customBlockOptional.ifPresent(customBlock -> unloadCustomBlock(customBlock, save));
   }
 
   /**
-   * Get the CustomBlock at the given LOADED location
+   * Unloads a CustomBlock from memory
+   *
+   * @param customBlock the block
+   * @param save     if the block should be saved
+   * @throws IllegalArgumentException if the given blocks location isn't loaded
+   */
+  @Synchronized
+  public void unloadCustomBlock(@NonNull final BaseCustomBlock customBlock, boolean save) {
+    Location location = customBlock.getLocation();
+
+    if (!location.getChunk().isLoaded()) {
+      throw new IllegalArgumentException("The provided location must be loaded!");
+    }
+
+    removeFromExecutorSchedule(customBlock);
+    if (save) {
+      dataStorageManager.writeBlockAndSave(customBlock);
+    } else {
+      dataStorageManager.removeBlockAndSave(customBlock);
+    }
+
+    customBlocks.get(location.getChunk()).remove(location);
+  }
+
+
+
+  /**
+   * Get the CustomBlock at the given loaded location
    *
    * @param location the location
    * @return the CustomBlock to retrieve
@@ -135,7 +153,7 @@ public class CustomBlockManager {
   }
 
   /**
-   * Get the CustomBlock in the given LOADED chunk
+   * Get the CustomBlock in the given loaded chunk
    *
    * @param chunk the chunk
    * @return the CustomBlocks in chunk
@@ -152,5 +170,50 @@ public class CustomBlockManager {
     }
     return Collections.unmodifiableMap(customBlocks.get(chunk));
   }
+
+  /**
+   * Place a custom block at a given location and then load into memory
+   * and also into the executor
+   *
+   * @param customBlockKey key representing the type of custom block to place
+   * @param location in the world to place the block
+   * @param direction the block is facing
+   * @return instance of the newly created Custom Block or Optional.empty if failed
+   */
+  public Optional<BaseCustomBlock> placeCustomBlock(@NonNull CustomBlockKey customBlockKey, @NonNull Location location,
+  @NonNull CraftoryDirection direction) {
+    Optional<BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(customBlockKey, location, direction);
+
+    if (!customBlock.isPresent()) {
+      Log.warn("Unable to place CustomBlock: " +customBlockKey.getName() + " at location: " + location);
+      return Optional.empty();
+    }
+
+    if (loadCustomBlock(customBlock.get())) {
+      //TODO Render Custom Block
+      location.getBlock().setType(Material.GLASS);
+      return customBlock;
+    }
+
+    return Optional.empty();
+  }
+
+  @Synchronized
+  public Set<Chunk> getCustomChunksInWorld(@NonNull World world) {
+    HashSet<Chunk> chunks = customBlocks.keySet().stream().filter(chunk -> chunk.getWorld().equals(world))
+                                          .collect(Collectors.toCollection(HashSet::new));
+    return Collections.unmodifiableSet(chunks);
+  }
+
+  private void addToExecutorSchedule(@NonNull final BaseCustomBlock block) {
+    asyncExecutionManager.addTickableObject( block);
+    syncExecutionManager.addTickableObject(block);
+  }
+
+  private void removeFromExecutorSchedule(@NonNull final BaseCustomBlock block) {
+    asyncExecutionManager.removeTickableObject(block);
+    syncExecutionManager.removeTickableObject(block);
+  }
+
 
 }

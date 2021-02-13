@@ -17,15 +17,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.LongAdder;
 import lombok.NonNull;
 import org.bukkit.scheduler.BukkitRunnable;
-import studio.craftory.core.executors.interfaces.Tickable;
+import studio.craftory.core.blocks.templates.BaseCustomBlock;
 
 public class AsyncExecutionManager extends BukkitRunnable {
 
   private List<HashSet<TickGroup>> tickGroups;
   private List<HashMap<Integer, TickGroup>> tickGroupsMap;
-  private Map<Class<? extends Tickable>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
-  private Map<Class<? extends Tickable>, ArrayList<Integer>> threadTaskDistribution;
-  private Map<Integer, HashSet<Tickable>> removeBacklog;
+  private Map<Class<? extends BaseCustomBlock>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
+  private Map<Class<? extends BaseCustomBlock>, ArrayList<Integer>> threadTaskDistribution;
+  private Map<Integer, HashSet<BaseCustomBlock>> removeBacklog;
   private final LongAdder tick;
   private final ExecutorService executor;
   private final int threadCount;
@@ -56,11 +56,11 @@ public class AsyncExecutionManager extends BukkitRunnable {
     }
   }
 
-  public void registerTickableClass(@NonNull Class<? extends Tickable> clazz) {
-    ExecutorUtils.registerTickableClass(clazz, tickableMethods);
+  public void registerTickableClass(@NonNull Class<? extends BaseCustomBlock> clazz) {
+    ExecutorUtils.registerTickableClass(clazz, tickableMethods, true);
   }
 
-  public void removeTickableObject(@NonNull Tickable tickableObject) {
+  public void removeTickableObject(@NonNull BaseCustomBlock tickableObject) {
     Optional<Set<Integer>> tickKeys = getTickKeys(tickableObject);
     if (!tickKeys.isPresent()) return;
 
@@ -71,10 +71,10 @@ public class AsyncExecutionManager extends BukkitRunnable {
   }
 
   private void cleanUpTickableObjects() {
-    for (Entry<Integer, HashSet<Tickable>> entry : removeBacklog.entrySet()) {
+    for (Entry<Integer, HashSet<BaseCustomBlock>> entry : removeBacklog.entrySet()) {
       for (int thread = 0; thread < threadCount; thread++) {
         TickGroup tickGroup = tickGroupsMap.get(thread).get(entry.getKey());
-        for (Tickable tickable : entry.getValue()) {
+        for (BaseCustomBlock tickable : entry.getValue()) {
           tickGroup.getTickables().remove(tickable);
         }
 
@@ -86,11 +86,11 @@ public class AsyncExecutionManager extends BukkitRunnable {
     }
   }
 
-  public void addTickableObject(@NonNull Tickable tickableObject) {
+  public void addTickableObject(@NonNull BaseCustomBlock tickableObject) {
     Optional<Set<Integer>> tickKeys = getTickKeys(tickableObject);
     if (!tickKeys.isPresent()) return;
 
-    int exectionThread = getExectionThread(tickableObject.getClass());
+    int exectionThread = getExecutionThread(tickableObject.getClass());
     HashMap<Integer,TickGroup> threadTickGroupMap = tickGroupsMap.get(exectionThread);
     for (Integer integer : tickKeys.get()) {
       TickGroup tickGroup;
@@ -106,14 +106,14 @@ public class AsyncExecutionManager extends BukkitRunnable {
     }
   }
 
-  private Optional<Set<Integer>> getTickKeys(@NonNull Tickable tickableObject) {
+  private Optional<Set<Integer>> getTickKeys(@NonNull BaseCustomBlock tickableObject) {
     if (!tickableMethods.containsKey(tickableObject.getClass())) return Optional.empty();
     Set<Integer> tickKeys = tickableMethods.get(tickableObject.getClass()).keySet();
     if (tickKeys.isEmpty()) return Optional.empty();
     return Optional.of(tickKeys);
   }
 
-  private int getExectionThread(@NonNull Class<? extends Tickable> clazz) {
+  private int getExecutionThread(@NonNull Class<? extends BaseCustomBlock> clazz) {
     if (threadTaskDistribution.containsKey(clazz)) {
       ArrayList<Integer> threadWorkloads = threadTaskDistribution.get(clazz);
       int bestThread = 0;

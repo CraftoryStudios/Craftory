@@ -43,7 +43,7 @@ public interface EnergyStorage extends PersistentDataHolder, VolatileDataHolder 
   }
 
   /**
-   * @return Amount of free space remain to store energy in
+   * @return Amount of free space remain to store energy
    */
   default long getFreeSpace() {
     return getMaxEnergyStored() - getEnergyStored();

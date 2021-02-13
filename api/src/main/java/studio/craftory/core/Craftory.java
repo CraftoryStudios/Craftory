@@ -2,22 +2,22 @@ package studio.craftory.core;
 
 import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
-import com.google.gson.Gson;
 import java.io.File;
-import java.util.ArrayList;
 import lombok.Getter;
 import org.bukkit.Server;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
+import studio.craftory.core.api.CustomBlockAPI;
 import studio.craftory.core.blocks.CustomBlockManager;
-import studio.craftory.core.blocks.CustomBlockRegister;
-import studio.craftory.core.blocks.templates.BaseCustomBlock;
+import studio.craftory.core.blocks.CustomBlockRegistry;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
 import studio.craftory.core.items.ItemEventManager;
-import studio.craftory.core.persistence.PersistenceManager;
+import studio.craftory.core.listeners.ChunkListener;
+import studio.craftory.core.listeners.CustomBlockListener;
+import studio.craftory.core.listeners.WorldListener;
 
 public final class Craftory extends JavaPlugin {
 
@@ -26,16 +26,13 @@ public final class Craftory extends JavaPlugin {
 
   //Internal
   private Injector injector;
-  private static ArrayList<JavaPlugin> addons = new ArrayList<>();
-
   private AsyncExecutionManager asyncExecutionManager;
   private SyncExecutionManager syncExecutionManager;
+  private CustomBlockManager customBlockManager;
 
   //External API
   @Getter
-  PersistenceManager persistenceManager;
-  @Getter
-  Gson gson = new Gson();
+  CustomBlockAPI customBlockAPI;
 
 
 
@@ -53,24 +50,37 @@ public final class Craftory extends JavaPlugin {
     asyncExecutionManager = injector.getSingleton(AsyncExecutionManager.class);
     syncExecutionManager = injector.getSingleton(SyncExecutionManager.class);
 
-    //Persistence
-    persistenceManager = injector.getSingleton(PersistenceManager.class);
-
     //Custom Block
-    injector.getSingleton(CustomBlockRegister.class);
-    injector.getSingleton(CustomBlockManager.class);
+    injector.getSingleton(CustomBlockRegistry.class);
+    customBlockManager = injector.getSingleton(CustomBlockManager.class);
+
+    //API
+    customBlockAPI = injector.getSingleton(CustomBlockAPI.class);
   }
 
   @Override
   public void onEnable() {
+    //Load Data
+    getServer().getWorlds().forEach(world -> customBlockManager.getDataStorageManager().registerWorld(world));
+
+    //Register Events
+    PluginManager pluginManager = getServer().getPluginManager();
+    pluginManager.registerEvents(injector.getSingleton(CustomBlockListener.class), instance);
+    pluginManager.registerEvents(injector.getSingleton(WorldListener.class), instance);
+    pluginManager.registerEvents(injector.getSingleton(ChunkListener.class), instance);
+    pluginManager.registerEvents(injector.getSingleton(ItemEventManager.class), instance);
+
     //Executor
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
+    syncExecutionManager.runTaskTimer(this, 20L,1L);
     getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
 
   }
 
-  public static void registerCustomBlock(Class<? extends BaseCustomBlock> customBlock) {
-    //Test
+  @Override
+  public void onDisable() {
+    customBlockManager.getDataStorageManager().writeAll();
+    customBlockManager.getDataStorageManager().saveAll();
   }
 
   public Craftory() {

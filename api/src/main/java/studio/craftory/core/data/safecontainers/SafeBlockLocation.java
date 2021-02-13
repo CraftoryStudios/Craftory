@@ -1,6 +1,5 @@
 package studio.craftory.core.data.safecontainers;
 
-import com.google.gson.annotations.SerializedName;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
@@ -16,7 +15,6 @@ import org.bukkit.block.Block;
 public class SafeBlockLocation {
 
   @NonNull
-  @SerializedName(value = "world")
   private SafeWorld safeWorld;
   @NonNull
   private int x;
