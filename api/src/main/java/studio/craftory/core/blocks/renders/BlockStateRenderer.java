@@ -60,9 +60,9 @@ public class BlockStateRenderer implements CraftoryRenderer{
   }
 
   private void renderNoteBlock(String stateData, Block block) {
-    String instrument = stateData.substring(0,2);
-    int note = Integer.parseInt(stateData.substring(2,4));
-    String powered = stateData.substring(4,5);
+    String instrument = stateData.substring(0,1);
+    int note = Integer.parseInt(stateData.substring(1,3));
+    String powered = stateData.substring(3,4);
 
     block.setType(Material.NOTE_BLOCK, false);
     NoteBlock blockData = (NoteBlock) block.getBlockData();
@@ -70,7 +70,7 @@ public class BlockStateRenderer implements CraftoryRenderer{
     blockData.setInstrument(getInstrument(instrument));
     blockData.setNote(new Note(note));
     blockData.setPowered(powered.equals("T"));
-    block.setBlockData(blockData);
+    block.setBlockData(blockData, false);
   }
 
   private Instrument getInstrument(String instrument) {

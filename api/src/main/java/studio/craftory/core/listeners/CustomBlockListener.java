@@ -30,22 +30,21 @@ public class CustomBlockListener implements Listener {
   @EventHandler
   public void onCustomBlockPlace(BlockPlaceEvent blockPlaceEvent) {
     //Check is Custom Block Being Placed
-    if (!blockPlaceEvent.getItemInHand().hasItemMeta()) return;
+    //if (!blockPlaceEvent.getItemInHand().hasItemMeta()) return;
 
     PersistentDataContainer dataHolder = blockPlaceEvent.getItemInHand().getItemMeta().getPersistentDataContainer();
-    if (!dataHolder.has(blockItemKey, PersistentDataType.STRING)) return;
+    //if (!dataHolder.has(blockItemKey, PersistentDataType.STRING)) return;
 
     //Get Custom Block Data
     CraftoryDirection direction = getDirection(blockPlaceEvent.getPlayer());
     String blockKey = dataHolder.get(blockItemKey, PersistentDataType.STRING);
 
-    Optional<CraftoryBlockKey> blockKeyOptional = blockRegistry.getBlockKey(blockKey);
+    Optional<CraftoryBlockKey> blockKeyOptional = blockRegistry.getBlockKey("CraftoryExample:SimpleGenerator");
     if (blockKeyOptional.isPresent()) {
-      blockPlaceEvent.setCancelled(true);
       customBlockManager.placeCustomBlock(blockKeyOptional.get(), blockPlaceEvent.getBlock().getLocation(), direction);
+    } else {
+      Log.warn("Unable to place custom block");
     }
-
-    Log.warn("Unable to place custom block");
   }
 
   @EventHandler

@@ -3,20 +3,17 @@ package studio.craftory.core.blocks;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.type.ReferenceType;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import javax.inject.Inject;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.renders.BlockStateRenderer;
@@ -28,19 +25,18 @@ import studio.craftory.core.data.keys.CraftoryBlockKey;
 import studio.craftory.core.utils.Log;
 
 public class BlockRenderManager {
-  @Inject
-  private CustomBlockRegistry customBlockRegistry;
+  private CustomBlockRegistry blockRegistry;
   private final ObjectMapper mapper;
 
   private Map<String, CraftoryRenderer> renderers = new HashMap<>();
   private Map<CraftoryBlockKey, RenderData> renderData = new HashMap<>();
 
 
-  public BlockRenderManager() {
+  public BlockRenderManager(CustomBlockRegistry blockRegistry) {
+    this.blockRegistry = blockRegistry;
     registerRenderer(Renderers.BLOCK_STATE_RENDER, new BlockStateRenderer());
     registerRenderer(Renderers.TRANSPARENT_BLOCK_STATE_RENDER, new BlockStateRenderer());
     mapper = new ObjectMapper();
-    loadRenderData();
   }
 
   public void registerRenderer(String key, CraftoryRenderer renderer) {
@@ -55,8 +51,8 @@ public class BlockRenderManager {
     data.getRenderer().render(block, direction, data);
   }
 
-  private void loadRenderData() {
-    File renderDataFile = new File(Craftory.getInstance().getDataFolder(), Craftory.getInstance().getName() + "renderData.json");
+  public void loadRenderData() {
+    File renderDataFile = new File(Craftory.getInstance().getDataFolder(), "renderData.json");
     if (renderDataFile.exists()) {
       try {
         JsonNode node = mapper.readTree(renderDataFile);
@@ -78,7 +74,7 @@ public class BlockRenderManager {
       while (fields.hasNext()) {
         field = fields.next();
 
-        Optional<CraftoryBlockKey> blockKeyOptional = customBlockRegistry.getBlockKey(field.getKey());
+        Optional<CraftoryBlockKey> blockKeyOptional = this.blockRegistry.getBlockKey(field.getKey());
         if (blockKeyOptional.isPresent()) {
           if (field.getValue().isArray() && field.getValue().size() > 1) {
             ArrayList<String> renderDetails = mapper.convertValue(field.getValue(), new TypeReference<ArrayList<String>>() {});

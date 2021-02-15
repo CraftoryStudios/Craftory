@@ -4,6 +4,7 @@ import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
 import java.io.File;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
@@ -18,6 +19,7 @@ import studio.craftory.core.items.ItemEventManager;
 import studio.craftory.core.listeners.ChunkListener;
 import studio.craftory.core.listeners.CustomBlockListener;
 import studio.craftory.core.listeners.WorldListener;
+import studio.craftory.core.utils.Log;
 
 public final class Craftory extends JavaPlugin {
 
@@ -39,6 +41,7 @@ public final class Craftory extends JavaPlugin {
   @Override
   public void onLoad() {
     instance = this;
+    Log.setLogger(this.getLogger());
 
     //Injector Setup
     injector = new InjectorBuilder().addDefaultHandlers("studio.craftory.core").create();
@@ -75,6 +78,7 @@ public final class Craftory extends JavaPlugin {
     syncExecutionManager.runTaskTimer(this, 20L,1L);
     getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
 
+    Bukkit.getScheduler().runTaskLater(Craftory.getInstance(), () -> customBlockManager.getBlockRenderManager().loadRenderData(), 30L);
   }
 
   @Override
