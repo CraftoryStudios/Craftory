@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
+import studio.craftory.core.api.CustomItemAPI;
 
 public class ItemEventManager implements Listener {
 
@@ -160,7 +161,7 @@ public class ItemEventManager implements Listener {
 
   private void addPotionEffects(ItemStack item, Player player) {
     if(item==null) return;
-    String itemName = CustomItemManager.getItemName(item);
+    String itemName = CustomItemAPI.getItemName(item);
     if(itemOnHoldEffects.containsKey(itemName)) {
       player.addPotionEffects(itemOnHoldEffects.get(itemName));
     }
@@ -168,7 +169,7 @@ public class ItemEventManager implements Listener {
 
   private void removePotionEffects(ItemStack item, Player player) {
     if(item==null) return;
-    String itemName = CustomItemManager.getItemName(item);
+    String itemName = CustomItemAPI.getItemName(item);
     if(itemOnHoldEffects.containsKey(itemName)) {
       for(PotionEffect effect: itemOnHoldEffects.get(itemName)) {
         player.removePotionEffect(effect.getType());

@@ -7,6 +7,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import studio.craftory.core.api.CustomItemAPI;
 
 public enum ItemSmartEvent {
 
@@ -37,14 +38,14 @@ public enum ItemSmartEvent {
     switch (this) {
       case PLAYERINTERACTEVENT:
         PlayerInteractEvent playerInteractEvent = (PlayerInteractEvent) event;
-        if(playerInteractEvent.getItem()!=null) return CustomItemManager.getItemName(playerInteractEvent.getItem());
+        if(playerInteractEvent.getItem()!=null) return CustomItemAPI.getItemName(playerInteractEvent.getItem());
         break;
       case PLAYERINTERACTENTITYEVENT:
         PlayerInteractEntityEvent playerInteractEntityEvent = (PlayerInteractEntityEvent) event;
-        return CustomItemManager.getItemName(playerInteractEntityEvent.getPlayer().getInventory().getItem(playerInteractEntityEvent.getHand()));
+        return CustomItemAPI.getItemName(playerInteractEntityEvent.getPlayer().getInventory().getItem(playerInteractEntityEvent.getHand()));
       case BLOCKBREAKEVENT:
         BlockBreakEvent blockBreakEvent = (BlockBreakEvent) event;
-        return CustomItemManager.getItemName(blockBreakEvent.getPlayer().getInventory().getItemInMainHand());
+        return CustomItemAPI.getItemName(blockBreakEvent.getPlayer().getInventory().getItemInMainHand());
     }
     return "";
   }

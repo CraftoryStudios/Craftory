@@ -15,6 +15,7 @@ import studio.craftory.core.blocks.CustomBlockRegistry;
 import studio.craftory.core.commands.SpawnItemCommand;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
+import studio.craftory.core.items.CustomItemManager;
 import studio.craftory.core.items.ItemEventManager;
 import studio.craftory.core.listeners.ChunkListener;
 import studio.craftory.core.listeners.CustomBlockListener;
@@ -31,6 +32,9 @@ public final class Craftory extends JavaPlugin {
   private AsyncExecutionManager asyncExecutionManager;
   private SyncExecutionManager syncExecutionManager;
   private CustomBlockManager customBlockManager;
+
+  @Getter
+  protected CustomItemManager customItemManager;
 
   //External API
   @Getter
@@ -58,6 +62,7 @@ public final class Craftory extends JavaPlugin {
 
     //API
     customBlockAPI = injector.getSingleton(CustomBlockAPI.class);
+    customItemManager = injector.getSingleton(CustomItemManager.class);
   }
 
   @Override
