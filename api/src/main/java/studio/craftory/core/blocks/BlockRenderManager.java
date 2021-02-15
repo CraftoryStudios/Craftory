@@ -12,8 +12,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import javax.inject.Inject;
-import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.renders.BlockStateRenderer;

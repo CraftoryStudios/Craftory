@@ -1,7 +1,6 @@
 package studio.craftory.core.blocks.renders;
 
 import org.bukkit.Instrument;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.block.Block;
@@ -17,7 +16,11 @@ public class BlockStateRenderer implements CraftoryRenderer{
   public void render(Block block, CraftoryDirection direction, RenderData renderData) {
     int directionKey = direction.label;
 
-    //TODO add check index exists
+    if (renderData.getData().size() != 6) {
+      Log.warn("Incomplete render data");
+      return;
+    }
+
     String data = renderData.getData().get(directionKey);
     if (data.isEmpty()) {
       //Block doesn't use directions so default to NORTH
