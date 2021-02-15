@@ -88,6 +88,8 @@ public class BlockRenderManager {
 
 
             renderData.put(blockKeyOptional.get(), data);
+          } else {
+            Log.warn("Block type "+ blockKeyOptional.get().toString() + " doesn't have correct render data");
           }
         } else {
           Log.warn("Render data has values for non existing block type");
