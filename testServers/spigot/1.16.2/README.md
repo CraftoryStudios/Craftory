@@ -1,1 +1,0 @@
-Place a spigot 1.16.2 JAR in this folder named "spigot-1.16.2.jar" for testing of this version.

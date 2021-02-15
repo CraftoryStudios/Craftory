@@ -1,1 +1,0 @@
-Place a spigot 1.15 JAR in this folder named "spigot-1.15.jar" for testing of this version.

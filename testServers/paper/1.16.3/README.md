@@ -1,1 +1,0 @@
-Place a paper 1.16.3 JAR in this folder named "paper-1.16.3.jar" for testing of this version.
