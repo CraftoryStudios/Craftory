@@ -4,15 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum CraftoryDirection {
-  NORTH((byte)0),
-  EAST((byte)1),
-  WEST((byte)2),
-  SOUTH((byte)3),
-  UP((byte)4),
-  DOWN((byte)5);
+  NORTH(0),
+  EAST(1),
+  WEST(2),
+  SOUTH(3),
+  UP(4),
+  DOWN(5);
 
-  public final byte label;
-  private static final Map<Byte, CraftoryDirection> BY_LABEL = new HashMap<>();
+  public final int label;
+  private static final Map<Integer, CraftoryDirection> BY_LABEL = new HashMap<>();
 
   static {
     for (CraftoryDirection e: values()) {
@@ -20,11 +20,11 @@ public enum CraftoryDirection {
     }
   }
 
-  private CraftoryDirection(byte label) {
+  private CraftoryDirection(int label) {
     this.label = label;
   }
 
-  public static CraftoryDirection valueOfLabel(byte label) {
+  public static CraftoryDirection valueOfLabel(int label) {
     return BY_LABEL.get(label);
   }
 

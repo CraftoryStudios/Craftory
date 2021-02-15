@@ -1,5 +1,6 @@
 package studio.craftory.core.blocks;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,13 +16,15 @@ public class DataStorageManager {
 
   private final CustomBlockManager customBlockManager;
   private final CustomBlockRegistry blockRegister;
+  private final ObjectMapper mapper;
 
-  private Map<World, WorldContainer> worldsStorage;
+  private Map<World, WorldDataStorage> worldsStorage;
 
   public DataStorageManager(CustomBlockManager customBlockManager, CustomBlockRegistry blockRegister) {
     this.customBlockManager = customBlockManager;
     this.blockRegister = blockRegister;
     this.worldsStorage = new ConcurrentHashMap<>();
+    this.mapper = new ObjectMapper();
   }
 
 
@@ -45,8 +48,8 @@ public class DataStorageManager {
   }
 
   public void saveAll() {
-    for (WorldContainer worldContainer : worldsStorage.values()) {
-      worldContainer.save();
+    for (WorldDataStorage worldDataStorage : worldsStorage.values()) {
+      worldDataStorage.save();
     }
   }
 
@@ -62,7 +65,7 @@ public class DataStorageManager {
 
   @Synchronized
   public void registerWorld(@NonNull World world) {
-    WorldContainer currentWorld = new WorldContainer(world, blockRegister);
+    WorldDataStorage currentWorld = new WorldDataStorage(world, blockRegister, mapper);
     worldsStorage.put(world, currentWorld);
     for (Chunk chunk : world.getLoadedChunks()) {
       loadSavedBlocks(chunk);
@@ -71,7 +74,7 @@ public class DataStorageManager {
 
   @Synchronized
   public void loadSavedBlocks(@NonNull Chunk chunk) {
-    WorldContainer storage = worldsStorage.get(chunk.getWorld());
+    WorldDataStorage storage = worldsStorage.get(chunk.getWorld());
     if (storage == null) {
       return;
     }
@@ -84,7 +87,7 @@ public class DataStorageManager {
     if (worldsStorage.containsKey(world)) {
       customBlockManager.getCustomChunksInWorld(world)
                         .forEach(chunk -> customBlockManager.unloadCustomChunk(chunk, true));
-      WorldContainer storage = worldsStorage.get(world);
+      WorldDataStorage storage = worldsStorage.get(world);
       storage.save();
       worldsStorage.remove(world);
     }

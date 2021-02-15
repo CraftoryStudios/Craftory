@@ -14,7 +14,6 @@ import lombok.NonNull;
 import lombok.Synchronized;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
@@ -28,6 +27,7 @@ public class CustomBlockManager {
   private CustomBlockRegistry blockRegister;
   private AsyncExecutionManager asyncExecutionManager;
   private SyncExecutionManager syncExecutionManager;
+  private BlockRenderManager blockRenderManager;
   @Getter
   private DataStorageManager dataStorageManager;
 
@@ -40,6 +40,7 @@ public class CustomBlockManager {
     this.syncExecutionManager = syncExecutionManager;
     this.asyncExecutionManager = asyncExecutionManager;
     this.dataStorageManager = new DataStorageManager(this, blockRegister);
+    this.blockRenderManager = new BlockRenderManager();
 
     this.customBlocks = new ConcurrentHashMap<>();
   }
@@ -190,8 +191,7 @@ public class CustomBlockManager {
     }
 
     if (loadCustomBlock(customBlock.get())) {
-      //TODO Render Custom Block
-      location.getBlock().setType(Material.GLASS);
+      blockRenderManager.renderCustomBlock(craftoryBlockKey, location.getBlock(), direction);
 
       return customBlock;
     }

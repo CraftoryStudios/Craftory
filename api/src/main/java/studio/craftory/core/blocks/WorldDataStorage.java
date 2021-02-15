@@ -25,7 +25,7 @@ import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.data.keys.CraftoryBlockKey;
 import studio.craftory.core.utils.Log;
 
-public class WorldContainer {
+public class WorldDataStorage {
 
   private static final String CUSTOMBLOCK_TYPE_KEY = "type";
   private static final String CUSTOMBLOCK_DIRECTION_KEY = "direction";
@@ -39,10 +39,10 @@ public class WorldContainer {
   private ObjectNode rootNode;
   private File file;
 
-  public WorldContainer(@NonNull final World world, CustomBlockRegistry blockRegister) {
+  public WorldDataStorage(@NonNull final World world, CustomBlockRegistry blockRegister, ObjectMapper mapper) {
     this.world = world;
     this.blockRegister = blockRegister;
-    this.mapper = new ObjectMapper();
+    this.mapper = mapper;
     file = new File(world.getWorldFolder(), "craftory");
     setupSaveFile();
   }
