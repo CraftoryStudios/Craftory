@@ -23,12 +23,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import studio.craftory.core.Craftory;
-import studio.craftory.core.data.keys.CraftoryKey;
+import studio.craftory.core.utils.Log;
 import studio.craftory.core.utils.StringUtils;
 
 public class CustomItemManager {
 
-  protected static final Map<String, ItemStack> customItemCache = new HashMap<>();
+  protected static final Map<String, CustomItem> customItemCache = new HashMap<>();
 
   public static final NamespacedKey ITEM_NAME_NAMESPACED_KEY = new NamespacedKey(Craftory.getInstance(), "CUSTOM_ITEM_NAME");
   public static final NamespacedKey CHARGE_NAMESPACED_KEY = new NamespacedKey(Craftory.getInstance(), "CHARGE");
@@ -37,12 +37,18 @@ public class CustomItemManager {
   private CustomItemManager() {}
 
   /* Registering */
-  public static void registerCustomItem(CraftoryKey itemKey, ItemStack baseStateItem) {
-    String itemName = itemKey.toString();
-    ItemMeta itemMeta = baseStateItem.getItemMeta();
-    itemMeta.getPersistentDataContainer().set(ITEM_NAME_NAMESPACED_KEY, PersistentDataType.STRING, itemName);
-    baseStateItem.setItemMeta(itemMeta);
-    customItemCache.put(itemName, baseStateItem);
+  public static void registerCustomItem(CustomItem item) {
+    item.createItem();
+
+    String itemName = item.getUniqueName();
+    customItemCache.put(itemName, item);
+    Log.info("Registered custom item '" + itemName + "'");
+    if (item.hasHoldEffects()) {
+      ItemEventManager.registerItemOnHoldEffects(itemName, item.getHoldEffects());
+    }
+    if (item.hasHandlers()) {
+      item.getHandlers().forEach(ItemEventManager::registerDumbEvent);
+    }
   }
 
   /* Utility Methods */
@@ -67,14 +73,14 @@ public class CustomItemManager {
 
   public static ItemStack getCustomItem(String name) {
     if (customItemCache.containsKey(name)) {
-      return customItemCache.get(name).clone();
+      return customItemCache.get(name).getItem();
     }
     return new ItemStack(Material.AIR);
   }
 
   public static ItemStack getCustomItemOrDefault(String name) {
     if (customItemCache.containsKey(name)) {
-      return customItemCache.get(name).clone();
+      return customItemCache.get(name).getItem();
     }
     Optional<Material> material = Optional.ofNullable(Material.getMaterial(name));
     return material.map(ItemStack::new).orElseGet(() -> new ItemStack(Material.AIR));

@@ -1,17 +1,14 @@
 package studio.craftory.craftoryexample;
 
-import java.util.Arrays;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.CraftoryAddon;
-import studio.craftory.core.data.keys.CraftoryKey;
-import studio.craftory.core.items.CustomItemManager;
-import studio.craftory.core.items.ItemEventManager;
+import studio.craftory.core.api.CustomItemAPI;
+import studio.craftory.core.items.CustomItem;
 import studio.craftory.craftoryexample.blocks.SimpleGenerator;
 import studio.craftory.craftoryexample.commands.SpawnGeneratorCommand;
 import studio.craftory.craftoryexample.items.Wrench;
@@ -20,39 +17,12 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
 
   @Override
   public void onLoad() {
-
-    /* Custom Item */
-    /*CraftoryKey itemKey = new CraftoryKey(this,"wrench");
-    ItemStack wrench = new ItemStack(Material.STICK);
-    ItemMeta itemMeta = wrench.getItemMeta();
-    itemMeta.setDisplayName("A WRENCH");
-    wrench.setItemMeta(itemMeta);
-    CustomItemManager.registerCustomItem(itemKey, wrench);
-
-    ItemEventManager.registerDumbEvent("PlayerInteractEvent", Wrench::onClick);
-
     /* Custom Blocks */
 
-//    CraftoryKey itemKey = new CraftoryKey("example","wrench");
-//    ItemStack wrench = new ItemStack(Material.STICK);
-//    ItemMeta itemMeta = wrench.getItemMeta();
-//    //ItemEventManager.registerDumbEvent(PlayerInteractEvent.class, Wrench::onClick);
-//    ItemEventManager.registerSmartEvent(PlayerInteractEvent.class, "example:wrench", Wrench::onClick);
-//
-//    CraftoryKey toolKey = new CraftoryKey("example", "drill");
-//    ItemStack drill = new ItemStack(Material.GOLDEN_PICKAXE);
-//    CustomItemManager.setDisplayName(drill, "DRILL");
-//    CustomItemManager.setUnbreakable(drill, true);
-//    CustomItemManager.registerCustomItem(toolKey, drill);
-//
-//    ItemEventManager.registerItemOnHoldEffects("example:drill", Arrays.asList(
-//        PotionEffectType.FAST_DIGGING.createEffect(Integer.MAX_VALUE,2),
-//        PotionEffectType.SLOW.createEffect(Integer.MAX_VALUE,1)
-//        ));
-//    wrench.setItemMeta(itemMeta);
-//    CustomItemManager.registerCustomItem(itemKey, wrench);
-//
-//    itemMeta.setDisplayName("A WRENCH");
+    /* Custom Item */
+    CustomItem wrench = CustomItem.builder().plugin("example").name("wrench").unbreakable(true).attackDamage(1).handler(PlayerInteractEvent.class,
+        Wrench::onClick).displayName("Wrench").material(Material.STICK).displayNameColour(ChatColor.AQUA).holdEffect(PotionEffectType.SPEED.createEffect(Integer.MAX_VALUE,1)).build();
+    CustomItemAPI.registerCustomItem(wrench);
   }
 
   @Override
