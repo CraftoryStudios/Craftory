@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Paper 1.16.5" type="JarApplication">
+  <configuration default="false" name="Paper 1.16.4" type="JarApplication">
     <option name="JAR_PATH" value="$PROJECT_DIR$/testServers/paper/1.16.4/paper-1.16.4.jar" />
     <option name="VM_PARAMETERS" value="-DIReallyKnowWhatIAmDoingISwear" />
     <option name="PROGRAM_PARAMETERS" value="nogui" />
