@@ -37,7 +37,7 @@ public class CustomItemManager {
   }
 
   /* Registering */
-  public void registerCustomItem(CustomItem item) {
+  public void registerCustomItem(@NonNull CustomItem item) {
     String itemName = item.getUniqueName();
     if(!customItemRenderIdCache.containsKey(itemName)) {
       throw new IllegalArgumentException("Custom item not present in the render data, all items must have an ID for render texture!");
