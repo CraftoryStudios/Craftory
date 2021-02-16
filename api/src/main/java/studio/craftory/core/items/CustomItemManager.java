@@ -60,7 +60,7 @@ public class CustomItemManager {
     return new ItemStack(Material.AIR);
   }
 
-  public ItemStack getCustomItemOrDefault(String name) {
+  public ItemStack getCustomItemOrDefault(@NonNull String name) {
     if (customItemCache.containsKey(name)) {
       return customItemCache.get(name).getItem();
     }
