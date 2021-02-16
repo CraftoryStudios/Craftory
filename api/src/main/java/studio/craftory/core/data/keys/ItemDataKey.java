@@ -12,9 +12,9 @@ import org.bukkit.plugin.Plugin;
 public class ItemDataKey {
 
   NamespacedKey namespacedKey;
-  PersistentDataType dataType;
+  PersistentDataType<Object,Object> dataType;
 
-  public ItemDataKey(@NonNull Plugin plugin, @NonNull String name, @NonNull PersistentDataType dataType) {
+  public ItemDataKey(@NonNull Plugin plugin, @NonNull String name, @NonNull PersistentDataType<Object,Object> dataType) {
     this.dataType = dataType;
     this.namespacedKey = new NamespacedKey(plugin, name);
   }

@@ -20,7 +20,7 @@ public class SpawnItemCommand implements CommandExecutor {
       if (args.length > 1) {
         try {
           amount = Integer.parseInt(args[1]);
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored) {/* Ignore */}
       }
       item.setAmount(amount);
       player.getInventory().addItem(item);

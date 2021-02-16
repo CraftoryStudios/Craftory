@@ -39,8 +39,11 @@ public class CustomItemManager {
   /* Registering */
   public void registerCustomItem(CustomItem item) {
     String itemName = item.getUniqueName();
+    if(!customItemRenderIdCache.containsKey(itemName)) {
+      throw new IllegalArgumentException("Custom item not present in the render data, all items must have an ID for render texture!");
+    }
     customItemCache.put(itemName, item);
-    item.createItem(1); // Change to actual ID
+    item.createItem(customItemRenderIdCache.get(itemName));
     Log.info("Registered custom item '" + itemName + "'");
     if (item.hasHoldEffects()) {
       ItemEventManager.registerItemOnHoldEffects(itemName, item.getHoldEffects());
