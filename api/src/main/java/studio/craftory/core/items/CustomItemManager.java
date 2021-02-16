@@ -16,7 +16,7 @@ import studio.craftory.core.utils.Log;
 public class CustomItemManager {
 
   protected static final Map<String, CustomItem> customItemCache = new HashMap<>();
-  protected static Map<String, Integer> customItemRenderIdCache = new HashMap<>();
+  private Map<String, Integer> customItemRenderIdCache = new HashMap<>();
 
   public static final NamespacedKey ITEM_NAME_NAMESPACED_KEY = new NamespacedKey(Craftory.getInstance(), "CUSTOM_ITEM_NAME");
 
