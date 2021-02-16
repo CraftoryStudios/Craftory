@@ -3,13 +3,10 @@ package studio.craftory.core.api;
 import static studio.craftory.core.items.CustomItemManager.ITEM_NAME_NAMESPACED_KEY;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -35,16 +32,6 @@ public class CustomItemAPI {
   public static final NamespacedKey CHARGE_NAMESPACED_KEY = new NamespacedKey(Craftory.getInstance(), "CHARGE");
   public static final NamespacedKey MAX_CHARGE_NAMESPACED_KEY = new NamespacedKey(Craftory.getInstance(), "MAX_CHARGE");
 
-  /* This should probably go in some other class */
-  private static final Map<Class, PersistentDataType> persistentDataTypes =
-      ImmutableMap.<Class, PersistentDataType>builder().put(String.class, PersistentDataType.STRING).put(Integer.class,
-      PersistentDataType.INTEGER).put(Byte.class,
-          PersistentDataType.BYTE).put(Double.class, PersistentDataType.DOUBLE).put(Long.class, PersistentDataType.LONG).put(Short.class,
-          PersistentDataType.SHORT).put(PersistentDataContainer.class, PersistentDataType.TAG_CONTAINER).build();
-  public static Optional<PersistentDataType> getPersistentDataType(Class clazz) {
-    return Optional.of(persistentDataTypes.get(clazz));
-  }
-
   /* Utility Methods */
   public static boolean isCustomItem(@NonNull ItemStack itemStack) {
     if (itemStack.getType() == Material.AIR || !itemStack.hasItemMeta()) {
@@ -54,7 +41,7 @@ public class CustomItemAPI {
   }
 
   public static boolean matchCustomItemName(@NonNull ItemStack itemStack, @NonNull String name) {
-    return name.equalsIgnoreCase(getItemName(itemStack));
+    return name.equals(getItemName(itemStack));
   }
 
   public static boolean isCustomItemName(@NonNull String name) {

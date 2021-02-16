@@ -4,7 +4,6 @@ import static studio.craftory.core.items.CustomItemManager.ITEM_NAME_NAMESPACED_
 
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -13,7 +12,6 @@ import lombok.Getter;
 import lombok.Singular;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.attribute.AttributeModifier.Operation;
@@ -27,7 +25,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import studio.craftory.core.Craftory;
-import studio.craftory.core.api.CustomItemAPI;
+import studio.craftory.core.data.keys.ItemDataKey;
 
 @Builder(toBuilder = true)
 public class CustomItem {
@@ -39,6 +37,7 @@ public class CustomItem {
   private ItemStack itemStack;
   private final Integer attackSpeed;
   private final Integer attackDamage;
+  private int renderID;
   @Builder.Default
   private final boolean unbreakable = true;
 
@@ -51,7 +50,7 @@ public class CustomItem {
   @Getter
   @Singular private final Map<Class<?>, Consumer<Event>> handlers;
 
-  @Singular private final Map<NamespacedKey, Object> attributes;
+  @Singular private final Map<ItemDataKey, Object> attributes;
 
   public boolean hasHoldEffects() {
     return !holdEffects.isEmpty();
@@ -69,19 +68,26 @@ public class CustomItem {
     return itemStack.clone();
   }
 
-  private void createItem() {
+  public void createItem(int renderID) {
     if (plugin==null || name==null || material==null || displayName==null) {
       throw new IllegalArgumentException("Attempted to register Custom item that was missing either: plugin, name, material or display-name");
     }
+    this.renderID = renderID;
 
+    // Create ItemStack and containers
     ItemStack item = new ItemStack(material);
     ItemMeta meta = item.getItemMeta();
     PersistentDataContainer persistentDataContainer = meta.getPersistentDataContainer();
+
+    // Set required fields
     persistentDataContainer.set(ITEM_NAME_NAMESPACED_KEY, PersistentDataType.STRING, getUniqueName());
+
     meta.setDisplayName(displayNameColour + displayName);
     meta.setUnbreakable(unbreakable);
     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+    meta.setCustomModelData(renderID);
 
+    // Set optional fields
     if (attackSpeed != null) {
       AttributeModifier modifier = new AttributeModifier(UUID.randomUUID(), "generic.attackSpeed",
           attackSpeed, Operation.ADD_NUMBER, EquipmentSlot.HAND);
@@ -94,18 +100,15 @@ public class CustomItem {
       meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, modifier);
     }
 
-    attributes.forEach((key, value) -> {
-      Optional<PersistentDataType> type = CustomItemAPI.getPersistentDataType(value.getClass());
-      type.ifPresent(persistentDataType -> persistentDataContainer.set(key, persistentDataType, value));
-    });
+    attributes.forEach((key, value) -> persistentDataContainer.set(key.getNamespacedKey(), key.getDataType(), value));
 
+    // Finalise item
     item.setItemMeta(meta);
     itemStack = item;
   }
 
   public void register(JavaPlugin plugin) {
     this.plugin = plugin.getName().toLowerCase(Locale.ROOT);
-    createItem();
     Craftory.getInstance().getCustomItemManager().registerCustomItem(this);
   }
 }

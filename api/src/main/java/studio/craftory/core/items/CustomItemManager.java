@@ -1,26 +1,46 @@
 package studio.craftory.core.items;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import lombok.NoArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.utils.Log;
 
-@NoArgsConstructor
 public class CustomItemManager {
 
   protected static final Map<String, CustomItem> customItemCache = new HashMap<>();
+  protected static Map<String, Integer> customItemRenderIdCache = new HashMap<>();
 
   public static final NamespacedKey ITEM_NAME_NAMESPACED_KEY = new NamespacedKey(Craftory.getInstance(), "CUSTOM_ITEM_NAME");
+
+  protected CustomItemManager() {
+    File renderIdFile = new File(Craftory.getInstance().getDataFolder(), "ItemRenderData.json");
+    ObjectMapper mapper = new ObjectMapper();
+    if(renderIdFile.exists()) {
+      try {
+        customItemRenderIdCache = mapper.readValue(renderIdFile, new TypeReference<Map<String, Integer>>() {});
+        Log.info("Loaded item render data");
+        customItemRenderIdCache.forEach((x,y) -> Log.info(x + " : " + y));
+      } catch (IOException e) {
+        Log.error("Couldn't read item render data");
+      }
+    } else {
+      Log.warn("No item render data found");
+    }
+  }
 
   /* Registering */
   public void registerCustomItem(CustomItem item) {
     String itemName = item.getUniqueName();
     customItemCache.put(itemName, item);
+    item.createItem(1); // Change to actual ID
     Log.info("Registered custom item '" + itemName + "'");
     if (item.hasHoldEffects()) {
       ItemEventManager.registerItemOnHoldEffects(itemName, item.getHoldEffects());
