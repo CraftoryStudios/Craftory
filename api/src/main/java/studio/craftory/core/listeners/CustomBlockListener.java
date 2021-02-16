@@ -9,9 +9,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import studio.craftory.core.Craftory;
+import studio.craftory.core.api.CustomItemAPI;
 import studio.craftory.core.blocks.CustomBlockManager;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
@@ -26,8 +28,9 @@ public class CustomBlockListener implements Listener {
   public void onCustomBlockPlace(BlockPlaceEvent blockPlaceEvent) {
     //Check is Custom Block Being Placed
     if (!blockPlaceEvent.getItemInHand().hasItemMeta()) return;
-
-    PersistentDataContainer dataHolder = blockPlaceEvent.getItemInHand().getItemMeta().getPersistentDataContainer();
+    ItemStack itemStack = blockPlaceEvent.getItemInHand();
+    CustomItemAPI.validateItemStackMeta(itemStack);
+    PersistentDataContainer dataHolder = itemStack.getItemMeta().getPersistentDataContainer();
     if (!dataHolder.has(blockItemKey, PersistentDataType.STRING)) return;
 
     //Get Custom Block Data

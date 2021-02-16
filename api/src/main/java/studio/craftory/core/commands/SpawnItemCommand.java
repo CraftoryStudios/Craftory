@@ -1,6 +1,6 @@
 package studio.craftory.core.commands;
 
-import org.bukkit.Material;
+import java.util.Optional;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,16 +15,18 @@ public class SpawnItemCommand implements CommandExecutor {
     if (sender instanceof Player && args.length > 0) {
       Player player = (Player)sender;
       String itemName = args[0];
-      ItemStack item = CustomItemAPI.getCustomItemOrDefault(itemName);
-      int amount = 1;
-      if (args.length > 1) {
-        try {
-          amount = Integer.parseInt(args[1]);
-        } catch (NumberFormatException ignored) {/* Ignore */}
+      Optional<ItemStack> itemStack = CustomItemAPI.getCustomItemOrDefault(itemName);
+      if(itemStack.isPresent()) {
+        ItemStack item = itemStack.get();
+        int amount = 1;
+        if (args.length > 1) {
+          try {
+            amount = Integer.parseInt(args[1]);
+          } catch (NumberFormatException ignored) {/* Ignore */}
+        }
+        item.setAmount(amount);
+        player.getInventory().addItem(item);
       }
-      item.setAmount(amount);
-      player.getInventory().addItem(item);
-      return item.getType() != Material.AIR;
     }
     return false;
   }

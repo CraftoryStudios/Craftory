@@ -54,19 +54,19 @@ public class CustomItemManager {
     }
   }
 
-  public ItemStack getCustomItem(@NonNull String name) {
+  public Optional<ItemStack> getCustomItem(@NonNull String name) {
     if (customItemCache.containsKey(name)) {
-      return customItemCache.get(name).getItem();
+      return Optional.of(customItemCache.get(name).getItem());
     }
-    return new ItemStack(Material.AIR);
+    return Optional.empty();
   }
 
-  public ItemStack getCustomItemOrDefault(@NonNull String name) {
+  public Optional<ItemStack> getCustomItemOrDefault(@NonNull String name) {
     if (customItemCache.containsKey(name)) {
-      return customItemCache.get(name).getItem();
+      return Optional.of(customItemCache.get(name).getItem());
     }
     Optional<Material> material = Optional.ofNullable(Material.getMaterial(name));
-    return material.map(ItemStack::new).orElseGet(() -> new ItemStack(Material.AIR));
+    return material.map(ItemStack::new);
   }
 
   public boolean isCustomItemName(@NonNull String name) {
