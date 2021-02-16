@@ -53,7 +53,7 @@ public class CustomItemManager {
     }
   }
 
-  public ItemStack getCustomItem(String name) {
+  public ItemStack getCustomItem(@NonNull String name) {
     if (customItemCache.containsKey(name)) {
       return customItemCache.get(name).getItem();
     }
