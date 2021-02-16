@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import lombok.NonNull;
 import org.bukkit.block.Block;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.renders.BlockStateRenderer;
@@ -27,14 +28,20 @@ public class BlockRenderManager {
   private final ObjectMapper mapper;
 
   private Map<String, CraftoryRenderer> renderers = new HashMap<>();
-  private Map<CraftoryBlockKey, RenderData> renderData = new HashMap<>();
+  private Map<String, RenderData> renderData = new HashMap<>();
 
 
   public BlockRenderManager(CustomBlockRegistry blockRegistry) {
     this.blockRegistry = blockRegistry;
+    mapper = new ObjectMapper();
+
+    registerRenders();
+    loadRenderData();
+  }
+
+  private void registerRenders() {
     registerRenderer(Renderers.BLOCK_STATE_RENDER, new BlockStateRenderer());
     registerRenderer(Renderers.TRANSPARENT_BLOCK_STATE_RENDER, new BlockStateRenderer());
-    mapper = new ObjectMapper();
   }
 
   public void registerRenderer(String key, CraftoryRenderer renderer) {
@@ -45,7 +52,7 @@ public class BlockRenderManager {
   }
 
   public void renderCustomBlock(CraftoryBlockKey blockKey, Block block, CraftoryDirection direction) {
-    RenderData data = renderData.get(blockKey);
+    RenderData data = renderData.get(blockKey.toString());
     data.getRenderer().render(block, direction, data);
   }
 
@@ -63,7 +70,7 @@ public class BlockRenderManager {
     }
   }
 
-  private void parseRenderData(JsonNode node) {
+  private void parseRenderData(@NonNull JsonNode node) {
     if (node.isObject()) {
       ObjectNode objectNode = (ObjectNode) node;
 
@@ -72,25 +79,21 @@ public class BlockRenderManager {
       while (fields.hasNext()) {
         field = fields.next();
 
-        Optional<CraftoryBlockKey> blockKeyOptional = this.blockRegistry.getBlockKey(field.getKey());
-        if (blockKeyOptional.isPresent()) {
-          if (field.getValue().isArray() && field.getValue().size() > 1) {
-            ArrayList<String> renderDetails = mapper.convertValue(field.getValue(), new TypeReference<ArrayList<String>>() {});
-            CraftoryRenderer renderer = renderers.get(renderDetails.get(0));
-            renderDetails.remove(0);
-            RenderData data = new RenderData(renderer, renderDetails);
-
-
-            renderData.put(blockKeyOptional.get(), data);
-          } else {
-            Log.warn("Block type "+ blockKeyOptional.get().toString() + " doesn't have correct render data");
-          }
+        if (field.getValue().isArray() && field.getValue().size() > 1) {
+          renderData.put(field.getKey(), extractRenderData(field.getValue()));
         } else {
-          Log.warn("Render data has values for non existing block type");
+          Log.warn("Block type "+ field.getKey() + " doesn't have correct render data");
         }
       }
     } else {
       Log.warn("Error in render data structure: is not type object");
     }
+  }
+
+  private RenderData extractRenderData(@NonNull JsonNode node) {
+    ArrayList<String> renderDetails = mapper.convertValue(node, new TypeReference<ArrayList<String>>() {});
+    CraftoryRenderer renderer = renderers.get(renderDetails.get(0));
+    renderDetails.remove(0);
+    return new RenderData(renderer, renderDetails);
   }
 }

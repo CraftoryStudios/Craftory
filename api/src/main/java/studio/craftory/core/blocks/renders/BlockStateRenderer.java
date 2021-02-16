@@ -1,5 +1,6 @@
 package studio.craftory.core.blocks.renders;
 
+import lombok.NonNull;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
 import org.bukkit.Note;
@@ -13,9 +14,10 @@ import studio.craftory.core.utils.Log;
 public class BlockStateRenderer implements CraftoryRenderer{
 
   @Override
-  public void render(Block block, CraftoryDirection direction, RenderData renderData) {
+  public void render(@NonNull Block block, @NonNull CraftoryDirection direction, @NonNull RenderData renderData) {
     int directionKey = direction.label;
 
+    //Must have render data for every CraftoryDirection
     if (renderData.getData().size() != 6) {
       Log.warn("Incomplete render data");
       return;
@@ -52,17 +54,17 @@ public class BlockStateRenderer implements CraftoryRenderer{
     }
   }
 
-  private void renderChorusPlant(String stateData, Block block) {
+  private void renderChorusPlant(@NonNull String stateData, Block block) {
     block.setType(Material.CHORUS_PLANT, false);
     block.setBlockData(getMutlifacingData(stateData, block), false);
   }
 
-  private void renderRedMushroom(String stateData, Block block) {
+  private void renderRedMushroom(@NonNull String stateData, Block block) {
     block.setType(Material.RED_MUSHROOM_BLOCK, false);
     block.setBlockData(getMutlifacingData(stateData, block), false);
   }
 
-  private void renderNoteBlock(String stateData, Block block) {
+  private void renderNoteBlock(@NonNull String stateData, Block block) {
     String instrument = stateData.substring(0,1);
     int note = Integer.parseInt(stateData.substring(1,3));
     String powered = stateData.substring(3,4);
@@ -76,7 +78,17 @@ public class BlockStateRenderer implements CraftoryRenderer{
     block.setBlockData(blockData, false);
   }
 
-  private Instrument getInstrument(String instrument) {
+  private void renderBrownMushroom(@NonNull String stateData, Block block) {
+    block.setType(Material.BROWN_MUSHROOM_BLOCK, false);
+    block.setBlockData(getMutlifacingData(stateData, block), false);
+  }
+
+  private void renderStem(@NonNull String stateData, Block block) {
+    block.setType(Material.MUSHROOM_STEM, false);
+    block.setBlockData(getMutlifacingData(stateData, block), false);
+  }
+
+  private Instrument getInstrument(@NonNull String instrument) {
     switch (instrument) {
       case "a":
         return Instrument.BANJO;
@@ -113,17 +125,7 @@ public class BlockStateRenderer implements CraftoryRenderer{
     }
   }
 
-  private void renderBrownMushroom(String stateData, Block block) {
-    block.setType(Material.BROWN_MUSHROOM_BLOCK, false);
-    block.setBlockData(getMutlifacingData(stateData, block), false);
-  }
-
-  private void renderStem(String stateData, Block block) {
-    block.setType(Material.MUSHROOM_STEM, false);
-    block.setBlockData(getMutlifacingData(stateData, block), false);
-  }
-
-  private static MultipleFacing getMutlifacingData(String stateData, Block block) {
+  private static MultipleFacing getMutlifacingData(@NonNull String stateData, Block block) {
     MultipleFacing blockData = (MultipleFacing) block.getBlockData();
 
     String[] states = stateData.split("");

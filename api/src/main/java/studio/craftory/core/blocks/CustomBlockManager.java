@@ -27,7 +27,6 @@ public class CustomBlockManager {
   private CustomBlockRegistry blockRegister;
   private AsyncExecutionManager asyncExecutionManager;
   private SyncExecutionManager syncExecutionManager;
-  @Getter
   private BlockRenderManager blockRenderManager;
   @Getter
   private DataStorageManager dataStorageManager;

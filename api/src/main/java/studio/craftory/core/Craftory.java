@@ -77,8 +77,6 @@ public final class Craftory extends JavaPlugin {
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
     syncExecutionManager.runTaskTimer(this, 20L,1L);
     getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
-
-    Bukkit.getScheduler().runTaskLater(Craftory.getInstance(), () -> customBlockManager.getBlockRenderManager().loadRenderData(), 30L);
   }
 
   @Override
