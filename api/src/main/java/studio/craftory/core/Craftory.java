@@ -5,6 +5,7 @@ import ch.jalu.injector.InjectorBuilder;
 import java.io.File;
 import lombok.Getter;
 import org.bukkit.Server;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -83,7 +84,10 @@ public final class Craftory extends JavaPlugin {
     getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
 
     //Commands
-    this.getCommand("spawnItem").setExecutor(new SpawnItemCommand());
+    PluginCommand spawnCommand = this.getCommand("spawnItem");
+    if(spawnCommand!=null) {
+      spawnCommand.setExecutor(new SpawnItemCommand());
+    }
 
   }
 
