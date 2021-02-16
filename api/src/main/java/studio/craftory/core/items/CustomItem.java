@@ -25,7 +25,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import studio.craftory.core.Craftory;
-import studio.craftory.core.api.CustomItemAPI;
 import studio.craftory.core.data.keys.ItemDataKey;
 
 @Builder(toBuilder = true)
@@ -77,7 +76,7 @@ public class CustomItem {
 
     // Create ItemStack and containers
     ItemStack item = new ItemStack(material);
-    CustomItemAPI.validateItemStackMeta(item);
+    CustomItemUtils.validateItemStackMeta(item);
     ItemMeta meta = item.getItemMeta();
     PersistentDataContainer persistentDataContainer = meta.getPersistentDataContainer();
 

@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import studio.craftory.core.api.CustomItemAPI;
+import studio.craftory.core.items.CustomItemUtils;
 
 public class SpawnItemCommand implements CommandExecutor {
 
@@ -15,7 +15,7 @@ public class SpawnItemCommand implements CommandExecutor {
     if (sender instanceof Player && args.length > 0) {
       Player player = (Player)sender;
       String itemName = args[0];
-      Optional<ItemStack> itemStack = CustomItemAPI.getCustomItemOrDefault(itemName);
+      Optional<ItemStack> itemStack = CustomItemUtils.getCustomItemOrDefault(itemName);
       if(itemStack.isPresent()) {
         ItemStack item = itemStack.get();
         int amount = 1;

@@ -3,7 +3,7 @@ package studio.craftory.craftoryexample.items;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import studio.craftory.core.api.CustomItemAPI;
+import studio.craftory.core.items.CustomItemUtils;
 
 public class Wrench {
 
@@ -12,8 +12,8 @@ public class Wrench {
   public static void onClick(Event e) {
     PlayerInteractEvent event = (PlayerInteractEvent) e;
     if(event.getHand()!= EquipmentSlot.HAND || event.getItem()==null) return;
-    if(CustomItemAPI.isCustomItem(event.getItem()) && CustomItemAPI.matchCustomItemName(event.getItem(), "craftoryexample:wrench")){
-      event.getPlayer().sendMessage("Hello : " + CustomItemAPI.getItemName(event.getItem()));
+    if(CustomItemUtils.isCustomItem(event.getItem()) && CustomItemUtils.matchCustomItemName(event.getItem(), "craftoryexample:wrench")){
+      event.getPlayer().sendMessage("Hello : " + CustomItemUtils.getItemName(event.getItem()));
     }
 
 
