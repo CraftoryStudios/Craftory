@@ -165,7 +165,7 @@ public class WorldDataStorage {
                 ((ComplexCustomBlock) customBlock.get()).getPersistentData().set(craftoryDataKey,
                     mapper.treeToValue(finalData.getValue(), craftoryDataKey.getDataClass()));
               } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                Log.error("Couldn't process custom block data");
               }
             });
 
