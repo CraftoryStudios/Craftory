@@ -4,7 +4,6 @@ import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
 import java.io.File;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;

@@ -40,7 +40,7 @@ public class CustomBlockManager {
     this.syncExecutionManager = syncExecutionManager;
     this.asyncExecutionManager = asyncExecutionManager;
     this.dataStorageManager = new DataStorageManager(this, blockRegister);
-    this.blockRenderManager = new BlockRenderManager(blockRegister);
+    this.blockRenderManager = new BlockRenderManager();
 
     this.customBlocks = new ConcurrentHashMap<>();
   }

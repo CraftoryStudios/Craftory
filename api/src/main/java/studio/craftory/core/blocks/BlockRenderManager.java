@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import lombok.NonNull;
 import org.bukkit.block.Block;
 import studio.craftory.core.Craftory;
@@ -24,15 +23,12 @@ import studio.craftory.core.data.keys.CraftoryBlockKey;
 import studio.craftory.core.utils.Log;
 
 public class BlockRenderManager {
-  private CustomBlockRegistry blockRegistry;
   private final ObjectMapper mapper;
 
   private Map<String, CraftoryRenderer> renderers = new HashMap<>();
   private Map<String, RenderData> renderData = new HashMap<>();
 
-
-  public BlockRenderManager(CustomBlockRegistry blockRegistry) {
-    this.blockRegistry = blockRegistry;
+  public BlockRenderManager() {
     mapper = new ObjectMapper();
 
     registerRenders();
