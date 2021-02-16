@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import lombok.NonNull;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -159,16 +160,14 @@ public class ItemEventManager implements Listener {
     }
   }
 
-  private void addPotionEffects(ItemStack item, Player player) {
-    if(item==null) return;
+  private void addPotionEffects(@NonNull ItemStack item, @NonNull Player player) {
     String itemName = CustomItemAPI.getItemName(item);
     if(itemOnHoldEffects.containsKey(itemName)) {
       player.addPotionEffects(itemOnHoldEffects.get(itemName));
     }
   }
 
-  private void removePotionEffects(ItemStack item, Player player) {
-    if(item==null) return;
+  private void removePotionEffects(@NonNull ItemStack item, @NonNull Player player) {
     String itemName = CustomItemAPI.getItemName(item);
     if(itemOnHoldEffects.containsKey(itemName)) {
       for(PotionEffect effect: itemOnHoldEffects.get(itemName)) {

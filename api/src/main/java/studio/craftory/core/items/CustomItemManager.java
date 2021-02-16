@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import lombok.NonNull;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -68,7 +69,7 @@ public class CustomItemManager {
     return material.map(ItemStack::new).orElseGet(() -> new ItemStack(Material.AIR));
   }
 
-  public boolean isCustomItemName(String name) {
+  public boolean isCustomItemName(@NonNull String name) {
     return customItemCache.containsKey(name);
   }
 

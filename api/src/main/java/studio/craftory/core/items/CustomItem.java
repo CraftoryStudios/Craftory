@@ -109,6 +109,6 @@ public class CustomItem {
 
   public void register(JavaPlugin plugin) {
     this.plugin = plugin.getName().toLowerCase(Locale.ROOT);
-    Craftory.getInstance().getCustomItemManager().registerCustomItem(this);
+    Craftory.getCustomItemManager().registerCustomItem(this);
   }
 }

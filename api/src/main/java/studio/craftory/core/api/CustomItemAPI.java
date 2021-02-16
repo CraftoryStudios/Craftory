@@ -45,7 +45,7 @@ public class CustomItemAPI {
   }
 
   public static boolean isCustomItemName(@NonNull String name) {
-    return Craftory.getInstance().getCustomItemManager().isCustomItemName(name);
+    return Craftory.getCustomItemManager().isCustomItemName(name);
   }
 
   public static String buildItemName(JavaPlugin plugin, String itemName) {
@@ -65,11 +65,11 @@ public class CustomItemAPI {
   }
 
   public static ItemStack getCustomItem(@NonNull String name) {
-    return Craftory.getInstance().getCustomItemManager().getCustomItem(name);
+    return Craftory.getCustomItemManager().getCustomItem(name);
   }
 
   public static ItemStack getCustomItemOrDefault(@NonNull String name) {
-    return Craftory.getInstance().getCustomItemManager().getCustomItemOrDefault(name);
+    return Craftory.getCustomItemManager().getCustomItemOrDefault(name);
   }
 
   /* Item Properties */
