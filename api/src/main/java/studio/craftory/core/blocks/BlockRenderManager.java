@@ -26,16 +26,16 @@ public class BlockRenderManager {
   private final ObjectMapper mapper;
 
   private Map<String, CraftoryRenderer> renderers = new HashMap<>();
-  private Map<String, RenderData> renderData = new HashMap<>();
+  private Map<String, RenderData> blockToRenderDataMap = new HashMap<>();
 
   public BlockRenderManager() {
     mapper = new ObjectMapper();
 
-    registerRenders();
+    registerDefaultRenders();
     loadRenderData();
   }
 
-  private void registerRenders() {
+  private void registerDefaultRenders() {
     registerRenderer(Renderers.BLOCK_STATE_RENDER, new BlockStateRenderer());
     registerRenderer(Renderers.TRANSPARENT_BLOCK_STATE_RENDER, new BlockStateRenderer());
   }
@@ -48,7 +48,7 @@ public class BlockRenderManager {
   }
 
   public void renderCustomBlock(CraftoryBlockKey blockKey, Block block, CraftoryDirection direction) {
-    RenderData data = renderData.get(blockKey.toString());
+    RenderData data = blockToRenderDataMap.get(blockKey.toString());
     data.getRenderer().render(block, direction, data);
   }
 
@@ -76,7 +76,7 @@ public class BlockRenderManager {
         field = fields.next();
 
         if (field.getValue().isArray() && field.getValue().size() > 1) {
-          renderData.put(field.getKey(), extractRenderData(field.getValue()));
+          blockToRenderDataMap.put(field.getKey(), extractRenderData(field.getValue()));
         } else {
           Log.warn("Block type "+ field.getKey() + " doesn't have correct render data");
         }

@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.block.data.type.NoteBlock;
 import studio.craftory.core.data.CraftoryDirection;
@@ -55,13 +56,19 @@ public class BlockStateRenderer implements CraftoryRenderer{
   }
 
   private void renderChorusPlant(@NonNull String stateData, Block block) {
-    block.setType(Material.CHORUS_PLANT, false);
-    block.setBlockData(getMutlifacingData(stateData, block), false);
+    setTypeAndData(block, Material.CHORUS_PLANT, getMutlifacingData(stateData, block));
   }
 
   private void renderRedMushroom(@NonNull String stateData, Block block) {
-    block.setType(Material.RED_MUSHROOM_BLOCK, false);
-    block.setBlockData(getMutlifacingData(stateData, block), false);
+    setTypeAndData(block, Material.RED_MUSHROOM_BLOCK, getMutlifacingData(stateData, block));
+  }
+
+  private void renderBrownMushroom(@NonNull String stateData, Block block) {
+    setTypeAndData(block, Material.BROWN_MUSHROOM_BLOCK, getMutlifacingData(stateData, block));
+  }
+
+  private void renderStem(@NonNull String stateData, Block block) {
+    setTypeAndData(block, Material.MUSHROOM_STEM, getMutlifacingData(stateData, block));
   }
 
   private void renderNoteBlock(@NonNull String stateData, Block block) {
@@ -69,23 +76,21 @@ public class BlockStateRenderer implements CraftoryRenderer{
     int note = Integer.parseInt(stateData.substring(1,3));
     String powered = stateData.substring(3,4);
 
-    block.setType(Material.NOTE_BLOCK, false);
+    setTypeAndData(block, Material.NOTE_BLOCK, getNoteBlockData(block, instrument, note, powered));
+  }
+
+  private void setTypeAndData(@NonNull Block block, @NonNull Material material, @NonNull BlockData blockData) {
+    block.setType(material, false);
+    block.setBlockData(blockData, false);
+  }
+
+  private BlockData getNoteBlockData(Block block, String instrument, int note, String powered) {
     NoteBlock blockData = (NoteBlock) block.getBlockData();
 
     blockData.setInstrument(getInstrument(instrument));
     blockData.setNote(new Note(note));
     blockData.setPowered(powered.equals("T"));
-    block.setBlockData(blockData, false);
-  }
-
-  private void renderBrownMushroom(@NonNull String stateData, Block block) {
-    block.setType(Material.BROWN_MUSHROOM_BLOCK, false);
-    block.setBlockData(getMutlifacingData(stateData, block), false);
-  }
-
-  private void renderStem(@NonNull String stateData, Block block) {
-    block.setType(Material.MUSHROOM_STEM, false);
-    block.setBlockData(getMutlifacingData(stateData, block), false);
+    return blockData;
   }
 
   private Instrument getInstrument(@NonNull String instrument) {
