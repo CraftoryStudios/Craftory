@@ -5,62 +5,46 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class StringUtils {
+
   private static final String UNIT_ENERGY = "Re";
   private static final String UNIT_FLUID = "B";
-  private static final DecimalFormat df = new DecimalFormat("###.###");
+  private static final DecimalFormat DF = new DecimalFormat("###.###");
+  private static final String[] PREFIXES = {" m", " ", " K", " M", " G", " T", " P", " E"};
 
-  public static String rawEnergyToPrefixed(int energy) {
-    String s = Integer.toString(energy);
+  public static String rawEnergyToPrefixed(long energy) {
+    return rawToPrefixed(energy, UNIT_ENERGY, 1);
+  }
+
+  public static String rawFluidToPrefixed(long amount) {
+    return rawToPrefixed(amount, UNIT_FLUID, 0);
+  }
+
+  private static String rawToPrefixed(long amount, String unit, int startingPrefix) {
+    String s = Long.toString(amount);
     int length = s.length();
 
     if (length < 6) {
-      return s + " " + UNIT_ENERGY;
+      return s + PREFIXES[startingPrefix] + unit;
     }
     if (length < 7) {
-      return df.format(energy / 1000f) + " K" + UNIT_ENERGY;
+      return DF.format(amount / 1000f) + PREFIXES[startingPrefix+1] + unit;
     }
     if (length < 10) {
-      return df.format(energy / 1000000f) + " M" + UNIT_ENERGY;
+      return DF.format(amount / 1000000f) + PREFIXES[startingPrefix+2] + unit;
     }
     if (length < 13) {
-      return df.format(energy / 1000000000f) + " G" + UNIT_ENERGY;
+      return DF.format(amount / 1000000000f) + PREFIXES[startingPrefix+3] + unit;
     }
     if (length < 16) {
-      return df.format(energy / 1000000000000f) + " T" + UNIT_ENERGY;
+      return DF.format(amount / 1000000000000f) + PREFIXES[startingPrefix+4] + unit;
     }
     if (length < 19) {
-      return df.format(energy / 1000000000000000f) + " P" + UNIT_ENERGY;
+      return DF.format(amount / 1000000000000000f) + PREFIXES[startingPrefix+5] + unit;
     }
-    if (length < 22) {
-      return df.format(energy / 1000000000000000000f) + " E" + UNIT_ENERGY;
+    if (amount < Long.MAX_VALUE) {
+      return DF.format(amount / 1000000000000000000f) + PREFIXES[startingPrefix+6] + unit;
     }
     return "A bukkit load";
   }
 
-  public static String rawFluidToPrefixed(int amount) {
-    String s = Integer.toString(amount);
-    int length = s.length();
-    if (length < 6) {
-      return s + " m" + UNIT_FLUID;
-    }
-    if (length < 7) {
-      return s + " " + UNIT_FLUID;
-    }
-    if (length < 10) {
-      return df.format(amount / 1000000f) + " K" + UNIT_FLUID;
-    }
-    if (length < 13) {
-      return df.format(amount / 1000000000f) + " M" + UNIT_FLUID;
-    }
-    if (length < 16) {
-      return df.format(amount / 1000000f) + " G" + UNIT_FLUID;
-    }
-    if (length < 19) {
-      return df.format(amount / 1000000f) + " T" + UNIT_FLUID;
-    }
-    if (length < 22) {
-      return df.format(amount / 1000000f) + " P" + UNIT_FLUID;
-    }
-    return "A bukkit load";
-  }
 }
