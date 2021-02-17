@@ -44,7 +44,7 @@ public class StringUtils {
       return s + " m" + UNIT_FLUID;
     }
     if (length < 7) {
-      return s + " " + UNIT_FLUID;
+      return df.format(amount / 1000f) + " " + UNIT_FLUID;
     }
     if (length < 10) {
       return df.format(amount / 1000000f) + " K" + UNIT_FLUID;
@@ -53,13 +53,13 @@ public class StringUtils {
       return df.format(amount / 1000000000f) + " M" + UNIT_FLUID;
     }
     if (length < 16) {
-      return df.format(amount / 1000000f) + " G" + UNIT_FLUID;
+      return df.format(amount / 1000000000000f) + " G" + UNIT_FLUID;
     }
     if (length < 19) {
-      return df.format(amount / 1000000f) + " T" + UNIT_FLUID;
+      return df.format(amount / 1000000000000000f) + " T" + UNIT_FLUID;
     }
-    if (length < 22) {
-      return df.format(amount / 1000000f) + " P" + UNIT_FLUID;
+    if (amount < Long.MAX_VALUE) {
+      return df.format(amount / 1000000000000000000f) + " P" + UNIT_FLUID;
     }
     return "A bukkit load";
   }
