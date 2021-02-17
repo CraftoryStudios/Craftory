@@ -49,6 +49,7 @@ public final class Craftory extends JavaPlugin {
   public void onLoad() {
     instance = this;
     Log.setLogger(this.getLogger());
+
     //Injector Setup
     injector = new InjectorBuilder().addDefaultHandlers("studio.craftory.core").create();
     injector.register(Craftory.class, instance);

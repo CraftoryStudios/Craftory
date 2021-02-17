@@ -14,11 +14,10 @@ import lombok.NonNull;
 import lombok.Synchronized;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
-import studio.craftory.core.data.keys.CustomBlockKey;
+import studio.craftory.core.data.keys.CraftoryBlockKey;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
 import studio.craftory.core.utils.Log;
@@ -28,6 +27,7 @@ public class CustomBlockManager {
   private CustomBlockRegistry blockRegister;
   private AsyncExecutionManager asyncExecutionManager;
   private SyncExecutionManager syncExecutionManager;
+  private BlockRenderManager blockRenderManager;
   @Getter
   private DataStorageManager dataStorageManager;
 
@@ -40,6 +40,7 @@ public class CustomBlockManager {
     this.syncExecutionManager = syncExecutionManager;
     this.asyncExecutionManager = asyncExecutionManager;
     this.dataStorageManager = new DataStorageManager(this, blockRegister);
+    this.blockRenderManager = new BlockRenderManager();
 
     this.customBlocks = new ConcurrentHashMap<>();
   }
@@ -175,23 +176,23 @@ public class CustomBlockManager {
    * Place a custom block at a given location and then load into memory
    * and also into the executor
    *
-   * @param customBlockKey key representing the type of custom block to place
+   * @param craftoryBlockKey key representing the type of custom block to place
    * @param location in the world to place the block
    * @param direction the block is facing
    * @return instance of the newly created Custom Block or Optional.empty if failed
    */
-  public Optional<BaseCustomBlock> placeCustomBlock(@NonNull CustomBlockKey customBlockKey, @NonNull Location location,
+  public Optional<BaseCustomBlock> placeCustomBlock(@NonNull CraftoryBlockKey craftoryBlockKey, @NonNull Location location,
   @NonNull CraftoryDirection direction) {
-    Optional<BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(customBlockKey, location, direction);
+    Optional<BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(craftoryBlockKey, location, direction);
 
     if (!customBlock.isPresent()) {
-      Log.warn("Unable to place CustomBlock: " +customBlockKey.getName() + " at location: " + location);
+      Log.warn("Unable to place CustomBlock: " + craftoryBlockKey.getName() + " at location: " + location);
       return Optional.empty();
     }
 
     if (loadCustomBlock(customBlock.get())) {
-      //TODO Render Custom Block
-      location.getBlock().setType(Material.GLASS);
+      blockRenderManager.renderCustomBlock(craftoryBlockKey, location.getBlock(), direction);
+
       return customBlock;
     }
 

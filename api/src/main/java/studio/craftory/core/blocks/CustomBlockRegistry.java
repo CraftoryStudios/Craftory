@@ -14,7 +14,7 @@ import org.bukkit.plugin.Plugin;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.keys.CraftoryDataKey;
-import studio.craftory.core.data.keys.CustomBlockKey;
+import studio.craftory.core.data.keys.CraftoryBlockKey;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
 import studio.craftory.core.utils.Log;
@@ -28,37 +28,39 @@ public class CustomBlockRegistry {
   @Inject
   private SyncExecutionManager syncExecutionManager;
 
-  private final Map<CustomBlockKey, Constructor<? extends BaseCustomBlock>> blockTypes = new HashMap<>();
-  private final Map<Class<? extends BaseCustomBlock>, CustomBlockKey> blockKeys = new HashMap<>();
+  private final Map<CraftoryBlockKey, Constructor<? extends BaseCustomBlock>> blockTypes = new HashMap<>();
+  private final Map<Class<? extends BaseCustomBlock>, CraftoryBlockKey> blockKeys = new HashMap<>();
+
   private final Map<String, CraftoryDataKey> craftoryDataKeyMap = new HashMap<>();
+  private final Map<String, CraftoryBlockKey> craftoryBlockKeyMap = new HashMap<>();
 
   @Synchronized
-  public void registerCustomBlock(@NonNull Plugin plugin, @NonNull Class<?> block) {
-    CustomBlockKey customBlockKey = new CustomBlockKey(plugin, block);
-    if (!blockTypes.containsKey(customBlockKey)) {
+  public void registerCustomBlockClass(@NonNull Plugin plugin, @NonNull Class<?> block) {
+    CraftoryBlockKey craftoryBlockKey = new CraftoryBlockKey(plugin, block);
+    if (!blockTypes.containsKey(craftoryBlockKey)) {
 
         Optional<Constructor<?>> constructor = getConstructor(block);
         if (constructor.isPresent()) {
 
-          addCustomBlockKeys((Class<? extends BaseCustomBlock>) block, (Constructor<? extends BaseCustomBlock>) constructor.get(),customBlockKey);
+          addCustomBlockKeys((Class<? extends BaseCustomBlock>) block, (Constructor<? extends BaseCustomBlock>) constructor.get(), craftoryBlockKey);
 
           registerCustomBlockTickables((Class<? extends BaseCustomBlock>) block);
           Log.debug("CustomBlock Register: " + block.getName());
         } else {
-          Log.warn("Couldn't get constructor for custom block: " + customBlockKey.getName());
+          Log.warn("Couldn't get constructor for custom block: " + craftoryBlockKey.getName());
         }
 
     } else {
-      Log.warn("Trying to re-register known key of Custom Block: " + customBlockKey.getName());
+      Log.warn("Trying to re-register known key of Custom Block: " + craftoryBlockKey.getName());
     }
   }
 
   @Synchronized
-  public boolean isBlockRegistered(@NonNull BaseCustomBlock block) {
+  public boolean isBlockClassRegistered(@NonNull BaseCustomBlock block) {
     return blockKeys.containsKey(block.getClass());
   }
 
-  public Optional<BaseCustomBlock> getNewCustomBlockInstance(@NonNull CustomBlockKey key,  @NonNull Location location,
+  public Optional<BaseCustomBlock> getNewCustomBlockInstance(@NonNull CraftoryBlockKey key,  @NonNull Location location,
       @NonNull CraftoryDirection direction) {
     Optional<Constructor<? extends BaseCustomBlock>> constructor = Optional.ofNullable(blockTypes.get(key));
     Location blockLocation = location.getBlock().getLocation();
@@ -75,9 +77,17 @@ public class CustomBlockRegistry {
   }
 
   @Synchronized
-  public Optional<CustomBlockKey> getKey(@NonNull BaseCustomBlock block) {
-    return getKey(block.getClass());
+  public Optional<CraftoryBlockKey> getBlockKey(@NonNull BaseCustomBlock block) {
+    return getBlockKey(block.getClass());
   }
+
+  @Synchronized
+  public Optional<CraftoryBlockKey> getBlockKey(@NonNull Class<? extends BaseCustomBlock> block) {
+    return Optional.ofNullable(blockKeys.get(block));
+  }
+
+  @Synchronized
+  public Optional<CraftoryBlockKey> getBlockKey(@NonNull String key) {return Optional.ofNullable(craftoryBlockKeyMap.get(key));}
 
   private Optional<Constructor<?>> getConstructor(@NonNull Class<?> clazz) {
     try {
@@ -85,11 +95,6 @@ public class CustomBlockRegistry {
     } catch(NoSuchMethodException e) {
       return Optional.empty();
     }
-  }
-
-  @Synchronized
-  public Optional<CustomBlockKey> getKey(@NonNull Class<? extends BaseCustomBlock> block) {
-    return Optional.ofNullable(blockKeys.get(block));
   }
 
   public void registerDataKey(String key, CraftoryDataKey dataKey) {
@@ -100,9 +105,10 @@ public class CustomBlockRegistry {
     return Optional.of(craftoryDataKeyMap.get(key));
   }
 
-  private void addCustomBlockKeys(Class<? extends BaseCustomBlock> clazz, Constructor<? extends BaseCustomBlock> constructor, CustomBlockKey key) {
+  private void addCustomBlockKeys(Class<? extends BaseCustomBlock> clazz, Constructor<? extends BaseCustomBlock> constructor, CraftoryBlockKey key) {
     blockTypes.put(key, constructor);
     blockKeys.put(clazz, key);
+    craftoryBlockKeyMap.put(key.toString(), key);
   }
 
   private void registerCustomBlockTickables(Class<? extends BaseCustomBlock> block) {
