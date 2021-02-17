@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import studio.craftory.core.items.CustomItemUtils;
+import studio.craftory.core.utils.ParseUtils;
 
 public class SpawnItemCommand implements CommandExecutor {
 
@@ -30,12 +31,7 @@ public class SpawnItemCommand implements CommandExecutor {
 
       if(itemStack.isPresent()) {
         ItemStack item = itemStack.get();
-        int amount = 1;
-        if (args.length > 1) {
-          try {
-            amount = Integer.parseInt(args[1]);
-          } catch (NumberFormatException ignored) {/* Ignore */}
-        }
+        int amount = ParseUtils.parseOrDefault(args[1],1);
         item.setAmount(amount);
         player.getInventory().addItem(item);
         return true;
