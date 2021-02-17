@@ -7,33 +7,32 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import lombok.NonNull;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 
 public class ItemEventManager implements Listener {
 
-  private static final Map<String, Set<Consumer<Event>>> dumbEvents = new HashMap<>();
+  private static final Map<String, Set<Consumer<Event>>> basicEvents = new HashMap<>();
   private static final Map<ItemSmartEvent, Map<String, Consumer<Event>>> smartEvents = new EnumMap<>(ItemSmartEvent.class);
   private static final Map<String, Collection<PotionEffect>> itemOnHoldEffects = new HashMap<>();
 
   public static void registerDumbEvent(Class<?> event, Consumer<Event> method) {
-    Set<Consumer<Event>> temp = dumbEvents.getOrDefault(event.getSimpleName(),new HashSet<>());
+    Set<Consumer<Event>> temp = basicEvents.getOrDefault(event.getSimpleName(),new HashSet<>());
     temp.add(method);
-    dumbEvents.put(event.getSimpleName(), temp);
+    basicEvents.put(event.getSimpleName(), temp);
   }
 
   public static boolean registerSmartEvent(Class<?> event, String triggerItemName, Consumer<Event> method) {
@@ -53,21 +52,21 @@ public class ItemEventManager implements Listener {
 
 
   @EventHandler
-  public void onRightClickTest(PlayerInteractEvent event) {
-    if(event.getHand().equals(EquipmentSlot.HAND) && event.getAction()== Action.RIGHT_CLICK_BLOCK && event.getItem()==null) {
-      event.getPlayer().getInventory().setItemInMainHand(CustomItemManager.getCustomItem("example:drill"));
-    }
-    handleDumbEvents(event);
+  public void onPlayerInteractEvent(PlayerInteractEvent event) {
+    handleEvents(event);
+    handleSmartEvent(event);
   }
 
+
+
   /**
-   * Dumb handler leaves validation to the method
+   * Basic event handler leaves validation to the method
    * @param event The event
    */
-  private void handleDumbEvents(Event event) {
+  private void handleEvents(Event event) {
     String name = event.getEventName();
-    if (dumbEvents.containsKey(name)) {
-      for (Consumer<Event> method: dumbEvents.get(name)) {
+    if (basicEvents.containsKey(name)) {
+      for (Consumer<Event> method: basicEvents.get(name)) {
         method.accept(event);
       }
     }
@@ -160,17 +159,17 @@ public class ItemEventManager implements Listener {
     }
   }
 
-  private void addPotionEffects(ItemStack item, Player player) {
-    if(item==null) return;
-    String itemName = CustomItemManager.getItemName(item);
+  private void addPotionEffects(ItemStack item, @NonNull Player player) {
+    if(item==null) return; // Not using NonNull
+    String itemName = CustomItemUtils.getItemName(item);
     if(itemOnHoldEffects.containsKey(itemName)) {
       player.addPotionEffects(itemOnHoldEffects.get(itemName));
     }
   }
 
-  private void removePotionEffects(ItemStack item, Player player) {
-    if(item==null) return;
-    String itemName = CustomItemManager.getItemName(item);
+  private void removePotionEffects(ItemStack item, @NonNull Player player) {
+    if(item==null) return; // Not using NonNull
+    String itemName = CustomItemUtils.getItemName(item);
     if(itemOnHoldEffects.containsKey(itemName)) {
       for(PotionEffect effect: itemOnHoldEffects.get(itemName)) {
         player.removePotionEffect(effect.getType());

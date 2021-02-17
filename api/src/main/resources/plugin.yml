@@ -7,3 +7,13 @@ load: STARTUP
 authors: [ BrettSaunders, MattyJones ]
 description: Plugin Extended Framework
 website: craftory.studio
+commands:
+  spawnItem:
+    description: Spawns a custom or normal Item
+    usage: /<spawnItem> <name> <amount>
+    permission: craftory.items.spawnItem
+
+permissions:
+  craftory.item.spawnItem:
+    description: Allows you to spawn items
+    default: op
