@@ -1,13 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
 #Test Servers
-*.txt
-*.json
-*.yml
-*.properties
-*.gz
-*.log
-*.dat
-*.dat_old
-*.lock
-*.mca
-*.mcmeta
+*
+!*.bat

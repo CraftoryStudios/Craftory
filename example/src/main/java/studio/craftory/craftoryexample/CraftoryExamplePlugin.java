@@ -1,5 +1,7 @@
 package studio.craftory.craftoryexample;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -26,9 +28,12 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
 
     /* Custom Item */
     ItemDataKey magicalPower = new ItemDataKey(new NamespacedKey(this, "magical-power"), PersistentDataType.INTEGER);
-    CustomItem wrench = CustomItem.builder().name("wrench").unbreakable(true).attackDamage(1).handler(PlayerInteractEvent.class,
-        Wrench::onClick).displayName("Wrench").material(Material.STICK).displayNameColour(ChatColor.AQUA)
-                                  .holdEffect(PotionEffectType.SPEED.createEffect(Integer.MAX_VALUE,1)).attribute(magicalPower, 100).build();
+    CustomItem wrench = CustomItem.builder()
+                                  .name("wrench").unbreakable(true)
+                                  .attackDamage(1).handler(PlayerInteractEvent.class, Wrench::onClick)
+                                  .displayName("Wrench").material(Material.STICK)
+                                  .displayNameColour(ChatColor.AQUA).holdEffect(PotionEffectType.SPEED.createEffect(Integer.MAX_VALUE,1))
+                                  .attribute(magicalPower, 100).build();
     wrench.register(this);
     ItemStack res = wrench.getItem();
     res.setAmount(6);
@@ -50,7 +55,19 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
   @Override
   public void onEnable() {
     Craftory.getInstance().getCustomBlockAPI().registerCustomBlock(this, SimpleGenerator.class);
+  }
+
+  public void onCraftoryEnable() {
     this.getCommand("simplegen").setExecutor(new SpawnGeneratorCommand());
   }
 
+  @Override
+  public URL getAddonResources() {
+    try {
+      return new URL("https://www.dropbox.com/s/l6q9uevu2cjpcju/CraftoryCore.zip?raw=1");
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
 }
