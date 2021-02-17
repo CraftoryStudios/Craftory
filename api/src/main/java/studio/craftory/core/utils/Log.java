@@ -25,7 +25,7 @@ public final class Log {
 
   public static void info(@NonNull String... logMessages) {
     for (String logMessage : logMessages) {
-      logger.info(PREFIX + INFO_COLOR + logMessage);
+      logger.info(INFO_COLOR + logMessage);
     }
   }
 

@@ -81,10 +81,14 @@ public final class Craftory extends JavaPlugin {
     pluginManager.registerEvents(injector.getSingleton(ChunkListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ItemEventManager.class), instance);
 
+
     //Executor
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
     syncExecutionManager.runTaskTimer(this, 20L,1L);
     getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
+
+    CraftorySetup setup = new CraftorySetup();
+    setup.runTaskLater(this, 1);
 
     //Commands
     PluginCommand spawnCommand = this.getCommand("spawnItem");
