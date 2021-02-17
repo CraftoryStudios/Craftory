@@ -9,8 +9,8 @@ public class StringUtils {
   private static final String UNIT_FLUID = "B";
   private static final DecimalFormat df = new DecimalFormat("###.###");
 
-  public static String rawEnergyToPrefixed(int energy) {
-    String s = Integer.toString(energy);
+  public static String rawEnergyToPrefixed(long energy) {
+    String s = Long.toString(energy);
     int length = s.length();
 
     if (length < 6) {
@@ -31,14 +31,14 @@ public class StringUtils {
     if (length < 19) {
       return df.format(energy / 1000000000000000f) + " P" + UNIT_ENERGY;
     }
-    if (length < 22) {
+    if (energy < Long.MAX_VALUE) {
       return df.format(energy / 1000000000000000000f) + " E" + UNIT_ENERGY;
     }
     return "A bukkit load";
   }
 
-  public static String rawFluidToPrefixed(int amount) {
-    String s = Integer.toString(amount);
+  public static String rawFluidToPrefixed(long amount) {
+    String s = Long.toString(amount);
     int length = s.length();
     if (length < 6) {
       return s + " m" + UNIT_FLUID;
