@@ -159,14 +159,16 @@ public class ItemEventManager implements Listener {
     }
   }
 
-  private void addPotionEffects(@NonNull ItemStack item, @NonNull Player player) {
+  private void addPotionEffects(ItemStack item, @NonNull Player player) {
+    if(item==null) return; // Not using NonNull
     String itemName = CustomItemUtils.getItemName(item);
     if(itemOnHoldEffects.containsKey(itemName)) {
       player.addPotionEffects(itemOnHoldEffects.get(itemName));
     }
   }
 
-  private void removePotionEffects(@NonNull ItemStack item, @NonNull Player player) {
+  private void removePotionEffects(ItemStack item, @NonNull Player player) {
+    if(item==null) return; // Not using NonNull
     String itemName = CustomItemUtils.getItemName(item);
     if(itemOnHoldEffects.containsKey(itemName)) {
       for(PotionEffect effect: itemOnHoldEffects.get(itemName)) {

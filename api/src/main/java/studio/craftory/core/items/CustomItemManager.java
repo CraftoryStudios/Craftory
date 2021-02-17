@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import lombok.NonNull;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -17,6 +19,8 @@ import studio.craftory.core.utils.Log;
 public class CustomItemManager {
 
   protected static final Map<String, CustomItem> customItemCache = new HashMap<>();
+  private static final Map<String, CustomItem> unqiueItemCache = new HashMap<>();
+  private static final Set<String> duplicateItemNames = new HashSet<>();
   private Map<String, Integer> customItemRenderIdCache = new HashMap<>();
 
   public static final NamespacedKey ITEM_NAME_NAMESPACED_KEY = new NamespacedKey(Craftory.getInstance(), "CUSTOM_ITEM_NAME");
@@ -52,6 +56,29 @@ public class CustomItemManager {
     if (item.hasHandlers()) {
       item.getHandlers().forEach(ItemEventManager::registerDumbEvent);
     }
+
+    String commonName = item.getName();
+    if(!unqiueItemCache.containsKey(commonName) && !duplicateItemNames.contains(commonName)) {
+      unqiueItemCache.put(commonName, item);
+    } else {
+      unqiueItemCache.remove(commonName);
+      duplicateItemNames.add(commonName);
+    }
+  }
+
+  public static boolean isDuplicateItemName(@NonNull String name) {
+    return duplicateItemNames.contains(name);
+  }
+
+  public static boolean isUniqueItemName(@NonNull String name) {
+    return unqiueItemCache.containsKey(name);
+  }
+
+  public static Optional<ItemStack> getUniqueItem(@NonNull String name) {
+    if (unqiueItemCache.containsKey(name)) {
+      return Optional.of(unqiueItemCache.get(name).getItem());
+    }
+    return Optional.empty();
   }
 
   public Optional<ItemStack> getCustomItem(@NonNull String name) {

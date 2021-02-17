@@ -15,7 +15,19 @@ public class SpawnItemCommand implements CommandExecutor {
     if (sender instanceof Player && args.length > 0) {
       Player player = (Player)sender;
       String itemName = args[0];
-      Optional<ItemStack> itemStack = CustomItemUtils.getCustomItemOrDefault(itemName);
+      Optional<ItemStack> itemStack;
+
+      if (itemName.contains(":")) {
+        itemStack = CustomItemUtils.getCustomItem(itemName);
+      } else {
+        if (CustomItemUtils.isDuplicateItemName(itemName)) {
+          player.sendMessage("This item has multiple versions please specify namespace in form plugin:item");
+          return true;
+        } else {
+          itemStack = CustomItemUtils.getUniqueItem(itemName);
+        }
+      }
+
       if(itemStack.isPresent()) {
         ItemStack item = itemStack.get();
         int amount = 1;
@@ -26,6 +38,7 @@ public class SpawnItemCommand implements CommandExecutor {
         }
         item.setAmount(amount);
         player.getInventory().addItem(item);
+        return true;
       }
     }
     return false;

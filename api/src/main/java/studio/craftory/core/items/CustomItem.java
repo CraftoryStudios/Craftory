@@ -31,6 +31,7 @@ import studio.craftory.core.data.keys.ItemDataKey;
 public class CustomItem {
 
   private String plugin;
+  @Getter
   private final String name;
   private final String displayName;
   private final Material material;

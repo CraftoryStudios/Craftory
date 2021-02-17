@@ -29,6 +29,18 @@ public class CustomItemAPI {
     return CustomItemUtils.isCustomItemName(name);
   }
 
+  public static boolean isDuplicateItemName(@NonNull String name) {
+    return CustomItemUtils.isDuplicateItemName(name);
+  }
+
+  public static boolean isUniqueItemName(@NonNull String name) {
+    return CustomItemUtils.isUniqueItemName(name);
+  }
+
+  public static Optional<ItemStack> getUniqueItem(@NonNull String name) {
+    return CustomItemUtils.getUniqueItem(name);
+  }
+
   public static String buildItemName(@NonNull JavaPlugin plugin, @NonNull String itemName) {
     return CustomItemUtils.buildItemName(plugin, itemName);
   }

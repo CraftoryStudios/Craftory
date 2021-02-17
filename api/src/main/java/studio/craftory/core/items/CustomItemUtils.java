@@ -72,6 +72,18 @@ public class CustomItemUtils {
     return Craftory.getCustomItemManager().getCustomItemOrDefault(name);
   }
 
+  public static boolean isDuplicateItemName(@NonNull String name) {
+    return CustomItemManager.isDuplicateItemName(name);
+  }
+
+  public static boolean isUniqueItemName(@NonNull String name) {
+    return CustomItemManager.isUniqueItemName(name);
+  }
+
+  public static Optional<ItemStack> getUniqueItem(@NonNull String name) {
+    return CustomItemManager.getUniqueItem(name);
+  }
+
   /* Item Properties */
   public static void setAttackSpeed(@NonNull ItemStack itemStack, int attackSpeed) {
     validateItemStackMeta(itemStack);
