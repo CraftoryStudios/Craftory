@@ -37,14 +37,14 @@ public enum ItemSmartEvent {
     switch (this) {
       case PLAYERINTERACTEVENT:
         PlayerInteractEvent playerInteractEvent = (PlayerInteractEvent) event;
-        if(playerInteractEvent.getItem()!=null) return CustomItemManager.getItemName(playerInteractEvent.getItem());
+        if(playerInteractEvent.getItem()!=null) return CustomItemUtils.getItemName(playerInteractEvent.getItem());
         break;
       case PLAYERINTERACTENTITYEVENT:
         PlayerInteractEntityEvent playerInteractEntityEvent = (PlayerInteractEntityEvent) event;
-        return CustomItemManager.getItemName(playerInteractEntityEvent.getPlayer().getInventory().getItem(playerInteractEntityEvent.getHand()));
+        return CustomItemUtils.getItemName(playerInteractEntityEvent.getPlayer().getInventory().getItem(playerInteractEntityEvent.getHand()));
       case BLOCKBREAKEVENT:
         BlockBreakEvent blockBreakEvent = (BlockBreakEvent) event;
-        return CustomItemManager.getItemName(blockBreakEvent.getPlayer().getInventory().getItemInMainHand());
+        return CustomItemUtils.getItemName(blockBreakEvent.getPlayer().getInventory().getItemInMainHand());
     }
     return "";
   }

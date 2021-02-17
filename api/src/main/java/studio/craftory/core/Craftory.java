@@ -5,6 +5,7 @@ import ch.jalu.injector.InjectorBuilder;
 import java.io.File;
 import lombok.Getter;
 import org.bukkit.Server;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -12,12 +13,15 @@ import org.bukkit.plugin.java.JavaPluginLoader;
 import studio.craftory.core.api.CustomBlockAPI;
 import studio.craftory.core.blocks.CustomBlockManager;
 import studio.craftory.core.blocks.CustomBlockRegistry;
+import studio.craftory.core.commands.SpawnItemCommand;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
+import studio.craftory.core.items.CustomItemManager;
 import studio.craftory.core.items.ItemEventManager;
 import studio.craftory.core.listeners.ChunkListener;
 import studio.craftory.core.listeners.CustomBlockListener;
 import studio.craftory.core.listeners.WorldListener;
+import studio.craftory.core.utils.Log;
 
 public final class Craftory extends JavaPlugin {
 
@@ -30,16 +34,21 @@ public final class Craftory extends JavaPlugin {
   private SyncExecutionManager syncExecutionManager;
   private CustomBlockManager customBlockManager;
 
+  private CustomItemManager customItemManager;
+
   //External API
   @Getter
   CustomBlockAPI customBlockAPI;
 
 
+  public static CustomItemManager getCustomItemManager() {
+    return instance.customItemManager;
+  }
 
   @Override
   public void onLoad() {
     instance = this;
-
+    Log.setLogger(this.getLogger());
     //Injector Setup
     injector = new InjectorBuilder().addDefaultHandlers("studio.craftory.core").create();
     injector.register(Craftory.class, instance);
@@ -56,6 +65,7 @@ public final class Craftory extends JavaPlugin {
 
     //API
     customBlockAPI = injector.getSingleton(CustomBlockAPI.class);
+    customItemManager = injector.getSingleton(CustomItemManager.class);
   }
 
   @Override
@@ -74,6 +84,12 @@ public final class Craftory extends JavaPlugin {
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
     syncExecutionManager.runTaskTimer(this, 20L,1L);
     getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
+
+    //Commands
+    PluginCommand spawnCommand = this.getCommand("spawnItem");
+    if(spawnCommand!=null) {
+      spawnCommand.setExecutor(new SpawnItemCommand());
+    }
 
   }
 
