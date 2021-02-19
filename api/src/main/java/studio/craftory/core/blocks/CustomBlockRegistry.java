@@ -47,7 +47,6 @@ public class CustomBlockRegistry {
         if (constructor.isPresent()) {
 
           addCustomBlockKeys((Class<? extends BaseCustomBlock>) block, (Constructor<? extends BaseCustomBlock>) constructor.get(), craftoryBlockKey);
-          craftoryBlockKey.getName();
           registerCustomBlockTickables((Class<? extends BaseCustomBlock>) block);
 
           CustomItem.builder().name(craftoryBlockKey.getName()).displayName(
@@ -110,7 +109,7 @@ public class CustomBlockRegistry {
   }
 
   public Optional<CraftoryDataKey> getDataKey(@NonNull String key) {
-    return Optional.of(craftoryDataKeyMap.get(key));
+    return Optional.ofNullable(craftoryDataKeyMap.get(key));
   }
 
   private void addCustomBlockKeys(Class<? extends BaseCustomBlock> clazz, Constructor<? extends BaseCustomBlock> constructor, CraftoryBlockKey key) {
