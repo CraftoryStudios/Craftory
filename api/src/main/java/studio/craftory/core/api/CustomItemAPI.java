@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import studio.craftory.core.Craftory;
 import studio.craftory.core.items.CustomItemUtils;
 
 @UtilityClass
