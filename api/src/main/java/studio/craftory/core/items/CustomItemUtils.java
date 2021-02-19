@@ -1,8 +1,8 @@
 package studio.craftory.core.items;
 
-import static studio.craftory.core.api.CustomItemAPI.CHARGE_NAMESPACED_KEY;
-import static studio.craftory.core.api.CustomItemAPI.MAX_CHARGE_NAMESPACED_KEY;
-import static studio.craftory.core.items.CustomItemManager.ITEM_NAME_NAMESPACED_KEY;
+import static studio.craftory.core.utils.Constants.Keys.CHARGE_NAMESPACED_KEY;
+import static studio.craftory.core.utils.Constants.Keys.ITEM_NAME_NAMESPACED_KEY;
+import static studio.craftory.core.utils.Constants.Keys.MAX_CHARGE_NAMESPACED_KEY;
 
 import com.google.common.base.Strings;
 import java.util.ArrayList;
@@ -23,7 +23,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import studio.craftory.core.Craftory;
@@ -35,10 +34,9 @@ public class CustomItemUtils {
 
   /* Utility Methods */
   public static boolean isCustomItem(@NonNull ItemStack itemStack) {
-    if (itemStack.getType() == Material.AIR) {
+    if (itemStack.getType() == Material.AIR || !itemStack.hasItemMeta()) {
       return false;
     }
-    validateItemStackMeta(itemStack);
     return itemStack.getItemMeta().getPersistentDataContainer().has(ITEM_NAME_NAMESPACED_KEY, PersistentDataType.STRING);
   }
 
@@ -59,9 +57,11 @@ public class CustomItemUtils {
   }
 
   public static String getItemName(@NonNull ItemStack itemStack) {
-    validateItemStackMeta(itemStack);
-    PersistentDataContainer container = itemStack.getItemMeta().getPersistentDataContainer();
-    return container.getOrDefault(ITEM_NAME_NAMESPACED_KEY, PersistentDataType.STRING, itemStack.getType().toString());
+    ItemMeta meta = itemStack.getItemMeta();
+    if (meta!=null){
+      return meta.getPersistentDataContainer().getOrDefault(ITEM_NAME_NAMESPACED_KEY, PersistentDataType.STRING, itemStack.getType().toString());
+    }
+    return itemStack.getType().toString();
   }
 
   public static Optional<ItemStack> getCustomItem(@NonNull String name) {

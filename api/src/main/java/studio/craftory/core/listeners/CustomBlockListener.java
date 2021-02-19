@@ -2,7 +2,6 @@ package studio.craftory.core.listeners;
 
 import java.util.Optional;
 import javax.inject.Inject;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,13 +11,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import studio.craftory.core.Craftory;
 import studio.craftory.core.items.CustomItemUtils;
 import studio.craftory.core.blocks.CustomBlockManager;
 import studio.craftory.core.blocks.CustomBlockRegistry;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.keys.CraftoryBlockKey;
+import studio.craftory.core.utils.Constants.Keys;
 import studio.craftory.core.utils.Log;
 
 public class CustomBlockListener implements Listener {
@@ -27,7 +26,6 @@ public class CustomBlockListener implements Listener {
   private CustomBlockManager customBlockManager;
   @Inject
   private CustomBlockRegistry blockRegistry;
-  private NamespacedKey blockItemKey = new NamespacedKey(Craftory.getInstance(), "blockItemKey");
 
   @EventHandler
   public void onCustomBlockPlace(BlockPlaceEvent blockPlaceEvent) {
@@ -36,11 +34,11 @@ public class CustomBlockListener implements Listener {
     ItemStack itemStack = blockPlaceEvent.getItemInHand();
     CustomItemUtils.validateItemStackMeta(itemStack);
     PersistentDataContainer dataHolder = itemStack.getItemMeta().getPersistentDataContainer();
-    if (!dataHolder.has(blockItemKey, PersistentDataType.STRING)) return;
+    if (!dataHolder.has(Keys.blockItemKey, PersistentDataType.STRING)) return;
 
     //Get Custom Block Data
     CraftoryDirection direction = getDirection(blockPlaceEvent.getPlayer());
-    String blockKey = dataHolder.get(blockItemKey, PersistentDataType.STRING);
+    String blockKey = dataHolder.get(Keys.blockItemKey, PersistentDataType.STRING);
 
     Optional<CraftoryBlockKey> blockKeyOptional = blockRegistry.getBlockKey(blockKey);
     if (blockKeyOptional.isPresent()) {

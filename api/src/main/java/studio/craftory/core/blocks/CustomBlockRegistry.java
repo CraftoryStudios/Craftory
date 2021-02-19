@@ -1,5 +1,7 @@
 package studio.craftory.core.blocks;
 
+import static studio.craftory.core.utils.Constants.Keys.blockItemDataKey;
+
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,13 +12,15 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Synchronized;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
-import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.data.keys.CraftoryBlockKey;
+import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
+import studio.craftory.core.items.CustomItem;
 import studio.craftory.core.utils.Log;
 
 /** Class based on LogisticsCraft's Logistics-API (MIT) and the LogisticsTypeRegister class **/
@@ -43,8 +47,12 @@ public class CustomBlockRegistry {
         if (constructor.isPresent()) {
 
           addCustomBlockKeys((Class<? extends BaseCustomBlock>) block, (Constructor<? extends BaseCustomBlock>) constructor.get(), craftoryBlockKey);
-
+          craftoryBlockKey.getName();
           registerCustomBlockTickables((Class<? extends BaseCustomBlock>) block);
+
+          CustomItem.builder().name(craftoryBlockKey.getName()).displayName(
+              craftoryBlockKey.getName()).attribute(blockItemDataKey, craftoryBlockKey.toString()).material(
+              Material.STONE).build().register(plugin);
           Log.debug("CustomBlock Register: " + block.getName());
         } else {
           Log.warn("Couldn't get constructor for custom block: " + craftoryBlockKey.getName());

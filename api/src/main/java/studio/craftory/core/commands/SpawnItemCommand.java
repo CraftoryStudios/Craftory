@@ -31,7 +31,7 @@ public class SpawnItemCommand implements CommandExecutor {
 
       if(itemStack.isPresent()) {
         ItemStack item = itemStack.get();
-        int amount = ParseUtils.parseOrDefault(args[1],1);
+        int amount = args.length > 1 ? ParseUtils.parseOrDefault(args[1],1) : 1;
         item.setAmount(amount);
         player.getInventory().addItem(item);
         return true;

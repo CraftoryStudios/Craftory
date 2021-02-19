@@ -56,19 +56,23 @@ public class BlockStateRenderer implements CraftoryRenderer{
   }
 
   private void renderChorusPlant(@NonNull String stateData, Block block) {
-    setTypeAndData(block, Material.CHORUS_PLANT, getMutlifacingData(stateData, block));
+    setType(block, Material.CHORUS_PLANT);
+    setData(block, getMutlifacingData(stateData, block));
   }
 
   private void renderRedMushroom(@NonNull String stateData, Block block) {
-    setTypeAndData(block, Material.RED_MUSHROOM_BLOCK, getMutlifacingData(stateData, block));
+    setType(block, Material.RED_MUSHROOM_BLOCK);
+    setData(block, getMutlifacingData(stateData, block));
   }
 
   private void renderBrownMushroom(@NonNull String stateData, Block block) {
-    setTypeAndData(block, Material.BROWN_MUSHROOM_BLOCK, getMutlifacingData(stateData, block));
+    setType(block, Material.BROWN_MUSHROOM_BLOCK);
+    setData(block, getMutlifacingData(stateData, block));
   }
 
   private void renderStem(@NonNull String stateData, Block block) {
-    setTypeAndData(block, Material.MUSHROOM_STEM, getMutlifacingData(stateData, block));
+    setType(block, Material.MUSHROOM_STEM);
+    setData(block, getMutlifacingData(stateData, block));
   }
 
   private void renderNoteBlock(@NonNull String stateData, Block block) {
@@ -76,11 +80,15 @@ public class BlockStateRenderer implements CraftoryRenderer{
     int note = Integer.parseInt(stateData.substring(1,3));
     String powered = stateData.substring(3,4);
 
-    setTypeAndData(block, Material.NOTE_BLOCK, getNoteBlockData(block, instrument, note, powered));
+    setType(block, Material.NOTE_BLOCK);
+    setData(block, getNoteBlockData(block, instrument, note, powered));
   }
 
-  private void setTypeAndData(@NonNull Block block, @NonNull Material material, @NonNull BlockData blockData) {
+  private void setType(@NonNull Block block, @NonNull Material material) {
     block.setType(material, false);
+  }
+
+  private void setData(@NonNull Block block, @NonNull BlockData blockData) {
     block.setBlockData(blockData, false);
   }
 

@@ -1,6 +1,6 @@
 package studio.craftory.core.items;
 
-import static studio.craftory.core.items.CustomItemManager.ITEM_NAME_NAMESPACED_KEY;
+import static studio.craftory.core.utils.Constants.Keys.ITEM_NAME_NAMESPACED_KEY;
 
 import java.util.Locale;
 import java.util.Map;
@@ -22,7 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.data.keys.ItemDataKey;
@@ -109,7 +109,7 @@ public class CustomItem {
     itemStack = item;
   }
 
-  public void register(JavaPlugin plugin) {
+  public void register(Plugin plugin) {
     this.plugin = plugin.getName().toLowerCase(Locale.ROOT);
     Craftory.getCustomItemManager().registerCustomItem(this);
   }
