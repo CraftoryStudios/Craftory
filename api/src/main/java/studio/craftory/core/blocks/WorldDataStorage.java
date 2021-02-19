@@ -159,7 +159,6 @@ public class WorldDataStorage {
           Map.Entry<String, JsonNode> data;
           while (iterator.hasNext()) {
             data = iterator.next();
-            Log.info("HIYA -------------------------------------------------------------------------------- " + data.getKey());
             Optional<CraftoryDataKey> datatype = blockRegister.getDataKey(data.getKey());
             Map.Entry<String, JsonNode> finalData = data;
             datatype.ifPresent(craftoryDataKey -> {
