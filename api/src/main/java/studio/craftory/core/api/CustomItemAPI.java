@@ -7,14 +7,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import studio.craftory.core.Craftory;
 import studio.craftory.core.items.CustomItemUtils;
 
 @UtilityClass
 public class CustomItemAPI {
-
-  public static final NamespacedKey CHARGE_NAMESPACED_KEY = new NamespacedKey(Craftory.getInstance(), "CHARGE");
-  public static final NamespacedKey MAX_CHARGE_NAMESPACED_KEY = new NamespacedKey(Craftory.getInstance(), "MAX_CHARGE");
 
   /* Utility Methods */
   public static boolean isCustomItem(@NonNull ItemStack itemStack) {

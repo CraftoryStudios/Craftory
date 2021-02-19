@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.Set;
 import lombok.NonNull;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.utils.Log;
@@ -22,8 +21,6 @@ public class CustomItemManager {
   private static final Map<String, CustomItem> unqiueItemCache = new HashMap<>();
   private static final Set<String> duplicateItemNames = new HashSet<>();
   private Map<String, Integer> customItemRenderIdCache = new HashMap<>();
-
-  public static final NamespacedKey ITEM_NAME_NAMESPACED_KEY = new NamespacedKey(Craftory.getInstance(), "CUSTOM_ITEM_NAME");
 
   protected CustomItemManager() {
     File renderIdFile = new File(Craftory.getInstance().getDataFolder(), "ItemRenderData.json");
@@ -45,7 +42,7 @@ public class CustomItemManager {
   public void registerCustomItem(@NonNull CustomItem item) {
     String itemName = item.getUniqueName();
     if(!customItemRenderIdCache.containsKey(itemName)) {
-      throw new IllegalArgumentException("Custom item not present in the render data, all items must have an ID for render texture!");
+      throw new IllegalArgumentException("Custom item not present in the render data, all items must have an ID for render texture! ItemName: " + itemName);
     }
     customItemCache.put(itemName, item);
     item.createItem(customItemRenderIdCache.get(itemName));

@@ -151,10 +151,11 @@ public class WorldDataStorage {
       if (!customBlock.isPresent()) return Optional.empty();
 
       //Inject Persistent Data
-      if (ComplexCustomBlock.class.isAssignableFrom(customBlock.getClass())) {
+      if (ComplexCustomBlock.class.isAssignableFrom(customBlock.get().getClass())) {
+
         JsonNode persistentData = field.getValue().get(CUSTOMBLOCK_PERSISTENT_DATA_KEY);
         if (persistentData != null) {
-          Iterator<Map.Entry<String, JsonNode>> iterator = chunkData.fields();
+          Iterator<Map.Entry<String, JsonNode>> iterator = persistentData.fields();
           Map.Entry<String, JsonNode> data;
           while (iterator.hasNext()) {
             data = iterator.next();
