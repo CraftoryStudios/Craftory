@@ -35,18 +35,16 @@ public final class Craftory extends JavaPlugin {
   private SyncExecutionManager syncExecutionManager;
   private CustomBlockManager customBlockManager;
 
+  //External
   private CustomItemManager customItemManager;
   private RecipeManager recipeManager;
-
-  //External API
-  @Getter
-  CustomBlockAPI customBlockAPI;
-
+  private CustomBlockAPI customBlockAPI;
 
   public static CustomItemManager getCustomItemManager() {
     return instance.customItemManager;
   }
   public static RecipeManager getRecipeManager() { return instance.recipeManager; }
+  public static CustomBlockAPI getCustomBlockAPI() {return instance.customBlockAPI; }
 
   @Override
   public void onLoad() {

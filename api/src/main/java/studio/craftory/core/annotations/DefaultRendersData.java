@@ -7,12 +7,11 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
-public @interface RenderData {
+public @interface DefaultRendersData {
   String northFacingModel() default "";
   String southFacingModel() default "";
   String eastFacingModel() default "";
   String westFacingModel() default "";
-  String upFacingModel() default "";
-  String downFacingModel() default "";
   String headModel() default "";
+  String all() default "";
 }
