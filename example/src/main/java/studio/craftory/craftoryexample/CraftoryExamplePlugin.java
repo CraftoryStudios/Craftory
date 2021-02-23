@@ -54,7 +54,8 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
 
   @Override
   public void onEnable() {
-    Craftory.getInstance().getCustomBlockAPI().registerCustomBlock(this, SimpleGenerator.class);
+
+    Craftory.getCustomBlockAPI().registerCustomBlock(this, SimpleGenerator.class);
   }
 
   public void onCraftoryEnable() {

@@ -13,8 +13,6 @@ import studio.craftory.core.components.energy.EnergyOutput.EnergyOutputData;
 import studio.craftory.core.components.energy.EnergyStorage.EnergyStorageData;
 import studio.craftory.core.data.CraftoryDirection;
 
-@CustomBlock(renders = {Renderers.BLOCK_STATE_RENDER, Renderers.HEAD_RENDER})
-@DefaultRendersData(all = "assets/blocks/test", headModel = "assets/blocks/headexample")
 @EnergyOutputData(maxExtract = 100)
 @EnergyStorageData(capacity = 1000000)
 public class SimpleGenerator extends ComplexCustomBlock implements EnergyOutput {
