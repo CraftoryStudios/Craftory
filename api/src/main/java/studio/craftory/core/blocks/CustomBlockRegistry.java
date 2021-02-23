@@ -35,7 +35,7 @@ public class CustomBlockRegistry {
   private final Map<String, CraftoryBlockKey> craftoryBlockKeyMap = new HashMap<>();
 
   @Synchronized
-  public void registerCustomBlockClass(@NonNull Plugin plugin, @NonNull Class<?> block) {
+  public CraftoryBlockKey registerCustomBlockClass(@NonNull Plugin plugin, @NonNull Class<?> block) {
     CraftoryBlockKey craftoryBlockKey = new CraftoryBlockKey(plugin, block);
     if (!blockTypes.containsKey(craftoryBlockKey)) {
 
@@ -53,6 +53,7 @@ public class CustomBlockRegistry {
     } else {
       Log.warn("Trying to re-register known key of Custom Block: " + craftoryBlockKey.getName());
     }
+    return craftoryBlockKey;
   }
 
   @Synchronized

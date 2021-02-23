@@ -1,4 +1,4 @@
-package studio.craftory.core;
+package studio.craftory.core.resources;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +22,8 @@ import java.util.zip.ZipInputStream;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import studio.craftory.core.Craftory;
+import studio.craftory.core.CraftoryAddon;
 import studio.craftory.core.utils.Log;
 
 public class CraftorySetup extends BukkitRunnable {

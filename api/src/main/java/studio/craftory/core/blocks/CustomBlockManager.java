@@ -47,6 +47,7 @@ public class CustomBlockManager {
 
   /**
    * Loads a Custom Block, into memory and executor when a new block is placed or loaded from file
+   * Loads a Custom Block, into memory and executor when a new block is placed or loaded from file
    *
    * @param customBlock which should be loaded into memory
    */

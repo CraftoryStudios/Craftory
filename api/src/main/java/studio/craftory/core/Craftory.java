@@ -21,6 +21,8 @@ import studio.craftory.core.items.ItemEventManager;
 import studio.craftory.core.listeners.ChunkListener;
 import studio.craftory.core.listeners.CustomBlockListener;
 import studio.craftory.core.listeners.WorldListener;
+import studio.craftory.core.resources.AssetManager;
+import studio.craftory.core.resources.CraftorySetup;
 import studio.craftory.core.utils.Log;
 
 public final class Craftory extends JavaPlugin {
@@ -61,6 +63,8 @@ public final class Craftory extends JavaPlugin {
     //Custom Block
     injector.getSingleton(CustomBlockRegistry.class);
     customBlockManager = injector.getSingleton(CustomBlockManager.class);
+
+    injector.getSingleton(AssetManager.class);
 
     //API
     customBlockAPI = injector.getSingleton(CustomBlockAPI.class);
