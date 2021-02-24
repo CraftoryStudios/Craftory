@@ -1,6 +1,6 @@
-package studio.craftory.core.blocks.renders;
+package studio.craftory.core.blocks.rendering;
 
-public enum Renderers {
+public enum DefaultRenderers {
   BLOCK_STATE_RENDER("b"),
   TRANSPARENT_BLOCK_STATE_RENDER("t"),
   ENTITY_SPAWNER_RENDER("e"),
@@ -8,5 +8,5 @@ public enum Renderers {
 
   public final String value;
 
-  Renderers(String value) { this.value = value;}
+  DefaultRenderers(String value) { this.value = value;}
 }

@@ -15,10 +15,10 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.block.Block;
 import studio.craftory.core.Craftory;
-import studio.craftory.core.blocks.renders.BlockStateRenderer;
-import studio.craftory.core.blocks.renders.CraftoryRenderer;
-import studio.craftory.core.blocks.renders.RenderData;
-import studio.craftory.core.blocks.renders.Renderers;
+import studio.craftory.core.blocks.rendering.renderers.BlockStateRenderer;
+import studio.craftory.core.blocks.rendering.CraftoryRenderer;
+import studio.craftory.core.data.RenderData;
+import studio.craftory.core.blocks.rendering.DefaultRenderers;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.keys.CraftoryBlockKey;
 import studio.craftory.core.utils.Log;
@@ -38,14 +38,14 @@ public class BlockRenderManager {
   }
 
   private void registerDefaultRenders() {
-    registerRenderer(Renderers.BLOCK_STATE_RENDER, new BlockStateRenderer());
-    registerRenderer(Renderers.TRANSPARENT_BLOCK_STATE_RENDER, new BlockStateRenderer());
+    registerRenderer(DefaultRenderers.BLOCK_STATE_RENDER, new BlockStateRenderer());
+    registerRenderer(DefaultRenderers.TRANSPARENT_BLOCK_STATE_RENDER, new BlockStateRenderer());
   }
 
   public void registerRenderer(String key, CraftoryRenderer renderer) {
     renderers.putIfAbsent(key, renderer);
   }
-  public void registerRenderer(Renderers key, CraftoryRenderer renderer) {
+  public void registerRenderer(DefaultRenderers key, CraftoryRenderer renderer) {
     registerRenderer(key.value, renderer);
   }
 
