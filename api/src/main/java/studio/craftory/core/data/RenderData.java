@@ -1,7 +1,8 @@
-package studio.craftory.core.blocks.renders;
+package studio.craftory.core.data;
 
 import java.util.List;
 import lombok.Getter;
+import studio.craftory.core.blocks.rendering.CraftoryRenderer;
 
 public class RenderData {
   @Getter

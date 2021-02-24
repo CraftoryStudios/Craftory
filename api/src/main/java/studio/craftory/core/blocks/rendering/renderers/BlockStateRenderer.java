@@ -1,4 +1,4 @@
-package studio.craftory.core.blocks.renders;
+package studio.craftory.core.blocks.rendering.renderers;
 
 import lombok.NonNull;
 import org.bukkit.Instrument;
@@ -9,10 +9,12 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.block.data.type.NoteBlock;
+import studio.craftory.core.blocks.rendering.CraftoryRenderer;
 import studio.craftory.core.data.CraftoryDirection;
+import studio.craftory.core.data.RenderData;
 import studio.craftory.core.utils.Log;
 
-public class BlockStateRenderer implements CraftoryRenderer{
+public class BlockStateRenderer implements CraftoryRenderer {
 
   @Override
   public void render(@NonNull Block block, @NonNull CraftoryDirection direction, @NonNull RenderData renderData) {
