@@ -21,6 +21,7 @@ import studio.craftory.core.items.ItemEventManager;
 import studio.craftory.core.listeners.ChunkListener;
 import studio.craftory.core.listeners.CustomBlockListener;
 import studio.craftory.core.listeners.WorldListener;
+import studio.craftory.core.recipes.RecipeManager;
 import studio.craftory.core.utils.Log;
 
 public final class Craftory extends JavaPlugin {
@@ -35,6 +36,7 @@ public final class Craftory extends JavaPlugin {
   private CustomBlockManager customBlockManager;
 
   private CustomItemManager customItemManager;
+  private RecipeManager recipeManager;
 
   //External API
   @Getter
@@ -44,6 +46,7 @@ public final class Craftory extends JavaPlugin {
   public static CustomItemManager getCustomItemManager() {
     return instance.customItemManager;
   }
+  public static RecipeManager getRecipeManager() { return instance.recipeManager; }
 
   @Override
   public void onLoad() {
@@ -67,6 +70,7 @@ public final class Craftory extends JavaPlugin {
     //API
     customBlockAPI = injector.getSingleton(CustomBlockAPI.class);
     customItemManager = injector.getSingleton(CustomItemManager.class);
+    recipeManager = injector.getSingleton(RecipeManager.class);
   }
 
   @Override
@@ -80,6 +84,7 @@ public final class Craftory extends JavaPlugin {
     pluginManager.registerEvents(injector.getSingleton(WorldListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ChunkListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ItemEventManager.class), instance);
+    pluginManager.registerEvents(recipeManager, instance);
 
     //Executor
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);

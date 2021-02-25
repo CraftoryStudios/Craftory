@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
@@ -11,6 +12,8 @@ import studio.craftory.core.Craftory;
 import studio.craftory.core.CraftoryAddon;
 import studio.craftory.core.data.keys.ItemDataKey;
 import studio.craftory.core.items.CustomItem;
+import studio.craftory.core.recipes.ShapedCraftingRecipe;
+import studio.craftory.core.recipes.ShapelessCraftingRecipe;
 import studio.craftory.craftoryexample.blocks.SimpleGenerator;
 import studio.craftory.craftoryexample.commands.SpawnGeneratorCommand;
 import studio.craftory.craftoryexample.items.Wrench;
@@ -27,6 +30,21 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
         Wrench::onClick).displayName("Wrench").material(Material.STICK).displayNameColour(ChatColor.AQUA)
                                   .holdEffect(PotionEffectType.SPEED.createEffect(Integer.MAX_VALUE,1)).attribute(magicalPower, 100).build();
     wrench.register(this);
+    ItemStack res = wrench.getItem();
+    res.setAmount(6);
+    ShapedCraftingRecipe.builder().name("wrenchdoubler").recipe(new String[]{"XWX", "XWX", "XWX"}).commonItemIngredient('W',"craftoryexample:wrench").result(res).build().register(this);
+    res.setAmount(1);
+    ShapedCraftingRecipe.builder().name("wrench").recipe(new String[]{"SXS","XSX","XSX"}).vanillaIngredient('S',Material.STICK).result(res).build().register(this);
+
+    ItemStack diamonds = new ItemStack(Material.DIAMOND_BLOCK);
+    diamonds.setAmount(64);
+    ShapelessCraftingRecipe.builder().name("testytesttest").vanillaIngredient(Material.NETHER_STAR,3).result(diamonds).build().register(this);
+
+    CustomItem superStar = CustomItem.builder().name("superstar").displayName("Super Star").material(Material.NETHER_STAR).build();
+    superStar.register(this);
+    ItemStack emeralds = new ItemStack(Material.EMERALD_BLOCK);
+    emeralds.setAmount(64);
+    ShapelessCraftingRecipe.builder().name("superVersion").commonItemIngredient("craftoryexample:superstar", 3).result(emeralds).build().register(this);
   }
 
   @Override
