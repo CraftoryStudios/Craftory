@@ -24,7 +24,7 @@ public class CustomBlockAPI {
   public AssetLinker assetLinker;
 
   public void registerCustomBlock(@NonNull Plugin plugin, @NonNull Class<? extends BaseCustomBlock> customBlock,
-      @NonNull char renderer, @NonNull String[] textures) {
+      @NonNull String renderer, @NonNull String[] textures) {
     CraftoryBlockKey blockKey = blockRegister.registerCustomBlockClass(plugin, customBlock);
     assetLinker.registerBlockAssets(blockKey, renderer, textures);
   }
