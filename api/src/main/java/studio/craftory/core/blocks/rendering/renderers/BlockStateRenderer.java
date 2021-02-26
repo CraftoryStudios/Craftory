@@ -1,5 +1,10 @@
 package studio.craftory.core.blocks.rendering.renderers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import lombok.NonNull;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
@@ -10,8 +15,10 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.block.data.type.NoteBlock;
 import studio.craftory.core.blocks.rendering.CraftoryRenderer;
+import studio.craftory.core.blocks.rendering.DefaultRenderers;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.RenderData;
+import studio.craftory.core.resourcepack.BlockAssetGenerator;
 import studio.craftory.core.utils.Log;
 
 public class BlockStateRenderer implements CraftoryRenderer {
@@ -20,13 +27,15 @@ public class BlockStateRenderer implements CraftoryRenderer {
   public void render(@NonNull Block block, @NonNull CraftoryDirection direction, @NonNull RenderData renderData) {
     int directionKey = direction.label;
 
-    //Must have render data for every CraftoryDirection
-    if (renderData.getData().size() != 6) {
-      Log.warn("Incomplete render data");
-      return;
+    String data = "";
+    int dataSize = renderData.getData().size();
+
+    if (dataSize == 6) {
+      data = renderData.getData().get(directionKey);
+    } else if (dataSize == 1) {
+      data = renderData.getData().get(0);
     }
 
-    String data = renderData.getData().get(directionKey);
     if (data.isEmpty()) {
       //Block doesn't use directions so default to NORTH
       data = renderData.getData().get(0);
@@ -55,6 +64,22 @@ public class BlockStateRenderer implements CraftoryRenderer {
         Log.warn("No render type found");
         break;
     }
+  }
+
+  @Override
+  public void generateAssets(String blockKey, String[] assetsData, BlockAssetGenerator blockAssetGenerator) {
+    ArrayList<String> renderData = new ArrayList<>();
+    renderData.add(DefaultRenderers.BLOCK_STATE_RENDER.value);
+
+    if (assetsData.length == 1 || assetsData.length == 6) {
+      for (int i = 0; i < assetsData.length; i++) {
+        renderData.add(blockAssetGenerator.generateBlockState());
+      }
+    } else {
+      Log.warn("Bad data for asset gen");
+    }
+
+    blockAssetGenerator.addRenderData(blockKey, renderData);
   }
 
   private void renderChorusPlant(@NonNull String stateData, Block block) {

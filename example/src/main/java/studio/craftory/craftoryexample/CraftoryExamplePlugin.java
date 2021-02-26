@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.CraftoryAddon;
+import studio.craftory.core.blocks.rendering.DefaultRenderers;
 import studio.craftory.core.data.keys.ItemDataKey;
 import studio.craftory.core.items.CustomItem;
 import studio.craftory.core.recipes.ShapedCraftingRecipe;
@@ -54,8 +55,8 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
 
   @Override
   public void onEnable() {
-
-    Craftory.getCustomBlockAPI().registerCustomBlock(this, SimpleGenerator.class);
+    String[] test = {"asd", "asd"};
+    Craftory.getCustomBlockAPI().registerCustomBlock(this, SimpleGenerator.class, DefaultRenderers.BLOCK_STATE_RENDER.value, test);
   }
 
   public void onCraftoryEnable() {
