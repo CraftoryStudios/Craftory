@@ -17,7 +17,6 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.Plugin;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.items.CustomItemUtils;
-import studio.craftory.core.utils.Log;
 
 @Builder
 public class ShapelessCraftingRecipe implements ICraftingRecipe{
@@ -51,7 +50,6 @@ public class ShapelessCraftingRecipe implements ICraftingRecipe{
     Map<String, Integer> uniqueCounts = new HashMap<>(uniqueItemIngredients);
     Map<String, Integer> commonCounts = new HashMap<>(commonItemIngredients);
 
-    Log.info(vanillaIngredients.toString());
     BiFunction<Object,Integer, Integer> subtractOne = (k, x) -> x-=1;
     for (int i = 0; i < 9; i++) {
 
@@ -73,9 +71,6 @@ public class ShapelessCraftingRecipe implements ICraftingRecipe{
     Predicate<Integer> greaterThanZero = x -> x > 0;
     if (vanillaCounts.values().stream().anyMatch(greaterThanZero) || uniqueCounts.values().stream().anyMatch(greaterThanZero) || commonCounts.values().stream().anyMatch(greaterThanZero)) {
       e.getInventory().setResult(new ItemStack(Material.AIR));
-      Log.warn("DIDNT MEET ALL REQUIREMENTS");
-      Log.warn(namespacedKey.toString() + "    "  + vanillaIngredients.toString());
-      Log.warn(namespacedKey.toString() + "    "  + vanillaCounts.toString());
     }
   }
 

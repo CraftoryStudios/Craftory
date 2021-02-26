@@ -38,7 +38,7 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
 
     ItemStack diamonds = new ItemStack(Material.DIAMOND_BLOCK);
     diamonds.setAmount(64);
-    ShapelessCraftingRecipe.builder().name("testytesttest").vanillaIngredient(Material.NETHER_STAR,3).result(diamonds).build().register(this);
+    ShapelessCraftingRecipe.builder().name("testytesttest").vanillaIngredient(Material.NETHERITE_BLOCK,3).result(diamonds).build().register(this);
 
     CustomItem superStar = CustomItem.builder().name("superstar").displayName("Super Star").material(Material.NETHER_STAR).build();
     superStar.register(this);
