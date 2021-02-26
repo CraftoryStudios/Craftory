@@ -13,6 +13,7 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import studio.craftory.core.items.CustomItemUtils;
+import studio.craftory.core.utils.Log;
 
 public class RecipeManager implements Listener {
 
@@ -21,10 +22,12 @@ public class RecipeManager implements Listener {
 
   public void registerRecipe(ShapedCraftingRecipe recipe) {
     shapedRecipes.put(recipe.getNamespacedKey(), recipe);
+    Log.info("Registered shaped recipe " + recipe.getNamespacedKey().toString());
   }
 
   public void registerRecipe(ShapelessCraftingRecipe recipe) {
     shapelessRecipes.put(recipe.getNamespacedKey(), recipe);
+    Log.info("Registered shapeless recipe " + recipe.getNamespacedKey().toString());
   }
 
   @EventHandler

@@ -42,14 +42,18 @@ public class ShapedCraftingRecipe implements ICraftingRecipe{
 
   @Override
   public void register(Plugin plugin) {
+    // Create Recipe
     namespacedKey = new NamespacedKey(plugin, name);
-
     bukkitRecipe = new ShapedRecipe(namespacedKey, result);
     bukkitRecipe.shape(recipe);
-    uniqueItemIngredients.forEach((c, name) -> bukkitRecipe.setIngredient(c, CustomItemUtils.getCustomItem(name).get().getData()));
-    commonItemIngredients.forEach((c, name) -> bukkitRecipe.setIngredient(c, CustomItemUtils.getCustomItem(name).get().getData()));
+
+    // Set the ingredients
+    uniqueItemIngredients.forEach((c, item) -> bukkitRecipe.setIngredient(c, CustomItemUtils.getCustomItem(item).get().getData()));
+    commonItemIngredients.forEach((c, item) -> bukkitRecipe.setIngredient(c, CustomItemUtils.getCustomItem(item).get().getData()));
     vanillaIngredients.forEach(bukkitRecipe::setIngredient);
     vanillaIngredientGroups.forEach((c, mats) -> bukkitRecipe.setIngredient(c, new MaterialChoice(mats)));
+
+    // Register the recipe
     Bukkit.addRecipe(bukkitRecipe);
     Craftory.getRecipeManager().registerRecipe(this);
   }
@@ -71,32 +75,37 @@ public class ShapedCraftingRecipe implements ICraftingRecipe{
     for (int i = 0; i < 9; i++) {
       c = pattern[i];
       item = matrix[i];
+
       if(vanillaIngredients.containsKey(c)) {
         if (item==null || item.getType()!=vanillaIngredients.get(c) || CustomItemUtils.isCustomItem(item)) {
           valid = false;
-          break;
         }
-      } else if (vanillaIngredientGroups.containsKey(c)) {
+      }
+
+      else if (vanillaIngredientGroups.containsKey(c)) {
         if (item==null || !vanillaIngredientGroups.get(c).contains(item.getType()) || CustomItemUtils.isCustomItem(item)) {
           valid = false;
-          break;
         }
-      } else if (commonItemIngredients.containsKey(c)) {
+      }
+
+      else if (commonItemIngredients.containsKey(c)) {
         if (item==null || !CustomItemUtils.isCustomItem(item) || !CustomItemUtils.matchCustomItemCommonName(item,commonItemIngredients.get(c))) {
           valid = false;
-          break;
         }
-      } else if (uniqueItemIngredients.containsKey(c)) {
+      }
+
+      else if (uniqueItemIngredients.containsKey(c)) {
         if (item==null || !CustomItemUtils.isCustomItem(item) || !CustomItemUtils.matchCustomItemName(item, uniqueItemIngredients.get(c))) {
           valid = false;
-          break;
         }
+      }
+
+      if (!valid) {
+        e.getInventory().setResult(new ItemStack(Material.AIR));
+        break;
       }
     }
 
-    if (!valid) {
-      e.getInventory().setResult(new ItemStack(Material.AIR));
-    }
   }
 
 }

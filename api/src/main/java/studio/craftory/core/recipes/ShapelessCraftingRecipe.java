@@ -2,6 +2,7 @@ package studio.craftory.core.recipes;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.Plugin;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.items.CustomItemUtils;
+import studio.craftory.core.utils.Log;
 
 @Builder
 public class ShapelessCraftingRecipe implements ICraftingRecipe{
@@ -49,48 +51,52 @@ public class ShapelessCraftingRecipe implements ICraftingRecipe{
     Map<String, Integer> uniqueCounts = new HashMap<>(uniqueItemIngredients);
     Map<String, Integer> commonCounts = new HashMap<>(commonItemIngredients);
 
+    Log.info(vanillaIngredients.toString());
+    BiFunction<Object,Integer, Integer> subtractOne = (k, x) -> x-=1;
     for (int i = 0; i < 9; i++) {
+
       item = matrix[i];
+
       if (item != null) {
         if (CustomItemUtils.isCustomItem(item)) {
-          String name = CustomItemUtils.getItemName(item);
-          String commonName = name.split(":")[1];
-          if (uniqueCounts.containsKey(name)) {
-            uniqueCounts.put(name, uniqueCounts.get(name) - 1);
-          } else if (commonCounts.containsKey(commonName)) {
-            commonCounts.put(commonName, commonCounts.get(commonName) - 1);
-          }
+          String itemName = CustomItemUtils.getItemName(item);
+          String commonName = itemName.split(":")[1];
+
+          uniqueCounts.computeIfPresent(itemName, subtractOne);
+          commonCounts.computeIfPresent(commonName, subtractOne);
         } else {
-          if (vanillaCounts.containsKey(item.getType())) {
-            vanillaCounts.put(item.getType(), vanillaCounts.get(item.getType()) - 1);
-          }
+          vanillaCounts.computeIfPresent(item.getType(), (k, x) -> x-=1);
         }
       }
     }
 
-    Predicate<Integer> greaterThanZero = (x) -> x > 0;
+    Predicate<Integer> greaterThanZero = x -> x > 0;
     if (vanillaCounts.values().stream().anyMatch(greaterThanZero) || uniqueCounts.values().stream().anyMatch(greaterThanZero) || commonCounts.values().stream().anyMatch(greaterThanZero)) {
       e.getInventory().setResult(new ItemStack(Material.AIR));
+      Log.warn("DIDNT MEET ALL REQUIREMENTS");
+      Log.warn(namespacedKey.toString() + "    "  + vanillaIngredients.toString());
+      Log.warn(namespacedKey.toString() + "    "  + vanillaCounts.toString());
     }
   }
 
   @Override
   public void register(Plugin plugin) {
+    // Create the recipe
     namespacedKey = new NamespacedKey(plugin, name);
-
     bukkitRecipe = new ShapelessRecipe(namespacedKey, result);
 
+    // Set the ingredients
     vanillaIngredients.forEach((mat, amount) -> bukkitRecipe.addIngredient(amount, mat));
-    uniqueItemIngredients.forEach((name, amount) -> bukkitRecipe.addIngredient(amount,
-        CustomItemUtils.getCustomItem(name).get().getData()));
-    commonItemIngredients.forEach((name, amount) -> bukkitRecipe.addIngredient(amount,
-        CustomItemUtils.getCustomItem(name).get().getData()));
+    uniqueItemIngredients.forEach((item, amount) -> bukkitRecipe.addIngredient(amount, CustomItemUtils.getCustomItem(item).get().getData()));
+    commonItemIngredients.forEach((item, amount) -> bukkitRecipe.addIngredient(amount, CustomItemUtils.getCustomItem(item).get().getData()));
+
+    // Register the recipe
     Bukkit.addRecipe(bukkitRecipe);
     Craftory.getRecipeManager().registerRecipe(this);
 
     // Make common ingredients only contain the common part of the item name
     Map<String, Integer> formattedCommonIngredients = new HashMap<>();
-    commonItemIngredients.forEach((name, amount) -> formattedCommonIngredients.put(name.split(":")[1],amount));
+    commonItemIngredients.forEach((item, amount) -> formattedCommonIngredients.put(item.split(":")[1],amount));
     commonItemIngredients = formattedCommonIngredients;
   }
 }
