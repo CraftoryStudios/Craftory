@@ -69,8 +69,6 @@ public final class Craftory extends JavaPlugin {
     injector.getSingleton(CustomBlockRegistry.class);
     customBlockManager = injector.getSingleton(CustomBlockManager.class);
 
-    injector.getSingleton(AssetLinker.class);
-
     //API
     customBlockAPI = injector.getSingleton(CustomBlockAPI.class);
     customItemManager = injector.getSingleton(CustomItemManager.class);
@@ -96,8 +94,11 @@ public final class Craftory extends JavaPlugin {
     syncExecutionManager.runTaskTimer(this, 20L,1L);
     getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
 
-    CraftorySetup setup = new CraftorySetup();
-    setup.runTaskLater(this, 1);
+    //CraftorySetup setup = new CraftorySetup();
+    //setup.runTaskLater(this, 1);
+
+    AssetLinker linker = injector.getSingleton(AssetLinker.class);
+    linker.runTaskLater(this, 1);
 
     //Commands
     PluginCommand spawnCommand = this.getCommand("spawnItem");
