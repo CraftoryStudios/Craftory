@@ -73,7 +73,9 @@ public class BlockStateRenderer implements CraftoryRenderer {
 
     if (assetsData.length == 1 || assetsData.length == 6) {
       for (int i = 0; i < assetsData.length; i++) {
-        renderData.add(blockAssetGenerator.generateBlockState());
+        String data = blockAssetGenerator.generateBlockState();
+        blockAssetGenerator.addBlockStateToPack(data, assetsData[i]);
+        renderData.add(data);
       }
     } else {
       Log.warn("Bad data for asset gen");
