@@ -44,6 +44,15 @@ public class CustomItemUtils {
     return name.equals(getItemName(itemStack));
   }
 
+  public static boolean matchCustomItemCommonName(@NonNull ItemStack itemStack, @NonNull String name) {
+    String[] split = name.split(":");
+    if (split.length > 1) {
+      return split[1].equals(getItemCommonName(itemStack));
+    } else {
+      return split[0].equals(getItemCommonName(itemStack));
+    }
+  }
+
   public static boolean isCustomItemName(@NonNull String name) {
     return Craftory.getCustomItemManager().isCustomItemName(name);
   }
@@ -82,6 +91,14 @@ public class CustomItemUtils {
 
   public static Optional<ItemStack> getUniqueItem(@NonNull String name) {
     return CustomItemManager.getUniqueItem(name);
+  }
+
+  public static String getItemPluginName(@NonNull ItemStack itemStack) {
+    return getItemName(itemStack).split(":")[0];
+  }
+
+  public static String getItemCommonName(@NonNull ItemStack itemStack) {
+    return getItemName(itemStack).split(":")[1];
   }
 
   /* Item Properties */

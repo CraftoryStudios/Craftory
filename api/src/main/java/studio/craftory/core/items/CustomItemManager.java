@@ -28,8 +28,7 @@ public class CustomItemManager {
     if(renderIdFile.exists()) {
       try {
         customItemRenderIdCache = mapper.readValue(renderIdFile, new TypeReference<Map<String, Integer>>() {});
-        Log.info("Loaded item render data");
-        customItemRenderIdCache.forEach((x,y) -> Log.info(x + " : " + y));
+        Log.debug("Loaded item render data: " + customItemRenderIdCache.toString());
       } catch (IOException e) {
         Log.error("Couldn't read item render data");
       }
@@ -46,7 +45,7 @@ public class CustomItemManager {
     }
     customItemCache.put(itemName, item);
     item.createItem(customItemRenderIdCache.get(itemName));
-    Log.info("Registered custom item '" + itemName + "'");
+    Log.debug("Registered custom item '" + itemName + "'");
     if (item.hasHoldEffects()) {
       ItemEventManager.registerItemOnHoldEffects(itemName, item.getHoldEffects());
     }

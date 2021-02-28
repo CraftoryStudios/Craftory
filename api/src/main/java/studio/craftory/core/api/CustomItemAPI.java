@@ -57,6 +57,14 @@ public class CustomItemAPI {
     return CustomItemUtils.getCustomItemOrDefault(name);
   }
 
+  public static String getItemPluginName(@NonNull ItemStack itemStack) {
+    return CustomItemUtils.getItemPluginName(itemStack);
+  }
+
+  public static String getItemCommonName(@NonNull ItemStack itemStack) {
+    return CustomItemUtils.getItemCommonName(itemStack);
+  }
+
   /* Item Properties */
   public static void setAttackSpeed(@NonNull ItemStack itemStack, int attackSpeed) {
     CustomItemUtils.setAttackSpeed(itemStack, attackSpeed);
