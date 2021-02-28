@@ -22,12 +22,12 @@ public class RecipeManager implements Listener {
 
   public void registerRecipe(ShapedCraftingRecipe recipe) {
     shapedRecipes.put(recipe.getNamespacedKey(), recipe);
-    Log.info("Registered shaped recipe " + recipe.getNamespacedKey().toString());
+    Log.debug("Registered shaped recipe " + recipe.getNamespacedKey().toString());
   }
 
   public void registerRecipe(ShapelessCraftingRecipe recipe) {
     shapelessRecipes.put(recipe.getNamespacedKey(), recipe);
-    Log.info("Registered shapeless recipe " + recipe.getNamespacedKey().toString());
+    Log.debug("Registered shapeless recipe " + recipe.getNamespacedKey().toString());
   }
 
   @EventHandler
