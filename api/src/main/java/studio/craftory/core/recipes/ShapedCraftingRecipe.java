@@ -68,34 +68,34 @@ public class ShapedCraftingRecipe implements ICraftingRecipe{
   public void handlePrepareItemCraft(PrepareItemCraftEvent e) {
     ItemStack[] matrix = e.getInventory().getMatrix();
     char[] pattern = String.join("", this.recipe).toCharArray();
-    char c;
+    char ingredient;
     ItemStack item;
     boolean valid = true;
 
     for (int i = 0; i < 9; i++) {
-      c = pattern[i];
+      ingredient = pattern[i];
       item = matrix[i];
 
-      if(vanillaIngredients.containsKey(c)) {
-        if (item==null || item.getType()!=vanillaIngredients.get(c) || CustomItemUtils.isCustomItem(item)) {
+      if(vanillaIngredients.containsKey(ingredient)) {
+        if (!validateVanillaItem(item, ingredient)) {
           valid = false;
         }
       }
 
-      else if (vanillaIngredientGroups.containsKey(c)) {
-        if (item==null || !vanillaIngredientGroups.get(c).contains(item.getType()) || CustomItemUtils.isCustomItem(item)) {
+      else if (vanillaIngredientGroups.containsKey(ingredient)) {
+        if (!validateVanillaItemGroup(item, ingredient)) {
           valid = false;
         }
       }
 
-      else if (commonItemIngredients.containsKey(c)) {
-        if (item==null || !CustomItemUtils.isCustomItem(item) || !CustomItemUtils.matchCustomItemCommonName(item,commonItemIngredients.get(c))) {
+      else if (commonItemIngredients.containsKey(ingredient)) {
+        if (!validateCommonItem(item, ingredient)) {
           valid = false;
         }
       }
 
-      else if (uniqueItemIngredients.containsKey(c)) {
-        if (item==null || !CustomItemUtils.isCustomItem(item) || !CustomItemUtils.matchCustomItemName(item, uniqueItemIngredients.get(c))) {
+      else if (uniqueItemIngredients.containsKey(ingredient)) {
+        if (!validateUniqueItem(item, ingredient)) {
           valid = false;
         }
       }
@@ -108,4 +108,19 @@ public class ShapedCraftingRecipe implements ICraftingRecipe{
 
   }
 
+  private boolean validateVanillaItem(ItemStack item, char ingredient) {
+    return item!=null && item.getType()==vanillaIngredients.get(ingredient) && !CustomItemUtils.isCustomItem(item);
+  }
+
+  private boolean validateVanillaItemGroup(ItemStack item, char ingredient) {
+    return item!=null && vanillaIngredientGroups.get(ingredient).contains(item.getType()) && !CustomItemUtils.isCustomItem(item);
+  }
+
+  private boolean validateCommonItem(ItemStack item, char ingredient) {
+    return item!=null && CustomItemUtils.isCustomItem(item) && CustomItemUtils.matchCustomItemCommonName(item,commonItemIngredients.get(ingredient));
+  }
+
+  private boolean validateUniqueItem(ItemStack item, char ingredient) {
+    return item!=null && CustomItemUtils.isCustomItem(item) && CustomItemUtils.matchCustomItemName(item, uniqueItemIngredients.get(ingredient));
+  }
 }
