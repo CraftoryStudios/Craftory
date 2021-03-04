@@ -92,7 +92,7 @@ public final class Craftory extends JavaPlugin {
     //Executor
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
     syncExecutionManager.runTaskTimer(this, 20L,1L);
-    //getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
+    getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
 
     AssetLinker linker = injector.getSingleton(AssetLinker.class);
     linker.runTaskLater(this, 1);
