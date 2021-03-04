@@ -55,7 +55,8 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
 
   @Override
   public void onEnable() {
-    String[] test = {"custom/block/mineral/copper/copper_ore"};
+    String[] test = {"custom/block/mineral/copper/copper_ore", "custom/block/mineral/copper/copper_ore", "custom/block/mineral/copper/copper_ore",
+        "custom/block/mineral/copper/copper_ore", "custom/block/mineral/copper/copper_ore", "custom/block/mineral/copper/copper_ore"};
     Craftory.getCustomBlockAPI().registerCustomBlock(this, SimpleGenerator.class, DefaultRenderers.BLOCK_STATE_RENDER.value, test);
   }
 

@@ -71,23 +71,19 @@ public class BlockStateRenderer implements CraftoryRenderer {
   @Override
   public void generateAssets(String blockKey, String[] assetsData, BlockAssetGenerator blockAssetGenerator) {
     ObjectMapper mapper = new ObjectMapper();
-    ArrayList<String> renderData = new ArrayList<>();
-    renderData.add(DefaultRenderers.BLOCK_STATE_RENDER.value);
 
     if (assetsData.length == 1 || assetsData.length == 6) {
       ArrayNode renderFileData = mapper.createArrayNode();
+      renderFileData.add(DefaultRenderers.BLOCK_STATE_RENDER.value);
       for (int i = 0; i < assetsData.length; i++) {
         String data = blockAssetGenerator.generateBlockState();
         renderFileData.add(data);
         blockAssetGenerator.addBlockStateToPack(data, assetsData[i]);
-        renderData.add(data);
       }
       blockAssetGenerator.addToRenderFile(blockKey, renderFileData);
     } else {
       Log.warn("Bad data for asset gen");
     }
-
-    blockAssetGenerator.addRenderData(blockKey, renderData);
   }
 
   private void renderChorusPlant(@NonNull String stateData, Block block) {

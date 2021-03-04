@@ -256,6 +256,4 @@ public class BlockAssetGenerator {
     }
   }
 
-  public void addRenderData(String blockKey, ArrayList<String> renderData) {
-  }
 }
