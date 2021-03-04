@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import javax.inject.Inject;
 import lombok.NonNull;
 import org.bukkit.scheduler.BukkitRunnable;
+import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.BlockRenderManager;
 import studio.craftory.core.blocks.rendering.CraftoryRenderer;
 import studio.craftory.core.data.keys.CraftoryBlockKey;
@@ -20,6 +21,8 @@ public class AssetLinker extends BukkitRunnable {
 
   @Override
   public void run() {
+    CraftorySetup setup = new CraftorySetup();
+    setup.runTask(Craftory.getInstance());
     linkCustomBlockAssets();
   }
 
@@ -37,6 +40,7 @@ public class AssetLinker extends BukkitRunnable {
         renderer.generateAssets(blockAssets.getKey(), blockAssets.getValue(), blockAssetGenerator);
       }
     }
+    blockAssetGenerator.writeRenderDataFile();
   }
 }
 

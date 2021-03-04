@@ -1,5 +1,7 @@
 package studio.craftory.core.blocks.rendering.renderers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -68,15 +70,19 @@ public class BlockStateRenderer implements CraftoryRenderer {
 
   @Override
   public void generateAssets(String blockKey, String[] assetsData, BlockAssetGenerator blockAssetGenerator) {
+    ObjectMapper mapper = new ObjectMapper();
     ArrayList<String> renderData = new ArrayList<>();
     renderData.add(DefaultRenderers.BLOCK_STATE_RENDER.value);
 
     if (assetsData.length == 1 || assetsData.length == 6) {
+      ArrayNode renderFileData = mapper.createArrayNode();
       for (int i = 0; i < assetsData.length; i++) {
         String data = blockAssetGenerator.generateBlockState();
+        renderFileData.add(data);
         blockAssetGenerator.addBlockStateToPack(data, assetsData[i]);
         renderData.add(data);
       }
+      blockAssetGenerator.addToRenderFile(blockKey, renderFileData);
     } else {
       Log.warn("Bad data for asset gen");
     }
@@ -155,7 +161,7 @@ public class BlockStateRenderer implements CraftoryRenderer {
       case "k":
         return Instrument.IRON_XYLOPHONE;
       case "l":
-        return Instrument.PIANO;
+        return Instrument.PLING;
       case "m":
         return Instrument.SNARE_DRUM;
       case "n":

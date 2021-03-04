@@ -4,12 +4,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.JsonArray;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import lombok.NonNull;
+import org.bukkit.Instrument;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.utils.Log;
 
@@ -18,13 +22,31 @@ public class BlockAssetGenerator {
   private ArrayList<GenerationData> blocksToUse = new ArrayList<>();
   private final ArrayList<String> resourcePacks = new ArrayList<>(Arrays.asList("low", "normal", "high"));
   ObjectMapper mapper = new ObjectMapper();
+  ObjectNode renderDataFile = mapper.createObjectNode();
+  File file = new File(Craftory.getInstance().getDataFolder(), "renderData.json");
 
   public BlockAssetGenerator() {
+    try {
+      renderDataFile = (ObjectNode) mapper.readTree(file);
+    } catch (IOException e) {
+    }
     //Should be read from config file and generated
-    blocksToUse.add(new GenerationData(750, "a,0,T","note_block"));
+    blocksToUse.add(new GenerationData(750, "a00T","note_block"));
     blocksToUse.add(new GenerationData(64, "0", "mushroom_stem"));
     blocksToUse.add(new GenerationData(64, "0", "brown_mushroom_block"));
     blocksToUse.add(new GenerationData(64, "0", "red_mushroom_block"));
+  }
+
+  public void writeRenderDataFile() {
+    try {
+      mapper.writeValue(file, renderDataFile);
+    } catch (IOException e) {
+      Log.warn("Couldn't write render data");
+    }
+  }
+
+  public void addToRenderFile(String blockKey, ArrayNode renderFileData) {
+    renderDataFile.set(blockKey, renderFileData);
   }
 
   public String generateBlockState() {
@@ -93,22 +115,65 @@ public class BlockAssetGenerator {
       if (Files.exists(path) && Files.isRegularFile(path)) {
         try {
           JsonNode node = mapper.readTree(path.toFile());
+          if (!node.isObject()) {
+            node = mapper.createObjectNode();
+          }
 
           ObjectNode noteblockState = mapper.createObjectNode();
-          String[] data = state.split(",");
-          noteblockState.with("when").put("instrument", data[0]);
-          noteblockState.with("when").put("note", data[1]);
-          noteblockState.with("when").put("powered", mapBoolean(data[3].charAt(0)));
-          noteblockState.with("apply").put("model", asset);
+          noteblockState.put("model", asset);
 
-          ArrayNode multipartNode = node.withArray("multipart");
-          multipartNode.add(noteblockState);
+          StringBuilder builder = new StringBuilder();
+          builder.append("instrument=");
+          builder.append(getInstrument(state.substring(0,1)));
+          builder.append(",note=");
+          builder.append(Integer.parseInt(state.substring(1,3)));
+          builder.append(",powered=");
+          builder.append(mapBoolean(state.charAt(3)));
+
+          ((ObjectNode) node.with("variants")).set(builder.toString(), noteblockState);
 
           mapper.writeValue(path.toFile(), node);
         } catch (IOException e) {
           e.printStackTrace();
         }
       }
+    }
+  }
+
+  private String getInstrument(@NonNull String instrument) {
+    switch (instrument) {
+      case "a":
+        return "banjo";
+      case "b":
+        return "basedrum";
+      case "c":
+        return "bass";
+      case "d" :
+        return "bell";
+      case "e":
+        return "bit";
+      case "f":
+        return "chime";
+      case "g":
+        return "cow_bell";
+      case "h":
+        return "didgeridoo";
+      case "i":
+        return "flute";
+      case "j":
+        return "guitar";
+      case "k":
+        return "iron_xylophone";
+      case "l":
+        return "pling";
+      case "m":
+        return "snare";
+      case "n":
+        return "hat";
+      case "o":
+        return "xylophone";
+      default:
+        return "error";
     }
   }
 
@@ -148,10 +213,11 @@ public class BlockAssetGenerator {
   }
 
   private String generateNoteBlockState(GenerationData generationData) {
-    String[] data = generationData.getData().split(",");
-    char instrument = data[0].charAt(0);
-    int note = Integer.parseInt(data[1]);
-    String powered = data[2];
+    String result = "n"+generationData.getData();
+    char instrument = generationData.getData().charAt(0);
+    instrument += 1;
+    int note = Integer.parseInt(generationData.getData().substring(1,3));
+    String powered = generationData.getData().substring(3,4);
 
     if (instrument == 'o' && note < 24) {
       instrument = 'a';
@@ -162,16 +228,10 @@ public class BlockAssetGenerator {
       powered = "F";
     }
 
-    String blockData = "" + instrument + note + powered;
+    String blockData = "" + instrument + ("00"+note).substring(String.valueOf(note).length()) + powered;
+    decreaseGenerationData(generationData, blockData);
 
-    blocksToUse.remove(0);
-    if (generationData.getAmountLeft() != 0) {
-      generationData.setAmountLeft(generationData.getAmountLeft() - 1);
-      generationData.setData(blockData);
-      blocksToUse.add(0, generationData);
-    }
-
-    return blockData;
+    return result;
   }
 
   private String generateMushroomState(GenerationData generationData, String block) {
@@ -181,14 +241,19 @@ public class BlockAssetGenerator {
       result.append((Integer.parseInt(generationData.getData()) & 0x1 << i) != 0 ? "T" : "F");
     }
 
-    blocksToUse.remove(0);
-    if (generationData.getAmountLeft() != 0) {
-      generationData.setAmountLeft(generationData.getAmountLeft() - 1);
-      generationData.setData(String.valueOf(Integer.parseInt(generationData.getData()) - 1));
-      blocksToUse.add(0, generationData);
-    }
+    String blockData = String.valueOf(Integer.parseInt(generationData.getData()) - 1);
+    decreaseGenerationData(generationData, blockData);
 
     return result.toString();
+  }
+
+  private void decreaseGenerationData(GenerationData generationData, String blockData) {
+    if (generationData.getAmountLeft() != 0) {
+      generationData.setAmountLeft(generationData.getAmountLeft() - 1);
+      generationData.setData(blockData);
+    } else {
+      blocksToUse.remove(0);
+    }
   }
 
   public void addRenderData(String blockKey, ArrayList<String> renderData) {
