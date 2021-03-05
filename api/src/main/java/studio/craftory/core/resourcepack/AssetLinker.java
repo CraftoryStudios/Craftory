@@ -1,14 +1,18 @@
 package studio.craftory.core.resourcepack;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.inject.Inject;
 import lombok.NonNull;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.BlockRenderManager;
 import studio.craftory.core.blocks.rendering.CraftoryRenderer;
+import studio.craftory.core.data.events.ResourcePackBuilt;
 import studio.craftory.core.data.keys.CraftoryBlockKey;
 
 public class AssetLinker extends BukkitRunnable {
@@ -21,9 +25,13 @@ public class AssetLinker extends BukkitRunnable {
 
   @Override
   public void run() {
-    CraftorySetup setup = new CraftorySetup();
-    setup.runTask(Craftory.getInstance());
-    linkCustomBlockAssets();
+    //Need better system later
+    if (!Files.exists(Paths.get(Craftory.getInstance().getDataFolder() + "/resourcepacks"))) {
+      CraftorySetup.run();
+      linkCustomBlockAssets();
+    }
+    ResourcePackBuilt builtEvent = new ResourcePackBuilt();
+    Bukkit.getPluginManager().callEvent(builtEvent);
   }
 
   public void registerBlockAssets(@NonNull CraftoryBlockKey blockKey, String renderer, @NonNull String[] textures) {

@@ -2,10 +2,13 @@ package studio.craftory.core.listeners;
 
 import java.util.Optional;
 import javax.inject.Inject;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -61,5 +64,22 @@ public class CustomBlockListener implements Listener {
     if (degrees <= 135) return CraftoryDirection.EAST;
     if (degrees <= 225) return CraftoryDirection.SOUTH;
     return CraftoryDirection.WEST;
+  }
+
+  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+  public void onCustomBlockPhysics(BlockPhysicsEvent event) {
+    Material type = event.getChangedType();
+    if ((type == Material.MUSHROOM_STEM || type == Material.BROWN_MUSHROOM_BLOCK || type == Material.RED_MUSHROOM_BLOCK
+        || type == Material.NOTE_BLOCK) && customBlockManager.containsCustomBlock(event.getSourceBlock().getLocation())) {
+      event.setCancelled(true);
+      event.getBlock().getState().update(true, false);
+    }
+  }
+
+  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+  public void onNoteBlockInteract(PlayerInteractEvent event) {
+    if (event.hasBlock() && event.getClickedBlock().getType() == Material.NOTE_BLOCK && customBlockManager.containsCustomBlock(event.getClickedBlock().getLocation())) {
+      event.setCancelled(true);
+    }
   }
 }

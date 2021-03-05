@@ -11,6 +11,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import studio.craftory.core.api.CustomBlockAPI;
+import studio.craftory.core.blocks.BlockRenderManager;
 import studio.craftory.core.blocks.CustomBlockManager;
 import studio.craftory.core.blocks.CustomBlockRegistry;
 import studio.craftory.core.commands.SpawnItemCommand;
@@ -38,6 +39,7 @@ public final class Craftory extends JavaPlugin {
   private AsyncExecutionManager asyncExecutionManager;
   private SyncExecutionManager syncExecutionManager;
   private CustomBlockManager customBlockManager;
+  private BlockRenderManager blockRenderManager;
 
   //External
   private CustomItemManager customItemManager;
@@ -67,6 +69,7 @@ public final class Craftory extends JavaPlugin {
 
     //Custom Block
     injector.getSingleton(CustomBlockRegistry.class);
+    blockRenderManager = injector.getSingleton(BlockRenderManager.class);
     customBlockManager = injector.getSingleton(CustomBlockManager.class);
 
     //API
@@ -82,6 +85,7 @@ public final class Craftory extends JavaPlugin {
 
     //Register Events
     PluginManager pluginManager = getServer().getPluginManager();
+    pluginManager.registerEvents(blockRenderManager, instance);
     pluginManager.registerEvents(injector.getSingleton(CustomBlockListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(WorldListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ChunkListener.class), instance);

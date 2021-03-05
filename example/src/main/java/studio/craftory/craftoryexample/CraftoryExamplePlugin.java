@@ -17,6 +17,7 @@ import studio.craftory.core.data.keys.ItemDataKey;
 import studio.craftory.core.items.CustomItem;
 import studio.craftory.core.recipes.ShapedCraftingRecipe;
 import studio.craftory.core.recipes.ShapelessCraftingRecipe;
+import studio.craftory.craftoryexample.blocks.CopperOre;
 import studio.craftory.craftoryexample.blocks.SimpleGenerator;
 import studio.craftory.craftoryexample.commands.SpawnGeneratorCommand;
 import studio.craftory.craftoryexample.items.Wrench;
@@ -55,9 +56,12 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
 
   @Override
   public void onEnable() {
-    String[] test = {"custom/block/mineral/copper/copper_ore", "custom/block/mineral/copper/copper_ore", "custom/block/mineral/copper/copper_ore",
-        "custom/block/mineral/copper/copper_ore", "custom/block/mineral/copper/copper_ore", "custom/block/mineral/copper/copper_ore"};
+    String[] test = {"custom/block/machine/generator_n", "custom/block/machine/generator_s", "custom/block/machine/generator_s",
+        "custom/block/machine/generator_w", "custom/block/machine/generator_n", "custom/block/machine/generator_n"};
     Craftory.getCustomBlockAPI().registerCustomBlock(this, SimpleGenerator.class, DefaultRenderers.BLOCK_STATE_RENDER.value, test);
+
+    String[] test1 = {"custom/block/mineral/copper/copper_ore"};
+    Craftory.getCustomBlockAPI().registerCustomBlock(this, CopperOre.class, DefaultRenderers.BLOCK_STATE_RENDER.value, test1);
   }
 
   public void onCraftoryEnable() {

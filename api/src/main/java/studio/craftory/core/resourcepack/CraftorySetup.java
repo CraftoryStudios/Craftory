@@ -14,6 +14,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
@@ -21,16 +22,16 @@ import java.util.zip.ZipInputStream;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.FileUtil;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.CraftoryAddon;
 import studio.craftory.core.utils.Log;
 
-public class CraftorySetup extends BukkitRunnable {
+public class CraftorySetup {
 
-  private final ObjectMapper objectMapper = new ObjectMapper();
+  private static final ObjectMapper objectMapper = new ObjectMapper();
 
-  @Override
-  public void run() {
+  public static void run() {
     for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
       if (CraftoryAddon.class.isAssignableFrom(plugin.getClass())) {
 
@@ -51,13 +52,24 @@ public class CraftorySetup extends BukkitRunnable {
 
         File endDir = new File(Craftory.getInstance().getDataFolder(), "resourcepacks");
         copyResources(destDir.getAbsolutePath(), endDir.getAbsolutePath());
-        zipFile.delete();
-        destDir.delete();
+
+        try {
+          Files.walk(Paths.get(Craftory.getInstance().getDataFolder() + "/tempassets"))
+               .sorted(Comparator.reverseOrder())
+               .map(Path::toFile)
+               .forEach(File::delete);
+          Files.walk(Paths.get(Craftory.getInstance().getDataFolder() + "/assets"))
+               .sorted(Comparator.reverseOrder())
+               .map(Path::toFile)
+               .forEach(File::delete);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     }
   }
 
-  private void downloadResource(URL url, File localFilename) {
+  private static void downloadResource(URL url, File localFilename) {
     try (ReadableByteChannel readableByteChannel = Channels.newChannel(url.openStream());
         FileOutputStream fileOutputStream = new FileOutputStream(localFilename); FileChannel fileChannel = fileOutputStream.getChannel()) {
 
@@ -67,7 +79,7 @@ public class CraftorySetup extends BukkitRunnable {
     }
   }
 
-  private void copyResources(String sourceDirectoryLocation, String destinationDirectoryLocation)  {
+  private static void copyResources(String sourceDirectoryLocation, String destinationDirectoryLocation)  {
     try {
       Files.walk(Paths.get(sourceDirectoryLocation))
            .forEach(source -> {
@@ -88,7 +100,7 @@ public class CraftorySetup extends BukkitRunnable {
     }
   }
 
-  private void mergeResources(File source, File dest) {
+  private static void mergeResources(File source, File dest) {
     Optional<String> fileExtensionOptional = getExtension(dest.getName());
     if (!fileExtensionOptional.isPresent()) {
       Log.warn("What is this");
@@ -107,7 +119,7 @@ public class CraftorySetup extends BukkitRunnable {
     }
   }
 
-  private void mergeJSON(File source, File dest) {
+  private static void mergeJSON(File source, File dest) {
     try {
       JsonNode sourceNode = objectMapper.readTree(source);
       JsonNode destNode = objectMapper.readTree(dest);
@@ -117,7 +129,7 @@ public class CraftorySetup extends BukkitRunnable {
     }
   }
 
-  private JsonNode merge(JsonNode mainNode, JsonNode updateNode) {
+  private static JsonNode merge(JsonNode mainNode, JsonNode updateNode) {
     Iterator<String> fieldNames = updateNode.fieldNames();
     while (fieldNames.hasNext()) {
 
@@ -140,13 +152,13 @@ public class CraftorySetup extends BukkitRunnable {
     return mainNode;
   }
 
-  private Optional<String> getExtension(String filename) {
+  private static Optional<String> getExtension(String filename) {
     return Optional.ofNullable(filename)
                    .filter(f -> f.contains("."))
                    .map(f -> f.substring(filename.lastIndexOf(".") + 1));
   }
 
-  private void unZip(File input, File destDir)  {
+  private static void unZip(File input, File destDir)  {
     try {
       byte[] buffer = new byte[1024];
       ZipInputStream zis = new ZipInputStream(new FileInputStream(input));
