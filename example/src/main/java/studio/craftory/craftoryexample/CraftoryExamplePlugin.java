@@ -12,14 +12,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.CraftoryAddon;
-import studio.craftory.core.blocks.rendering.DefaultRenderers;
 import studio.craftory.core.data.keys.ItemDataKey;
 import studio.craftory.core.items.CustomItem;
 import studio.craftory.core.recipes.ShapedCraftingRecipe;
 import studio.craftory.core.recipes.ShapelessCraftingRecipe;
 import studio.craftory.craftoryexample.blocks.CopperOre;
 import studio.craftory.craftoryexample.blocks.SimpleGenerator;
-import studio.craftory.craftoryexample.commands.SpawnGeneratorCommand;
 import studio.craftory.craftoryexample.items.Wrench;
 
 public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryAddon {
@@ -58,14 +56,10 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
   public void onEnable() {
     String[] test = {"custom/block/machine/generator_n", "custom/block/machine/generator_s", "custom/block/machine/generator_s",
         "custom/block/machine/generator_w", "custom/block/machine/generator_n", "custom/block/machine/generator_n"};
-    Craftory.getCustomBlockAPI().registerCustomBlock(this, SimpleGenerator.class, DefaultRenderers.BLOCK_STATE_RENDER.value, test);
+    Craftory.getCustomBlockAPI().registerCustomBlock(this, SimpleGenerator.class, test);
 
     String[] test1 = {"custom/block/mineral/copper/copper_ore"};
-    Craftory.getCustomBlockAPI().registerCustomBlock(this, CopperOre.class, DefaultRenderers.BLOCK_STATE_RENDER.value, test1);
-  }
-
-  public void onCraftoryEnable() {
-    this.getCommand("simplegen").setExecutor(new SpawnGeneratorCommand());
+    Craftory.getCustomBlockAPI().registerCustomBlock(this, CopperOre.class, test1);
   }
 
   @Override

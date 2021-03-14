@@ -17,7 +17,7 @@ import studio.craftory.core.data.keys.CraftoryBlockKey;
 
 public class AssetLinker extends BukkitRunnable {
 
-  private Map<String, Map<String, String[]>> assetsToGenerate = new HashMap<>();
+  private Map<Class<? extends CraftoryRenderer>, Map<String, String[]>> assetsToGenerate = new HashMap<>();
   private BlockAssetGenerator blockAssetGenerator = new BlockAssetGenerator();
 
   @Inject
@@ -34,14 +34,14 @@ public class AssetLinker extends BukkitRunnable {
     Bukkit.getPluginManager().callEvent(builtEvent);
   }
 
-  public void registerBlockAssets(@NonNull CraftoryBlockKey blockKey, String renderer, @NonNull String[] textures) {
+  public void registerBlockAssets(@NonNull CraftoryBlockKey blockKey, Class<? extends CraftoryRenderer> renderer, @NonNull String[] textures) {
     assetsToGenerate.computeIfAbsent(renderer, k -> new HashMap<>()).put(blockKey.toString(), textures);
   }
 
 
 
   private void linkCustomBlockAssets() {
-    for (Entry<String, Map<String, String[]>> rendererAssets : assetsToGenerate.entrySet()) {
+    for (Entry<Class<? extends CraftoryRenderer>, Map<String, String[]>> rendererAssets : assetsToGenerate.entrySet()) {
       CraftoryRenderer renderer = blockRenderManager.getRenderers().get(rendererAssets.getKey());
 
       for (Entry<String, String[]> blockAssets : rendererAssets.getValue().entrySet()) {

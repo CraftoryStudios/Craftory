@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,7 +32,7 @@ public class BlockRenderManager implements Listener {
   private final ObjectMapper mapper;
 
   @Getter
-  private Map<String, CraftoryRenderer> renderers = new HashMap<>();
+  private Map<Class<? extends CraftoryRenderer>, CraftoryRenderer> renderers = new HashMap<>();
   private Map<String, RenderData> blockToRenderDataMap = new HashMap<>();
 
   public BlockRenderManager() {
@@ -45,15 +46,15 @@ public class BlockRenderManager implements Listener {
   }
 
   private void registerDefaultRenders() {
-    registerRenderer(DefaultRenderers.BLOCK_STATE_RENDER, new BlockStateRenderer());
-    registerRenderer(DefaultRenderers.TRANSPARENT_BLOCK_STATE_RENDER, new BlockStateRenderer());
+    registerRenderer(BlockStateRenderer.class);
   }
 
-  public void registerRenderer(String key, CraftoryRenderer renderer) {
-    renderers.putIfAbsent(key, renderer);
-  }
-  public void registerRenderer(DefaultRenderers key, CraftoryRenderer renderer) {
-    registerRenderer(key.value, renderer);
+  public void registerRenderer(@NonNull Class<? extends CraftoryRenderer> renderer) {
+    try {
+      renderers.putIfAbsent(renderer, renderer.getDeclaredConstructor().newInstance());
+    } catch (Exception e ) {
+      Log.error("Couldn't register renderer ", renderer.getName());
+    }
   }
 
   public void renderCustomBlock(CraftoryBlockKey blockKey, Block block, CraftoryDirection direction) {
