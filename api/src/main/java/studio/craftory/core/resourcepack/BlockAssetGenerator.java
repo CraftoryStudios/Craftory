@@ -15,6 +15,7 @@ import java.util.Arrays;
 import lombok.NonNull;
 import org.bukkit.Instrument;
 import studio.craftory.core.Craftory;
+import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.utils.Log;
 
 public class BlockAssetGenerator {
@@ -64,22 +65,22 @@ public class BlockAssetGenerator {
     return "";
   }
 
-  public void addBlockStateToPack(String state, String asset) {
+  public void addBlockStateToPack(String state, String asset, CraftoryDirection direction) {
     String blockType = state.substring(0, 1);
     String stateData = state.substring(1);
 
     switch (blockType) {
       case "s":
-        addMushroomToPack(stateData, asset, getAllBlockStateFiles("mushroom_stem"));
+        addMushroomToPack(stateData, asset, getAllBlockStateFiles("mushroom_stem"), direction);
         break;
       case "b":
-        addMushroomToPack(stateData, asset, getAllBlockStateFiles("brown_mushroom_block"));
+        addMushroomToPack(stateData, asset, getAllBlockStateFiles("brown_mushroom_block"), direction);
         break;
       case "n":
-        addNoteblockToPack(stateData, asset, getAllBlockStateFiles("note_block"));
+        addNoteblockToPack(stateData, asset, getAllBlockStateFiles("note_block"), direction);
         break;
       case "r":
-        addMushroomToPack(stateData, asset, getAllBlockStateFiles("red_mushroom_block"));
+        addMushroomToPack(stateData, asset, getAllBlockStateFiles("red_mushroom_block"), direction);
         break;
       case "c":
 
@@ -110,7 +111,7 @@ public class BlockAssetGenerator {
     return paths;
   }
 
-  private void addNoteblockToPack(String state, String asset, ArrayList<Path> paths) {
+  private void addNoteblockToPack(String state, String asset, ArrayList<Path> paths, CraftoryDirection direction) {
     for (Path path : paths) {
       if (Files.exists(path) && Files.isRegularFile(path)) {
         try {
@@ -121,6 +122,7 @@ public class BlockAssetGenerator {
 
           ObjectNode noteblockState = mapper.createObjectNode();
           noteblockState.put("model", asset);
+          addDirectionData(noteblockState, direction);
 
           StringBuilder builder = new StringBuilder();
           builder.append("instrument=");
@@ -177,7 +179,29 @@ public class BlockAssetGenerator {
     }
   }
 
-  private void addMushroomToPack(String state, String asset, ArrayList<Path> paths) {
+  private void addDirectionData(ObjectNode node, CraftoryDirection direction) {
+    if (direction != CraftoryDirection.NORTH) {
+      switch (direction) {
+        case SOUTH:
+          node.put("y", 180);
+          break;
+        case EAST:
+          node.put("y", 90);
+          break;
+        case WEST:
+          node.put("y", 270);
+          break;
+        case UP:
+          node.put("x", 90);
+          break;
+        case DOWN:
+          node.put("x", 270);
+          break;
+      }
+    }
+  }
+
+  private void addMushroomToPack(String state, String asset, ArrayList<Path> paths, CraftoryDirection direction) {
     for (Path path : paths) {
       if (Files.exists(path) && Files.isRegularFile(path)) {
         try {
@@ -191,6 +215,7 @@ public class BlockAssetGenerator {
           mushroomState.with("when").put("up", mapBoolean(state.charAt(4)));
           mushroomState.with("when").put("west", mapBoolean(state.charAt(5)));
           mushroomState.with("apply").put("model", asset);
+          addDirectionData(mushroomState.with("apply"), direction);
 
           ArrayNode multipartNode = node.withArray("multipart");
           multipartNode.add(mushroomState);

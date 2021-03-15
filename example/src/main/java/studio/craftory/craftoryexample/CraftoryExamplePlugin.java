@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.CraftoryAddon;
+import studio.craftory.core.blocks.rendering.renderers.DefaultRotationalRenderer;
 import studio.craftory.core.data.keys.ItemDataKey;
 import studio.craftory.core.items.CustomItem;
 import studio.craftory.core.recipes.ShapedCraftingRecipe;
@@ -54,9 +55,8 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
 
   @Override
   public void onEnable() {
-    String[] test = {"custom/block/machine/generator_n", "custom/block/machine/generator_s", "custom/block/machine/generator_s",
-        "custom/block/machine/generator_w", "custom/block/machine/generator_n", "custom/block/machine/generator_n"};
-    Craftory.getCustomBlockAPI().registerCustomBlock(this, SimpleGenerator.class, test);
+    String[] test = {"custom/block/machine/generator_n"};
+    Craftory.getCustomBlockAPI().registerCustomBlock(this, SimpleGenerator.class, test, DefaultRotationalRenderer.class);
 
     String[] test1 = {"custom/block/mineral/copper/copper_ore"};
     Craftory.getCustomBlockAPI().registerCustomBlock(this, CopperOre.class, test1);

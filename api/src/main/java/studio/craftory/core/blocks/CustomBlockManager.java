@@ -24,15 +24,15 @@ import studio.craftory.core.utils.Log;
 
 public class CustomBlockManager {
 
-  private CustomBlockRegistry blockRegister;
-  private AsyncExecutionManager asyncExecutionManager;
-  private SyncExecutionManager syncExecutionManager;
-  private BlockRenderManager blockRenderManager;
+  private final CustomBlockRegistry blockRegister;
+  private final AsyncExecutionManager asyncExecutionManager;
+  private final SyncExecutionManager syncExecutionManager;
+  private final BlockRenderManager blockRenderManager;
   @Getter
-  private DataStorageManager dataStorageManager;
+  private final DataStorageManager dataStorageManager;
 
   @Getter
-  private Map<Chunk,Map<Location, BaseCustomBlock>> customBlocks;
+  private final Map<Chunk,Map<Location, BaseCustomBlock>> customBlocks;
 
   @Inject
   public CustomBlockManager (CustomBlockRegistry blockRegister, AsyncExecutionManager asyncExecutionManager,
@@ -162,7 +162,7 @@ public class CustomBlockManager {
     if (location.getChunk().isLoaded()) {
       Map<Location, BaseCustomBlock> chunkData = customBlocks.get(location.getChunk());
       if (chunkData != null) {
-        if (chunkData.containsKey(location)) return true;
+        return chunkData.containsKey(location);
       }
     }
     return false;
