@@ -12,12 +12,15 @@ assignees: ''
 <!-- For example add xxxx new machine, or add xxx new system -->
 <!-- If requests contain more they should be broken into separate requests -->
 
+
 ## Description of Feature (REQUIRED)
 <!-- A clear and detailed description of the feature you want to be added. -->
+
 
 ## Details of Benefit (REQUIRED)
 <!-- Provide details about how this feature would benefit Craftory and why it should be added -->
 <!-- Mainly used to decide the priority of this feature -->
+
 
 ## Estimated Difficulty (OPTIONAL)
 <!-- How hard is this feature to implement -->
