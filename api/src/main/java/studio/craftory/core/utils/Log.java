@@ -51,7 +51,7 @@ public final class Log {
 
   public static void error(@NonNull String... logMessages) {
     for (String logMessage : logMessages) {
-      logger.severe(ERROR_COLOR + PREFIX +logMessage);
+      logger.severe(ERROR_COLOR +logMessage);
     }
   }
 

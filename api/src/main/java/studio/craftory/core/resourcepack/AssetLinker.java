@@ -42,7 +42,7 @@ public class AssetLinker extends BukkitRunnable {
 
   private void linkCustomBlockAssets() {
     for (Entry<Class<? extends CraftoryRenderer>, Map<String, String[]>> rendererAssets : assetsToGenerate.entrySet()) {
-      CraftoryRenderer renderer = blockRenderManager.getRenderers().get(rendererAssets.getKey());
+      CraftoryRenderer renderer = blockRenderManager.getRenderers().get(rendererAssets.getKey().getSimpleName());
 
       for (Entry<String, String[]> blockAssets : rendererAssets.getValue().entrySet()) {
         renderer.generateAssets(blockAssets.getKey(), blockAssets.getValue(), blockAssetGenerator);

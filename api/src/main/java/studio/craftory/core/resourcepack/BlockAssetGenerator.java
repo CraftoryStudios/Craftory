@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.gson.JsonArray;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +12,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import lombok.NonNull;
-import org.bukkit.Instrument;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.utils.Log;
@@ -180,16 +178,16 @@ public class BlockAssetGenerator {
   }
 
   private void addDirectionData(ObjectNode node, CraftoryDirection direction) {
-    if (direction != CraftoryDirection.NORTH) {
+    if (direction != CraftoryDirection.WEST) {
       switch (direction) {
-        case SOUTH:
-          node.put("y", 180);
-          break;
-        case EAST:
+        case NORTH:
           node.put("y", 90);
           break;
-        case WEST:
+        case SOUTH:
           node.put("y", 270);
+          break;
+        case EAST:
+          node.put("y", 180);
           break;
         case UP:
           node.put("x", 90);

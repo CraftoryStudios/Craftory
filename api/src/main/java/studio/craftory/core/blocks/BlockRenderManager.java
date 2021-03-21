@@ -19,6 +19,7 @@ import org.bukkit.event.Listener;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.rendering.renderers.DefaultRenderer;
 import studio.craftory.core.blocks.rendering.CraftoryRenderer;
+import studio.craftory.core.blocks.rendering.renderers.DefaultRotationalRenderer;
 import studio.craftory.core.data.RenderData;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.events.ResourcePackBuilt;
@@ -44,6 +45,7 @@ public class BlockRenderManager implements Listener {
 
   private void registerDefaultRenders() {
     registerRenderer(DefaultRenderer.class);
+    registerRenderer(DefaultRotationalRenderer.class);
   }
 
   public void registerRenderer(@NonNull Class<? extends CraftoryRenderer> renderer) {
