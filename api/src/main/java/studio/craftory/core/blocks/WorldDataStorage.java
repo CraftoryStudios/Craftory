@@ -43,19 +43,20 @@ public class WorldDataStorage {
     this.world = world;
     this.blockRegister = blockRegister;
     this.mapper = mapper;
-    file = new File(world.getWorldFolder(), "craftory");
+    file = new File(world.getWorldFolder(), "craftory/worldStorage.json");
     setupSaveFile();
   }
 
   private void setupSaveFile() {
     if (!file.exists()) {
-      file.mkdirs();
+      file.getParentFile().mkdirs();
       try {
         if(!file.createNewFile()) {
           Log.error("Couldn't create save file");
         }
       } catch (IOException e) {
         Log.error("Couldn't create save file");
+        e.printStackTrace();
       }
     }
     file = new File(file, "blocks.json");
