@@ -10,9 +10,10 @@ import studio.craftory.core.data.keys.ItemDataKey;
 public class Constants {
 
   public static class Keys {
+    private Keys(){}
 
-    public static final NamespacedKey blockItemKey = new NamespacedKey(Craftory.getInstance(), "blockItemKey");
-    public static final ItemDataKey blockItemDataKey = new ItemDataKey(blockItemKey, PersistentDataType.STRING);
+    public static final NamespacedKey BLOCK_ITEM_KEY = new NamespacedKey(Craftory.getInstance(), "blockItemKey");
+    public static final ItemDataKey BLOCK_ITEM_DATA_KEY = new ItemDataKey(BLOCK_ITEM_KEY, PersistentDataType.STRING);
     public static final NamespacedKey ITEM_NAME_NAMESPACED_KEY = new NamespacedKey(Craftory.getInstance(), "CUSTOM_ITEM_NAME");
 
     public static final NamespacedKey CHARGE_NAMESPACED_KEY = new NamespacedKey(Craftory.getInstance(), "CHARGE");
@@ -21,9 +22,11 @@ public class Constants {
   }
 
   public static class ResourcePack {
-    public static final String resourcePackPath = Craftory.getInstance().getDataFolder() +"/resourcepacks";
-    public static final String assetsPath = Craftory.getInstance().getDataFolder() + "/assets";
-    public static final String tempPath = Craftory.getInstance().getDataFolder() + "/temp";
+    private ResourcePack(){}
+
+    public static final String RESOURCE_PACK_PATH = Craftory.getInstance().getDataFolder() +"/resourcepacks";
+    public static final String ASSETS_PATH = Craftory.getInstance().getDataFolder() + "/assets";
+    public static final String TEMP_PATH = Craftory.getInstance().getDataFolder() + "/temp";
   }
 
 }

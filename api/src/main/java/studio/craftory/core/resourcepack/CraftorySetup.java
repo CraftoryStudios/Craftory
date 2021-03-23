@@ -23,13 +23,13 @@ public class CraftorySetup {
   }
 
   public static void run() {
-    File tempDirectory = new File(ResourcePack.tempPath);
+    File tempDirectory = new File(ResourcePack.TEMP_PATH);
     tempDirectory.mkdirs();
 
     for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
       if (CraftoryAddon.class.isAssignableFrom(plugin.getClass())) {
 
-        File assetDirectory = new File(ResourcePack.assetsPath, plugin.getName());
+        File assetDirectory = new File(ResourcePack.ASSETS_PATH, plugin.getName());
         assetDirectory.mkdirs();
         File zipFile = new File(tempDirectory, plugin.getName() + ".zip");
 
@@ -43,13 +43,13 @@ public class CraftorySetup {
 
         FileUtils.downloadResource(((CraftoryAddon) plugin).getAddonResources(), zipFile);
         FileUtils.unZip(zipFile, assetDirectory);
-        FileUtils.copyResources(assetDirectory.getAbsolutePath(), new File(ResourcePack.resourcePackPath).getAbsolutePath(),
+        FileUtils.copyResources(assetDirectory.getAbsolutePath(), new File(ResourcePack.RESOURCE_PACK_PATH).getAbsolutePath(),
             (source, dest) -> mergeResources(source, dest));
 
-        FileUtils.recursiveDirectoryDelete(ResourcePack.assetsPath);
+        FileUtils.recursiveDirectoryDelete(ResourcePack.ASSETS_PATH);
       }
     }
-    FileUtils.recursiveDirectoryDelete(ResourcePack.tempPath);
+    FileUtils.recursiveDirectoryDelete(ResourcePack.TEMP_PATH);
   }
 
   private static void mergeResources(File source, File dest) {
@@ -67,6 +67,8 @@ public class CraftorySetup {
         break;
       case "json":
         mergeJSON(source, dest);
+        break;
+      default:
         break;
     }
   }

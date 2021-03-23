@@ -39,11 +39,11 @@ public class CustomBlockListener implements Listener {
     ItemStack itemStack = blockPlaceEvent.getItemInHand();
     CustomItemUtils.validateItemStackMeta(itemStack);
     PersistentDataContainer dataHolder = itemStack.getItemMeta().getPersistentDataContainer();
-    if (!dataHolder.has(Keys.blockItemKey, PersistentDataType.STRING)) return;
+    if (!dataHolder.has(Keys.BLOCK_ITEM_KEY, PersistentDataType.STRING)) return;
 
     //Get Custom Block Data
     CraftoryDirection direction = getDirection(blockPlaceEvent.getPlayer());
-    String blockKey = dataHolder.get(Keys.blockItemKey, PersistentDataType.STRING);
+    String blockKey = dataHolder.get(Keys.BLOCK_ITEM_KEY, PersistentDataType.STRING);
 
     Optional<CraftoryBlockKey> blockKeyOptional = blockRegistry.getBlockKey(blockKey);
     if (blockKeyOptional.isPresent()) {
