@@ -18,6 +18,10 @@ import studio.craftory.core.utils.Log;
 
 public class BlockAssetGenerator {
 
+  public static final String NOTE_BLOCK = "note_block";
+  public static final String MUSHROOM_STEM = "mushroom_stem";
+  public static final String BROWN_MUSHROOM_BLOCK = "brown_mushroom_block";
+  public static final String RED_MUSHROOM_BLOCK = "red_mushroom_block";
   private ArrayList<GenerationData> blocksToUse = new ArrayList<>();
   private final ArrayList<String> resourcePacks = new ArrayList<>(Arrays.asList("low", "normal", "high"));
   ObjectMapper mapper = new ObjectMapper();
@@ -28,12 +32,13 @@ public class BlockAssetGenerator {
     try {
       renderDataFile = (ObjectNode) mapper.readTree(file);
     } catch (IOException e) {
+      Log.debug("Couldn't read render data while generating assets");
     }
     //Should be read from config file and generated
-    blocksToUse.add(new GenerationData(750, "a00T","note_block"));
-    blocksToUse.add(new GenerationData(64, "0", "mushroom_stem"));
-    blocksToUse.add(new GenerationData(64, "0", "brown_mushroom_block"));
-    blocksToUse.add(new GenerationData(64, "0", "red_mushroom_block"));
+    blocksToUse.add(new GenerationData(750, "a00T", NOTE_BLOCK));
+    blocksToUse.add(new GenerationData(64, "0", MUSHROOM_STEM));
+    blocksToUse.add(new GenerationData(64, "0", BROWN_MUSHROOM_BLOCK));
+    blocksToUse.add(new GenerationData(64, "0", RED_MUSHROOM_BLOCK));
   }
 
   public void writeRenderDataFile() {
@@ -51,16 +56,17 @@ public class BlockAssetGenerator {
   public String generateBlockState() {
     GenerationData generationData = blocksToUse.get(0);
     switch (generationData.getBlockName()) {
-      case "mushroom_stem":
+      case MUSHROOM_STEM:
         return generateMushroomState(generationData, "s");
-      case "brown_mushroom_block":
+      case BROWN_MUSHROOM_BLOCK:
         return generateMushroomState(generationData, "b");
-      case "red_mushroom_block":
+      case RED_MUSHROOM_BLOCK:
         return generateMushroomState(generationData, "r");
-      case "note_block":
+      case NOTE_BLOCK:
         return generateNoteBlockState(generationData);
+      default:
+        return "";
     }
-    return "";
   }
 
   public void addBlockStateToPack(String state, String asset, CraftoryDirection direction) {
@@ -69,16 +75,16 @@ public class BlockAssetGenerator {
 
     switch (blockType) {
       case "s":
-        addMushroomToPack(stateData, asset, getAllBlockStateFiles("mushroom_stem"), direction);
+        addMushroomToPack(stateData, asset, getAllBlockStateFiles(MUSHROOM_STEM), direction);
         break;
       case "b":
-        addMushroomToPack(stateData, asset, getAllBlockStateFiles("brown_mushroom_block"), direction);
+        addMushroomToPack(stateData, asset, getAllBlockStateFiles(BROWN_MUSHROOM_BLOCK), direction);
         break;
       case "n":
-        addNoteblockToPack(stateData, asset, getAllBlockStateFiles("note_block"), direction);
+        addNoteblockToPack(stateData, asset, getAllBlockStateFiles(NOTE_BLOCK), direction);
         break;
       case "r":
-        addMushroomToPack(stateData, asset, getAllBlockStateFiles("red_mushroom_block"), direction);
+        addMushroomToPack(stateData, asset, getAllBlockStateFiles(RED_MUSHROOM_BLOCK), direction);
         break;
       case "c":
 
@@ -94,9 +100,7 @@ public class BlockAssetGenerator {
     for (String pack : resourcePacks) {
       Path blockstatePath = Paths.get(Craftory.getInstance().getDataFolder() +
           "/resourcepacks/" + pack + "/assets/minecraft/blockstates/" + blockstateName + ".json");
-      if (Files.exists(blockstatePath)) {
-
-      } else {
+      if (!Files.exists(blockstatePath)) {
         try {
           Files.createDirectories(blockstatePath.getParent());
           Files.createFile(blockstatePath);
@@ -194,6 +198,8 @@ public class BlockAssetGenerator {
           break;
         case DOWN:
           node.put("x", 270);
+          break;
+        default:
           break;
       }
     }

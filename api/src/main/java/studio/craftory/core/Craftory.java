@@ -26,7 +26,6 @@ import studio.craftory.core.resources.AssetManager;
 import studio.craftory.core.resources.CraftorySetup;
 import studio.craftory.core.recipes.RecipeManager;
 import studio.craftory.core.resourcepack.AssetLinker;
-import studio.craftory.core.resourcepack.CraftorySetup;
 import studio.craftory.core.utils.Log;
 
 public final class Craftory extends JavaPlugin {

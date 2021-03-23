@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import lombok.experimental.UtilityClass;
@@ -19,9 +20,8 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class FileUtils {
   public void copyResources(String sourceDirectory, String destinationDirectory, MergeAction mergeAction) {
-    try {
-      Files.walk(Paths.get(sourceDirectory))
-           .forEach(source -> {
+    try (Stream<Path> stream = Files.walk(Paths.get(sourceDirectory))){
+      stream.forEach(source -> {
              Path destination = Paths.get(destinationDirectory, source.toString().substring(sourceDirectory.length()));
 
              if (Files.exists(destination) && !Files.isDirectory(destination)) {
@@ -50,9 +50,8 @@ public class FileUtils {
   }
 
   public void unZip(File input, File outputDirectory) {
-    try {
-      byte[] buffer = new byte[1024];
-      ZipInputStream zis = new ZipInputStream(new FileInputStream(input));
+    byte[] buffer = new byte[1024];
+    try (ZipInputStream zis = new ZipInputStream(new FileInputStream(input))){
       ZipEntry zipEntry = zis.getNextEntry();
 
       while (zipEntry != null) {
@@ -69,17 +68,16 @@ public class FileUtils {
           }
 
           // write file content
-          FileOutputStream fos = new FileOutputStream(newFile);
-          int len;
-          while ((len = zis.read(buffer)) > 0) {
-            fos.write(buffer, 0, len);
+          try (FileOutputStream fos = new FileOutputStream(newFile)) {
+            int len;
+            while ((len = zis.read(buffer)) > 0) {
+              fos.write(buffer, 0, len);
+            }
           }
-          fos.close();
         }
         zipEntry = zis.getNextEntry();
       }
-      zis.closeEntry();
-      zis.close();
+
     } catch (IOException e) {
       Log.warn(e.toString());
     }
@@ -99,9 +97,8 @@ public class FileUtils {
   }
 
   public void recursiveDirectoryDelete(String directory) {
-    try {
-      Files.walk(Paths.get(directory))
-           .sorted(Comparator.reverseOrder())
+    try (Stream<Path> stream = Files.walk(Paths.get(directory))){
+      stream.sorted(Comparator.reverseOrder())
            .map(Path::toFile)
            .forEach(File::delete);
     } catch (IOException e) {

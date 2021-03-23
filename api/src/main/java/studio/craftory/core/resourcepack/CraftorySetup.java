@@ -4,28 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.FileUtil;
-import studio.craftory.core.Craftory;
 import studio.craftory.core.CraftoryAddon;
-import studio.craftory.core.utils.Constants;
 import studio.craftory.core.utils.Constants.ResourcePack;
 import studio.craftory.core.utils.FileUtils;
 import studio.craftory.core.utils.Log;
@@ -33,6 +17,10 @@ import studio.craftory.core.utils.Log;
 public class CraftorySetup {
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
+
+  private CraftorySetup() {
+
+  }
 
   public static void run() {
     File tempDirectory = new File(ResourcePack.tempPath);
@@ -46,7 +34,9 @@ public class CraftorySetup {
         File zipFile = new File(tempDirectory, plugin.getName() + ".zip");
 
         try {
-          zipFile.createNewFile();
+          if (!zipFile.createNewFile()) {
+            Log.debug("Couldn't create resource pack zip file, as already existed");
+          }
         } catch (IOException e) {
           e.printStackTrace();
         }
