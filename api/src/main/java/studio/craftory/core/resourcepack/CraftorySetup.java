@@ -38,7 +38,7 @@ public class CraftorySetup {
             Log.debug("Couldn't create resource pack zip file, as already existed");
           }
         } catch (IOException e) {
-          e.printStackTrace();
+          Log.error(e.toString());
         }
 
         FileUtils.downloadResource(((CraftoryAddon) plugin).getAddonResources(), zipFile);
@@ -79,7 +79,7 @@ public class CraftorySetup {
       JsonNode destNode = objectMapper.readTree(dest);
       objectMapper.writeValue(dest, merge(destNode, sourceNode));
     } catch (IOException e) {
-      e.printStackTrace();
+      Log.error(e.toString());
     }
   }
 

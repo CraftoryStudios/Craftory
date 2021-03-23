@@ -56,7 +56,7 @@ public class WorldDataStorage {
         }
       } catch (IOException e) {
         Log.error("Couldn't create save file");
-        e.printStackTrace();
+        Log.error(e.toString());
       }
     }
     file = new File(file, "blocks.json");

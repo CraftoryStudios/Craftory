@@ -22,6 +22,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
+import studio.craftory.core.utils.Log;
 
 public class ItemEventManager implements Listener {
 
@@ -85,7 +86,7 @@ public class ItemEventManager implements Listener {
             try {
               smartEvents.get(itemSmartEvent).get(triggerItemName).accept(event);
             } catch (Exception e) {
-              e.printStackTrace();
+              Log.error(e.toString());
             }
         }
       }

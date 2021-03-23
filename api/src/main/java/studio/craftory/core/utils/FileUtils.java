@@ -35,7 +35,7 @@ public class FileUtils {
              }
            });
     } catch (IOException e) {
-      e.printStackTrace();
+      Log.error(e.toString());
     }
   }
 
@@ -45,7 +45,7 @@ public class FileUtils {
 
       fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
     } catch (IOException fileNotFoundException) {
-      fileNotFoundException.printStackTrace();
+      Log.error(fileNotFoundException.toString());
     }
   }
 

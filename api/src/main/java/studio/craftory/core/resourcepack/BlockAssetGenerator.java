@@ -105,7 +105,7 @@ public class BlockAssetGenerator {
           Files.createDirectories(blockstatePath.getParent());
           Files.createFile(blockstatePath);
         } catch (IOException e) {
-          e.printStackTrace();
+          Log.error(e.toString());
         }
       }
        paths.add(blockstatePath);
@@ -138,7 +138,7 @@ public class BlockAssetGenerator {
 
           mapper.writeValue(path.toFile(), node);
         } catch (IOException e) {
-          e.printStackTrace();
+          Log.error(e.toString());
         }
       }
     }
@@ -226,7 +226,7 @@ public class BlockAssetGenerator {
 
           mapper.writeValue(path.toFile(), node);
         } catch (IOException e) {
-          e.printStackTrace();
+          Log.error(e.toString());
         }
         
 

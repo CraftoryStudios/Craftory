@@ -17,6 +17,7 @@ import studio.craftory.core.data.keys.ItemDataKey;
 import studio.craftory.core.items.CustomItem;
 import studio.craftory.core.recipes.ShapedCraftingRecipe;
 import studio.craftory.core.recipes.ShapelessCraftingRecipe;
+import studio.craftory.core.utils.Log;
 import studio.craftory.craftoryexample.blocks.CopperOre;
 import studio.craftory.craftoryexample.blocks.SimpleGenerator;
 import studio.craftory.craftoryexample.items.Wrench;
@@ -67,7 +68,7 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
     try {
       return new URL("https://www.dropbox.com/s/l6q9uevu2cjpcju/CraftoryCore.zip?raw=1");
     } catch (MalformedURLException e) {
-      e.printStackTrace();
+      Log.error(e.toString());
     }
     return null;
   }
