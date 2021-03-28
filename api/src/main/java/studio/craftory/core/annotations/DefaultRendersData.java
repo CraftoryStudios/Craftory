@@ -4,10 +4,14 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import studio.craftory.core.blocks.renders.Renderers;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
-public @interface CustomBlock {
-  Renderers[] renders() default {Renderers.BLOCK_STATE_RENDER};
+public @interface DefaultRendersData {
+  String northFacingModel() default "";
+  String southFacingModel() default "";
+  String eastFacingModel() default "";
+  String westFacingModel() default "";
+  String headModel() default "";
+  String all() default "";
 }

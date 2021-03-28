@@ -25,7 +25,7 @@ public final class Log {
 
   public static void info(@NonNull String... logMessages) {
     for (String logMessage : logMessages) {
-      logger.info(PREFIX + INFO_COLOR + logMessage);
+      logger.info(INFO_COLOR + logMessage);
     }
   }
 
@@ -51,7 +51,7 @@ public final class Log {
 
   public static void error(@NonNull String... logMessages) {
     for (String logMessage : logMessages) {
-      logger.severe(ERROR_COLOR + PREFIX +logMessage);
+      logger.severe(ERROR_COLOR +logMessage);
     }
   }
 

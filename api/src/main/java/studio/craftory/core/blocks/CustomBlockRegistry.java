@@ -1,6 +1,6 @@
 package studio.craftory.core.blocks;
 
-import static studio.craftory.core.utils.Constants.Keys.blockItemDataKey;
+import static studio.craftory.core.utils.Constants.Keys.BLOCK_ITEM_DATA_KEY;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -39,7 +39,7 @@ public class CustomBlockRegistry {
   private final Map<String, CraftoryBlockKey> craftoryBlockKeyMap = new HashMap<>();
 
   @Synchronized
-  public void registerCustomBlockClass(@NonNull Plugin plugin, @NonNull Class<?> block) {
+  public CraftoryBlockKey registerCustomBlockClass(@NonNull Plugin plugin, @NonNull Class<?> block) {
     CraftoryBlockKey craftoryBlockKey = new CraftoryBlockKey(plugin, block);
     if (!blockTypes.containsKey(craftoryBlockKey)) {
 
@@ -50,7 +50,7 @@ public class CustomBlockRegistry {
           registerCustomBlockTickables((Class<? extends BaseCustomBlock>) block);
 
           CustomItem.builder().name(craftoryBlockKey.getName()).displayName(
-              craftoryBlockKey.getName()).attribute(blockItemDataKey, craftoryBlockKey.toString()).material(
+              craftoryBlockKey.getName()).attribute(BLOCK_ITEM_DATA_KEY, craftoryBlockKey.toString()).material(
               Material.STONE).build().register(plugin);
           Log.debug("CustomBlock Register: " + block.getName());
         } else {
@@ -60,6 +60,7 @@ public class CustomBlockRegistry {
     } else {
       Log.warn("Trying to re-register known key of Custom Block: " + craftoryBlockKey.getName());
     }
+    return craftoryBlockKey;
   }
 
   @Synchronized

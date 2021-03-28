@@ -11,40 +11,49 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import studio.craftory.core.Craftory;
-import studio.craftory.core.blocks.renders.BlockStateRenderer;
-import studio.craftory.core.blocks.renders.CraftoryRenderer;
-import studio.craftory.core.blocks.renders.RenderData;
-import studio.craftory.core.blocks.renders.Renderers;
+import studio.craftory.core.blocks.rendering.renderers.DefaultRenderer;
+import studio.craftory.core.blocks.rendering.CraftoryRenderer;
+import studio.craftory.core.blocks.rendering.renderers.DefaultRotationalRenderer;
+import studio.craftory.core.data.RenderData;
 import studio.craftory.core.data.CraftoryDirection;
+import studio.craftory.core.data.events.ResourcePackBuilt;
 import studio.craftory.core.data.keys.CraftoryBlockKey;
 import studio.craftory.core.utils.Log;
 
-public class BlockRenderManager {
+public class BlockRenderManager implements Listener {
   private final ObjectMapper mapper;
 
+  @Getter
   private Map<String, CraftoryRenderer> renderers = new HashMap<>();
   private Map<String, RenderData> blockToRenderDataMap = new HashMap<>();
 
   public BlockRenderManager() {
     mapper = new ObjectMapper();
-
     registerDefaultRenders();
+  }
+
+  @EventHandler
+  public void onResourcePackBuilt(ResourcePackBuilt event) {
     loadRenderData();
   }
 
   private void registerDefaultRenders() {
-    registerRenderer(Renderers.BLOCK_STATE_RENDER, new BlockStateRenderer());
-    registerRenderer(Renderers.TRANSPARENT_BLOCK_STATE_RENDER, new BlockStateRenderer());
+    registerRenderer(DefaultRenderer.class);
+    registerRenderer(DefaultRotationalRenderer.class);
   }
 
-  public void registerRenderer(String key, CraftoryRenderer renderer) {
-    renderers.putIfAbsent(key, renderer);
-  }
-  public void registerRenderer(Renderers key, CraftoryRenderer renderer) {
-    registerRenderer(key.value, renderer);
+  public void registerRenderer(@NonNull Class<? extends CraftoryRenderer> renderer) {
+    try {
+      renderers.putIfAbsent(renderer.getSimpleName(), renderer.getDeclaredConstructor().newInstance());
+    } catch (Exception e ) {
+      Log.error("Couldn't register renderer ", renderer.getName());
+    }
   }
 
   public void renderCustomBlock(CraftoryBlockKey blockKey, Block block, CraftoryDirection direction) {

@@ -11,6 +11,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import studio.craftory.core.api.CustomBlockAPI;
+import studio.craftory.core.blocks.BlockRenderManager;
 import studio.craftory.core.blocks.CustomBlockManager;
 import studio.craftory.core.blocks.CustomBlockRegistry;
 import studio.craftory.core.commands.SpawnItemCommand;
@@ -22,6 +23,7 @@ import studio.craftory.core.listeners.ChunkListener;
 import studio.craftory.core.listeners.CustomBlockListener;
 import studio.craftory.core.listeners.WorldListener;
 import studio.craftory.core.recipes.RecipeManager;
+import studio.craftory.core.resourcepack.AssetLinker;
 import studio.craftory.core.utils.Log;
 
 public final class Craftory extends JavaPlugin {
@@ -34,19 +36,18 @@ public final class Craftory extends JavaPlugin {
   private AsyncExecutionManager asyncExecutionManager;
   private SyncExecutionManager syncExecutionManager;
   private CustomBlockManager customBlockManager;
+  private BlockRenderManager blockRenderManager;
 
+  //External
   private CustomItemManager customItemManager;
   private RecipeManager recipeManager;
-
-  //External API
-  @Getter
-  CustomBlockAPI customBlockAPI;
-
+  private CustomBlockAPI customBlockAPI;
 
   public static CustomItemManager getCustomItemManager() {
     return instance.customItemManager;
   }
   public static RecipeManager getRecipeManager() { return instance.recipeManager; }
+  public static CustomBlockAPI getCustomBlockAPI() {return instance.customBlockAPI; }
 
   @Override
   public void onLoad() {
@@ -65,6 +66,7 @@ public final class Craftory extends JavaPlugin {
 
     //Custom Block
     injector.getSingleton(CustomBlockRegistry.class);
+    blockRenderManager = injector.getSingleton(BlockRenderManager.class);
     customBlockManager = injector.getSingleton(CustomBlockManager.class);
 
     //API
@@ -80,16 +82,21 @@ public final class Craftory extends JavaPlugin {
 
     //Register Events
     PluginManager pluginManager = getServer().getPluginManager();
+    pluginManager.registerEvents(blockRenderManager, instance);
     pluginManager.registerEvents(injector.getSingleton(CustomBlockListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(WorldListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ChunkListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ItemEventManager.class), instance);
     pluginManager.registerEvents(recipeManager, instance);
 
+
     //Executor
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
     syncExecutionManager.runTaskTimer(this, 20L,1L);
     getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
+
+    AssetLinker linker = injector.getSingleton(AssetLinker.class);
+    linker.runTaskLater(this, 1);
 
     //Commands
     PluginCommand spawnCommand = this.getCommand("spawnItem");

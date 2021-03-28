@@ -7,10 +7,13 @@ import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 import studio.craftory.core.blocks.CustomBlockManager;
 import studio.craftory.core.blocks.CustomBlockRegistry;
+import studio.craftory.core.blocks.rendering.CraftoryRenderer;
+import studio.craftory.core.blocks.rendering.renderers.DefaultRenderer;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.data.keys.CraftoryBlockKey;
+import studio.craftory.core.resourcepack.AssetLinker;
 import studio.craftory.core.utils.Log;
 
 public class CustomBlockAPI {
@@ -19,9 +22,18 @@ public class CustomBlockAPI {
   public CustomBlockRegistry blockRegister;
   @Inject
   public CustomBlockManager customBlockManager;
+  @Inject
+  public AssetLinker assetLinker;
 
-  public void registerCustomBlock(@NonNull Plugin plugin, @NonNull Class<? extends BaseCustomBlock> customBlock) {
-    blockRegister.registerCustomBlockClass(plugin, customBlock);
+  public void registerCustomBlock(@NonNull Plugin plugin, @NonNull Class<? extends BaseCustomBlock> customBlock,
+      @NonNull String[] textures, @NonNull Class<? extends CraftoryRenderer> renderer) {
+    CraftoryBlockKey blockKey = blockRegister.registerCustomBlockClass(plugin, customBlock);
+    assetLinker.registerBlockAssets(blockKey, renderer, textures);
+  }
+
+  public void registerCustomBlock(@NonNull Plugin plugin, @NonNull Class<? extends BaseCustomBlock> customBlock,
+      @NonNull String[] textures) {
+    registerCustomBlock(plugin, customBlock, textures, DefaultRenderer.class);
   }
 
   public Optional<BaseCustomBlock> placeCustomBlock(@NonNull Location location, @NonNull Class<? extends BaseCustomBlock> customBlockClazz,
