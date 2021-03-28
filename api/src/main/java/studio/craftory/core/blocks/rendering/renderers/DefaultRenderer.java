@@ -1,5 +1,7 @@
-package studio.craftory.core.blocks.renders;
+package studio.craftory.core.blocks.rendering.renderers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.NonNull;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
@@ -9,22 +11,27 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.block.data.type.NoteBlock;
+import studio.craftory.core.blocks.rendering.CraftoryRenderer;
 import studio.craftory.core.data.CraftoryDirection;
+import studio.craftory.core.data.RenderData;
+import studio.craftory.core.resourcepack.BlockAssetGenerator;
 import studio.craftory.core.utils.Log;
 
-public class BlockStateRenderer implements CraftoryRenderer{
+public class DefaultRenderer implements CraftoryRenderer {
 
   @Override
   public void render(@NonNull Block block, @NonNull CraftoryDirection direction, @NonNull RenderData renderData) {
     int directionKey = direction.label;
 
-    //Must have render data for every CraftoryDirection
-    if (renderData.getData().size() != 6) {
-      Log.warn("Incomplete render data");
-      return;
+    String data = "";
+    int dataSize = renderData.getData().size();
+
+    if (dataSize == 6) {
+      data = renderData.getData().get(directionKey);
+    } else if (dataSize == 1) {
+      data = renderData.getData().get(0);
     }
 
-    String data = renderData.getData().get(directionKey);
     if (data.isEmpty()) {
       //Block doesn't use directions so default to NORTH
       data = renderData.getData().get(0);
@@ -55,27 +62,45 @@ public class BlockStateRenderer implements CraftoryRenderer{
     }
   }
 
-  private void renderChorusPlant(@NonNull String stateData, Block block) {
+  @Override
+  public void generateAssets(String blockKey, String[] assetsData, BlockAssetGenerator blockAssetGenerator) {
+    ObjectMapper mapper = new ObjectMapper();
+
+    if (assetsData.length == 1 || assetsData.length == 6) {
+      ArrayNode renderFileData = mapper.createArrayNode();
+      renderFileData.add(this.getClass().getSimpleName());
+      for (int i = 0; i < assetsData.length; i++) {
+        String data = blockAssetGenerator.generateBlockState();
+        renderFileData.add(data);
+        blockAssetGenerator.addBlockStateToPack(data, assetsData[i], CraftoryDirection.NORTH);
+      }
+      blockAssetGenerator.addToRenderFile(blockKey, renderFileData);
+    } else {
+      Log.warn("Bad data for asset gen");
+    }
+  }
+
+  protected void renderChorusPlant(@NonNull String stateData, Block block) {
     setType(block, Material.CHORUS_PLANT);
     setData(block, getMutlifacingData(stateData, block));
   }
 
-  private void renderRedMushroom(@NonNull String stateData, Block block) {
+  protected void renderRedMushroom(@NonNull String stateData, Block block) {
     setType(block, Material.RED_MUSHROOM_BLOCK);
     setData(block, getMutlifacingData(stateData, block));
   }
 
-  private void renderBrownMushroom(@NonNull String stateData, Block block) {
+  protected void renderBrownMushroom(@NonNull String stateData, Block block) {
     setType(block, Material.BROWN_MUSHROOM_BLOCK);
     setData(block, getMutlifacingData(stateData, block));
   }
 
-  private void renderStem(@NonNull String stateData, Block block) {
+  protected void renderStem(@NonNull String stateData, Block block) {
     setType(block, Material.MUSHROOM_STEM);
     setData(block, getMutlifacingData(stateData, block));
   }
 
-  private void renderNoteBlock(@NonNull String stateData, Block block) {
+  protected void renderNoteBlock(@NonNull String stateData, Block block) {
     String instrument = stateData.substring(0,1);
     int note = Integer.parseInt(stateData.substring(1,3));
     String powered = stateData.substring(3,4);
@@ -92,7 +117,7 @@ public class BlockStateRenderer implements CraftoryRenderer{
     block.setBlockData(blockData, false);
   }
 
-  private BlockData getNoteBlockData(Block block, String instrument, int note, String powered) {
+  protected BlockData getNoteBlockData(Block block, String instrument, int note, String powered) {
     NoteBlock blockData = (NoteBlock) block.getBlockData();
 
     blockData.setInstrument(getInstrument(instrument));
@@ -101,7 +126,7 @@ public class BlockStateRenderer implements CraftoryRenderer{
     return blockData;
   }
 
-  private Instrument getInstrument(@NonNull String instrument) {
+  protected Instrument getInstrument(@NonNull String instrument) {
     switch (instrument) {
       case "a":
         return Instrument.BANJO;
@@ -126,7 +151,7 @@ public class BlockStateRenderer implements CraftoryRenderer{
       case "k":
         return Instrument.IRON_XYLOPHONE;
       case "l":
-        return Instrument.PIANO;
+        return Instrument.PLING;
       case "m":
         return Instrument.SNARE_DRUM;
       case "n":
@@ -138,7 +163,7 @@ public class BlockStateRenderer implements CraftoryRenderer{
     }
   }
 
-  private static MultipleFacing getMutlifacingData(@NonNull String stateData, Block block) {
+  protected static MultipleFacing getMutlifacingData(@NonNull String stateData, Block block) {
     MultipleFacing blockData = (MultipleFacing) block.getBlockData();
 
     String[] states = stateData.split("");

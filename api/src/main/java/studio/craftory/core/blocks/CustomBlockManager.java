@@ -24,24 +24,25 @@ import studio.craftory.core.utils.Log;
 
 public class CustomBlockManager {
 
-  private CustomBlockRegistry blockRegister;
-  private AsyncExecutionManager asyncExecutionManager;
-  private SyncExecutionManager syncExecutionManager;
-  private BlockRenderManager blockRenderManager;
+  private final CustomBlockRegistry blockRegister;
+  private final AsyncExecutionManager asyncExecutionManager;
+  private final SyncExecutionManager syncExecutionManager;
+  private final BlockRenderManager blockRenderManager;
   @Getter
-  private DataStorageManager dataStorageManager;
+  private final DataStorageManager dataStorageManager;
 
   @Getter
-  private Map<Chunk,Map<Location, BaseCustomBlock>> customBlocks;
+  private final Map<Chunk,Map<Location, BaseCustomBlock>> customBlocks;
 
   @Inject
-  public CustomBlockManager (CustomBlockRegistry blockRegister, AsyncExecutionManager asyncExecutionManager, SyncExecutionManager syncExecutionManager) {
+  public CustomBlockManager (CustomBlockRegistry blockRegister, AsyncExecutionManager asyncExecutionManager,
+      SyncExecutionManager syncExecutionManager, BlockRenderManager blockRenderManager) {
     this.blockRegister = blockRegister;
     this.syncExecutionManager = syncExecutionManager;
     this.asyncExecutionManager = asyncExecutionManager;
-    this.dataStorageManager = new DataStorageManager(this, blockRegister);
-    this.blockRenderManager = new BlockRenderManager();
+    this.blockRenderManager = blockRenderManager;
 
+    this.dataStorageManager = new DataStorageManager(this, blockRegister);
     this.customBlocks = new ConcurrentHashMap<>();
   }
 
@@ -151,6 +152,20 @@ public class CustomBlockManager {
       return Optional.empty();
     }
     return Optional.ofNullable(loadedBlockInChunk.get(location));
+  }
+
+  /**
+   * Check if location contains custom block
+   */
+  @Synchronized
+  public boolean containsCustomBlock(@NonNull final Location location) {
+    if (location.getChunk().isLoaded()) {
+      Map<Location, BaseCustomBlock> chunkData = customBlocks.get(location.getChunk());
+      if (chunkData != null) {
+        return chunkData.containsKey(location);
+      }
+    }
+    return false;
   }
 
   /**

@@ -11,6 +11,7 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import studio.craftory.core.annotations.Tickable;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
+import studio.craftory.core.utils.Log;
 import studio.craftory.core.utils.Reflections;
 
 @UtilityClass
@@ -53,7 +54,7 @@ public class ExecutorUtils {
             try {
               method.invoke(tickable);
             } catch (IllegalAccessException | InvocationTargetException e) {
-              e.printStackTrace();
+              Log.error(e.toString());
             }
           }
         }
