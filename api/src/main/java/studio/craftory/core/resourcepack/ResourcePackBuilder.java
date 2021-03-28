@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Optional;
+import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import studio.craftory.core.CraftoryAddon;
@@ -14,13 +15,10 @@ import studio.craftory.core.utils.Constants.ResourcePack;
 import studio.craftory.core.utils.FileUtils;
 import studio.craftory.core.utils.Log;
 
-public class CraftorySetup {
+@UtilityClass
+public class ResourcePackBuilder {
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
-
-  private CraftorySetup() {
-
-  }
 
   public static void run() {
     File tempDirectory = new File(ResourcePack.TEMP_PATH);
