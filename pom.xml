@@ -31,7 +31,7 @@
     <jdk.version>1.8</jdk.version>
 
     <!-- Google -->
-    <auto-service.version>1.0-rc2</auto-service.version>
+    <auto-service.version>1.0-rc7</auto-service.version>
     
     <!-- Other -->
     <jackson.version>2.12.0</jackson.version>
