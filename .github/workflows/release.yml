@@ -10,9 +10,9 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 11
+      - name: Change Project
+        run: cd api
       - name: Publish package
-        run: |
-          cd api \
-          mvn --batch-mode deploy
+        run: mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
