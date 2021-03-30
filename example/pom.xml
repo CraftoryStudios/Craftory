@@ -18,6 +18,7 @@
     <sonar.projectKey>craftorystudios_Craftory_Example</sonar.projectKey>
     <sonar.organization>craftorystudios</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
 
   <dependencies>
