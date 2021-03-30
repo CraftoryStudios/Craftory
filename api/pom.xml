@@ -20,6 +20,14 @@
   <artifactId>craftory-api</artifactId>
   <packaging>jar</packaging>
 
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub CraftoryStudios Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/CraftoryStudios/Craftory</url>
+    </repository>
+  </distributionManagement>
+
   <build>
     <plugins>
       <plugin>
