@@ -9,10 +9,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import javax.inject.Inject;
 import lombok.NonNull;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import studio.craftory.core.Craftory;
+import studio.craftory.core.data.events.ResourcePackBuilt;
+import studio.craftory.core.resourcepack.AssetLinker;
+import studio.craftory.core.utils.Constants.ResourcePack;
 import studio.craftory.core.utils.Log;
 
 public class CustomItemManager {
@@ -21,20 +24,11 @@ public class CustomItemManager {
   private static final Map<String, CustomItem> unqiueItemCache = new HashMap<>();
   private static final Set<String> duplicateItemNames = new HashSet<>();
   private Map<String, Integer> customItemRenderIdCache = new HashMap<>();
+  @Inject
+  private AssetLinker assetLinker;
 
   protected CustomItemManager() {
-    File renderIdFile = new File(Craftory.getInstance().getDataFolder(), "ItemRenderData.json");
-    ObjectMapper mapper = new ObjectMapper();
-    if(renderIdFile.exists()) {
-      try {
-        customItemRenderIdCache = mapper.readValue(renderIdFile, new TypeReference<Map<String, Integer>>() {});
-        Log.debug("Loaded item render data: " + customItemRenderIdCache.toString());
-      } catch (IOException e) {
-        Log.error("Couldn't read item render data");
-      }
-    } else {
-      Log.warn("No item render data found");
-    }
+
   }
 
   /* Registering */
@@ -43,8 +37,8 @@ public class CustomItemManager {
     if(!customItemRenderIdCache.containsKey(itemName)) {
       throw new IllegalArgumentException("Custom item not present in the render data, all items must have an ID for render texture! ItemName: " + itemName);
     }
+    assetLinker.registerItemForAssignment(itemName);
     customItemCache.put(itemName, item);
-    item.createItem(customItemRenderIdCache.get(itemName));
     Log.debug("Registered custom item '" + itemName + "'");
     if (item.hasHoldEffects()) {
       ItemEventManager.registerItemOnHoldEffects(itemName, item.getHoldEffects());
@@ -59,6 +53,29 @@ public class CustomItemManager {
     } else {
       unqiueItemCache.remove(commonName);
       duplicateItemNames.add(commonName);
+    }
+  }
+
+  public void onResourcePackBuilt(ResourcePackBuilt e) {
+    assignRenderIds();
+  }
+
+  private void assignRenderIds() {
+    File renderIdFile = new File(ResourcePack.ITEM_RENDER_DATA);
+    ObjectMapper mapper = new ObjectMapper();
+    if(renderIdFile.exists()) {
+      try {
+        customItemRenderIdCache = mapper.readValue(renderIdFile, new TypeReference<Map<String, Integer>>() {});
+        Log.debug("Loaded item render data: " + customItemRenderIdCache.toString());
+      } catch (IOException e) {
+        Log.error("Couldn't read item render data");
+      }
+    } else {
+      Log.warn("No item render data found");
+    }
+
+    for(CustomItem item: customItemCache.values()) {
+      item.createItem(customItemRenderIdCache.get(item.getName()));
     }
   }
 
