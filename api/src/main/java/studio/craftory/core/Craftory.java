@@ -24,6 +24,7 @@ import studio.craftory.core.listeners.CustomBlockListener;
 import studio.craftory.core.listeners.WorldListener;
 import studio.craftory.core.recipes.RecipeManager;
 import studio.craftory.core.resourcepack.AssetLinker;
+import studio.craftory.core.terrian.retro.RetroGeneration;
 import studio.craftory.core.utils.Log;
 
 public final class Craftory extends JavaPlugin {
@@ -104,6 +105,12 @@ public final class Craftory extends JavaPlugin {
       spawnCommand.setExecutor(new SpawnItemCommand());
     }
 
+  }
+
+  public void onResourcesSetup() {
+    //Register Events
+    PluginManager pluginManager = getServer().getPluginManager();
+    pluginManager.registerEvents(injector.getSingleton(RetroGeneration.class), instance);
   }
 
   @Override

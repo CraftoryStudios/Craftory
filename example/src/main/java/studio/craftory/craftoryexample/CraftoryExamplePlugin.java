@@ -2,6 +2,8 @@ package studio.craftory.craftoryexample;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.HashSet;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -13,10 +15,12 @@ import org.bukkit.potion.PotionEffectType;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.CraftoryAddon;
 import studio.craftory.core.blocks.rendering.renderers.DefaultRotationalRenderer;
+import studio.craftory.core.data.IntRange;
 import studio.craftory.core.data.keys.ItemDataKey;
 import studio.craftory.core.items.CustomItem;
 import studio.craftory.core.recipes.ShapedCraftingRecipe;
 import studio.craftory.core.recipes.ShapelessCraftingRecipe;
+import studio.craftory.core.terrian.retro.population.ore.VanillaOre;
 import studio.craftory.core.utils.Log;
 import studio.craftory.craftoryexample.blocks.CopperOre;
 import studio.craftory.craftoryexample.blocks.SimpleGenerator;
@@ -61,6 +65,11 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
 
     String[] test1 = {"custom/block/mineral/copper/copper_ore"};
     Craftory.getCustomBlockAPI().registerCustomBlock(this, CopperOre.class, test1);
+
+    HashSet<Material> set = new HashSet<>(Arrays.asList(Material.STONE));
+    Craftory.getCustomBlockAPI().getRetroGeneration().registerOre(new VanillaOre(CopperOre.class,
+        set, new IntRange(20,33), new IntRange(5, 60),
+        new IntRange(3,10)));
   }
 
   @Override

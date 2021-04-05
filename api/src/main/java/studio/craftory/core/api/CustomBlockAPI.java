@@ -14,16 +14,19 @@ import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.data.keys.CraftoryBlockKey;
 import studio.craftory.core.resourcepack.AssetLinker;
+import studio.craftory.core.terrian.retro.RetroGeneration;
 import studio.craftory.core.utils.Log;
 
 public class CustomBlockAPI {
 
   @Inject
-  public CustomBlockRegistry blockRegister;
+  private CustomBlockRegistry blockRegister;
   @Inject
-  public CustomBlockManager customBlockManager;
+  private CustomBlockManager customBlockManager;
   @Inject
-  public AssetLinker assetLinker;
+  private AssetLinker assetLinker;
+  @Inject
+  private RetroGeneration retroGeneration;
 
   public void registerCustomBlock(@NonNull Plugin plugin, @NonNull Class<? extends BaseCustomBlock> customBlock,
       @NonNull String[] textures, @NonNull Class<? extends CraftoryRenderer> renderer) {
@@ -52,6 +55,10 @@ public class CustomBlockAPI {
 
   public void registerDataKey(@NonNull CraftoryDataKey craftoryDataKey) {
     blockRegister.registerDataKey(craftoryDataKey.toString(), craftoryDataKey);
+  }
+
+  public RetroGeneration getRetroGeneration() {
+    return retroGeneration;
   }
 
 }
