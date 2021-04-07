@@ -4,8 +4,10 @@ import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
 import java.io.File;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,6 +26,7 @@ import studio.craftory.core.listeners.CustomBlockListener;
 import studio.craftory.core.listeners.WorldListener;
 import studio.craftory.core.recipes.RecipeManager;
 import studio.craftory.core.resourcepack.AssetLinker;
+import studio.craftory.core.utils.EventListener;
 import studio.craftory.core.utils.Log;
 
 public final class Craftory extends JavaPlugin {
@@ -82,12 +85,12 @@ public final class Craftory extends JavaPlugin {
 
     //Register Events
     PluginManager pluginManager = getServer().getPluginManager();
-    pluginManager.registerEvents(blockRenderManager, instance);
     pluginManager.registerEvents(injector.getSingleton(CustomBlockListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(WorldListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ChunkListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ItemEventManager.class), instance);
     pluginManager.registerEvents(recipeManager, instance);
+    pluginManager.registerEvents(injector.getSingleton(EventListener.class), instance);
 
 
     //Executor
@@ -95,8 +98,7 @@ public final class Craftory extends JavaPlugin {
     syncExecutionManager.runTaskTimer(this, 20L,1L);
     getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
 
-    AssetLinker linker = injector.getSingleton(AssetLinker.class);
-    linker.runTaskLater(this, 1);
+    instance.getServer().getScheduler().runTaskLater(this, this::afterEnable, 1);
 
     //Commands
     PluginCommand spawnCommand = this.getCommand("spawnItem");
@@ -104,6 +106,17 @@ public final class Craftory extends JavaPlugin {
       spawnCommand.setExecutor(new SpawnItemCommand());
     }
 
+  }
+
+  public void afterEnable() {
+    AssetLinker linker = injector.getSingleton(AssetLinker.class);
+    linker.run();
+
+    for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+      if (CraftoryAddon.class.isAssignableFrom(plugin.getClass())) {
+        ((CraftoryAddon) plugin).craftoryOnEnable();
+      }
+    }
   }
 
   @Override
