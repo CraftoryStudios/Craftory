@@ -34,9 +34,6 @@ public class CustomItemManager {
   /* Registering */
   public void registerCustomItem(@NonNull CustomItem item) {
     String itemName = item.getUniqueName();
-    if(!customItemRenderIdCache.containsKey(itemName)) {
-      throw new IllegalArgumentException("Custom item not present in the render data, all items must have an ID for render texture! ItemName: " + itemName);
-    }
     assetLinker.registerItemForAssignment(itemName);
     customItemCache.put(itemName, item);
     Log.debug("Registered custom item '" + itemName + "'");
@@ -75,7 +72,11 @@ public class CustomItemManager {
     }
 
     for(CustomItem item: customItemCache.values()) {
-      item.createItem(customItemRenderIdCache.get(item.getName()));
+      String itemName = item.getUniqueName();
+      if(!customItemRenderIdCache.containsKey(itemName)) {
+        throw new IllegalArgumentException("Custom item not present in the render data, all items must have an ID for render texture! ItemName: " + itemName);
+      }
+      item.createItem(customItemRenderIdCache.get(itemName));
     }
   }
 
