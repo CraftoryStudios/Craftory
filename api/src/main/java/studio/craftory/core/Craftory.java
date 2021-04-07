@@ -2,6 +2,12 @@ package studio.craftory.core;
 
 import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
+import com.comphenix.protocol.PacketType.Play;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
 import java.io.File;
 import lombok.Getter;
 import org.bukkit.Server;
@@ -22,6 +28,7 @@ import studio.craftory.core.items.ItemEventManager;
 import studio.craftory.core.listeners.ChunkListener;
 import studio.craftory.core.listeners.CustomBlockListener;
 import studio.craftory.core.listeners.WorldListener;
+import studio.craftory.core.packets.WrapperPlayServerAdvancements;
 import studio.craftory.core.recipes.RecipeManager;
 import studio.craftory.core.resourcepack.AssetLinker;
 import studio.craftory.core.utils.Log;
@@ -37,6 +44,7 @@ public final class Craftory extends JavaPlugin {
   private SyncExecutionManager syncExecutionManager;
   private CustomBlockManager customBlockManager;
   private BlockRenderManager blockRenderManager;
+  private ProtocolManager protocolManager;
 
   //External
   private CustomItemManager customItemManager;
@@ -73,6 +81,9 @@ public final class Craftory extends JavaPlugin {
     customBlockAPI = injector.getSingleton(CustomBlockAPI.class);
     customItemManager = injector.getSingleton(CustomItemManager.class);
     recipeManager = injector.getSingleton(RecipeManager.class);
+
+    //External API's
+    protocolManager = ProtocolLibrary.getProtocolManager();
   }
 
   @Override
@@ -88,6 +99,16 @@ public final class Craftory extends JavaPlugin {
     pluginManager.registerEvents(injector.getSingleton(ChunkListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ItemEventManager.class), instance);
     pluginManager.registerEvents(recipeManager, instance);
+
+    protocolManager.addPacketListener(new PacketAdapter(this, ListenerPriority.HIGH, Play.Server.ADVANCEMENTS) {
+      @Override
+      public void onPacketSending(PacketEvent event) {
+        Log.info(event.getPacket().toString());
+        WrapperPlayServerAdvancements advancements = new WrapperPlayServerAdvancements(event.getPacket());
+        advancements.getAdvancements();
+        Log.info("Test");
+      }
+    });
 
 
     //Executor

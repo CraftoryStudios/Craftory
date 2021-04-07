@@ -5,6 +5,7 @@ api-version: 1.16
 prefix: Craftory Core
 authors: [ BrettSaunders, MattyJones ]
 description: Plugin Extended Framework
+depend: [ProtocolLib]
 website: craftory.studio
 commands:
   spawnItem:
