@@ -5,7 +5,6 @@ import java.util.Random;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.IntRange;
 import studio.craftory.core.data.Vector3;
@@ -63,7 +62,7 @@ public class VanillaOre extends Ore{
                 if(x > 15 || z > 15 || y > 255 || x < 0 || z < 0 || y < 0) continue;
                 Block block = chunk.getBlock(x, y, z);
                 if((d13 * d13 + d14 * d14 + d15 * d15 < 1.0D) && this.replaceable.contains(block.getType())) {
-                  Craftory.getCustomBlockAPI().placeCustomBlock(block.getLocation(), material);
+                  customBlockAPI.placeCustomBlock(block.getLocation(), material);
                 }
               }
             }

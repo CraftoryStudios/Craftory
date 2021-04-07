@@ -43,12 +43,14 @@ public final class Craftory extends JavaPlugin {
   private CustomItemManager customItemManager;
   private RecipeManager recipeManager;
   private CustomBlockAPI customBlockAPI;
+  private RetroGeneration retroGeneration;
 
   public static CustomItemManager getCustomItemManager() {
     return instance.customItemManager;
   }
   public static RecipeManager getRecipeManager() { return instance.recipeManager; }
   public static CustomBlockAPI getCustomBlockAPI() {return instance.customBlockAPI; }
+  public static RetroGeneration getRetoGeneration() {return instance.retroGeneration; }
 
   @Override
   public void onLoad() {
@@ -110,7 +112,8 @@ public final class Craftory extends JavaPlugin {
   public void onResourcesSetup() {
     //Register Events
     PluginManager pluginManager = getServer().getPluginManager();
-    pluginManager.registerEvents(injector.getSingleton(RetroGeneration.class), instance);
+    retroGeneration = injector.getSingleton(RetroGeneration.class);
+    pluginManager.registerEvents(retroGeneration, instance);
   }
 
   @Override

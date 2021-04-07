@@ -67,7 +67,7 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
     Craftory.getCustomBlockAPI().registerCustomBlock(this, CopperOre.class, test1);
 
     HashSet<Material> set = new HashSet<>(Arrays.asList(Material.STONE));
-    Craftory.getCustomBlockAPI().getRetroGeneration().registerOre(new VanillaOre(CopperOre.class,
+    Craftory.getRetoGeneration().registerOre(new VanillaOre(CopperOre.class,
         set, new IntRange(20,33), new IntRange(5, 60),
         new IntRange(3,10)));
   }
