@@ -1,7 +1,7 @@
 package studio.craftory.core.terrian.retro.population.ore;
 
-import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Chunk;
@@ -16,7 +16,7 @@ import studio.craftory.core.data.Vector3;
 public abstract class Ore {
 
   protected final Class<? extends BaseCustomBlock> material;
-  protected final HashSet<Material> replaceable;
+  protected final Set<Material> replaceable;
   protected final IntRange amount;
   protected final IntRange height;
   protected CustomBlockAPI customBlockAPI;

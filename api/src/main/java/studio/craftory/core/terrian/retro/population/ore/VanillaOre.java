@@ -1,7 +1,7 @@
 package studio.craftory.core.terrian.retro.population.ore;
 
-import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,7 +12,7 @@ import studio.craftory.core.data.Vector3;
 public class VanillaOre extends Ore{
   private final IntRange oreSizeRange;
 
-  public VanillaOre(Class<? extends BaseCustomBlock> material, HashSet<Material> replaceable,  IntRange amount,
+  public VanillaOre(Class<? extends BaseCustomBlock> material, Set<Material> replaceable,  IntRange amount,
       IntRange height, IntRange oreSizeRange) {
     super(material, replaceable, amount, height);
     this.oreSizeRange = oreSizeRange;

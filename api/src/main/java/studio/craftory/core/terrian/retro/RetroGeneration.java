@@ -1,10 +1,14 @@
 package studio.craftory.core.terrian.retro;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import javax.inject.Inject;
 import lombok.NonNull;
 import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -19,15 +23,27 @@ public class RetroGeneration implements Listener {
   public CustomBlockAPI customBlockAPI;
 
   private HashSet<Ore> ores = new HashSet<>();
-  //TODO this doesn't save or account for added generation
-  private HashSet<String> visitedChunks = new HashSet<>();
+  private Map<World, Set<String>> visitedChunks = new HashMap<>();
+
+  public RetroGeneration() {
+    loadGeneratedChunks();
+  }
 
   @EventHandler
   public void onChunkLoad(ChunkLoadEvent chunkLoadEvent) {
-    if (visitedChunks.contains(TerrianUtils.getChunkUUID(chunkLoadEvent.getChunk()))) return;
+    if (!visitedChunks.containsKey(chunkLoadEvent.getWorld()) ||
+        !visitedChunks.get(chunkLoadEvent.getWorld()).contains(TerrianUtils.getChunkUUID(chunkLoadEvent.getChunk()))) return;
 
     populateOre(chunkLoadEvent.getChunk());
     visitedChunks.add(TerrianUtils.getChunkUUID(chunkLoadEvent.getChunk()));
+  }
+
+  public void saveGeneratedChunks() {
+
+  }
+
+  public void loadGeneratedChunks() {
+
   }
 
   public void registerOre(Ore ore) {
