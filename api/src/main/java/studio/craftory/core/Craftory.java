@@ -4,8 +4,10 @@ import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
 import java.io.File;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -100,6 +102,7 @@ public final class Craftory extends JavaPlugin {
 
     AssetLinker linker = injector.getSingleton(AssetLinker.class);
     linker.runTaskLater(this, 1);
+    instance.getServer().getScheduler().runTaskLater(this, this::afterEnable, 1);
 
     //Commands
     PluginCommand spawnCommand = this.getCommand("spawnItem");
@@ -116,9 +119,17 @@ public final class Craftory extends JavaPlugin {
     pluginManager.registerEvents(retroGeneration, instance);
   }
 
+  public void afterEnable() {
+    for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+      if (CraftoryAddon.class.isAssignableFrom(plugin.getClass())) {
+        ((CraftoryAddon) plugin).craftoryOnEnable();
+      }
+    }
+  }
+
   @Override
   public void onDisable() {
-
+    retroGeneration.saveGeneratedChunks();
     customBlockManager.getDataStorageManager().writeAll();
     customBlockManager.getDataStorageManager().saveAll();
   }

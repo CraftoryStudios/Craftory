@@ -1,8 +1,12 @@
 package studio.craftory.core.terrian.retro;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import javax.inject.Inject;
@@ -12,10 +16,12 @@ import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
+import studio.craftory.core.Craftory;
 import studio.craftory.core.api.CustomBlockAPI;
 import studio.craftory.core.data.Vector3;
 import studio.craftory.core.terrian.TerrianUtils;
 import studio.craftory.core.terrian.retro.population.ore.Ore;
+import studio.craftory.core.utils.Log;
 
 public class RetroGeneration implements Listener {
 
@@ -24,6 +30,7 @@ public class RetroGeneration implements Listener {
 
   private HashSet<Ore> ores = new HashSet<>();
   private Map<World, Set<String>> visitedChunks = new HashMap<>();
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
   public RetroGeneration() {
     loadGeneratedChunks();
@@ -31,19 +38,43 @@ public class RetroGeneration implements Listener {
 
   @EventHandler
   public void onChunkLoad(ChunkLoadEvent chunkLoadEvent) {
-    if (!visitedChunks.containsKey(chunkLoadEvent.getWorld()) ||
-        !visitedChunks.get(chunkLoadEvent.getWorld()).contains(TerrianUtils.getChunkUUID(chunkLoadEvent.getChunk()))) return;
+    if (visitedChunks.containsKey(chunkLoadEvent.getWorld()) &&
+        visitedChunks.get(chunkLoadEvent.getWorld()).contains(TerrianUtils.getChunkUUID(chunkLoadEvent.getChunk()))) return;
 
     populateOre(chunkLoadEvent.getChunk());
-    visitedChunks.add(TerrianUtils.getChunkUUID(chunkLoadEvent.getChunk()));
+    visitedChunks.computeIfAbsent(chunkLoadEvent.getWorld(), a -> new HashSet<>()).add(TerrianUtils.getChunkUUID(chunkLoadEvent.getChunk()));
   }
 
   public void saveGeneratedChunks() {
-
+    for (Entry<World, Set<String>> visitedChunksInWorld : visitedChunks.entrySet()) {
+      File file =
+          new File(Craftory.getInstance().getServer().getWorldContainer().getAbsolutePath() + "/" + visitedChunksInWorld.getKey().getName() +
+              "/Craftory");
+      file.mkdirs();
+      file = new File(file, "chunkGenerations.json");
+      try {
+        if (file.exists())
+          file.createNewFile();
+        objectMapper.writeValue(file, visitedChunksInWorld.getValue());
+      } catch (Exception e) {
+        Log.error("Couldn't save retro chunk data");
+      }
+    }
   }
 
   public void loadGeneratedChunks() {
-
+    for (World world : Craftory.getInstance().getServer().getWorlds()) {
+      File file =
+          new File(Craftory.getInstance().getServer().getWorldContainer().getAbsolutePath() + "/" +world.getName() +
+              "/Craftory", "chunkGenerations.json");
+      if (file.exists()) {
+        try {
+          visitedChunks.put(world, objectMapper.readValue(file, new TypeReference<Set<String>>() {}));
+        } catch (Exception e) {
+          Log.error("Couldn't load retro chunk data");
+        }
+      }
+    }
   }
 
   public void registerOre(Ore ore) {
