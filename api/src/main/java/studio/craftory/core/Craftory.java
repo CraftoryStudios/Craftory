@@ -1,5 +1,6 @@
 package studio.craftory.core;
 
+import kr.entree.spigradle.annotations.PluginMain;
 import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
 import java.io.File;
@@ -26,6 +27,7 @@ import studio.craftory.core.recipes.RecipeManager;
 import studio.craftory.core.resourcepack.AssetLinker;
 import studio.craftory.core.utils.Log;
 
+@PluginMain
 public final class Craftory extends JavaPlugin {
 
   @Getter

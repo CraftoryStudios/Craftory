@@ -117,6 +117,7 @@ run/
 #Gradle
 .gradle
 **/build/
+**/debug/
 !src/**/build/
 
 # Ignore Gradle GUI config

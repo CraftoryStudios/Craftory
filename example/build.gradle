@@ -12,4 +12,21 @@ sonarqube {
     }
 }
 
+spigot {
+    name 'CraftoryExample'
+    description 'Plugin Extended Framework'
+    authors = ['BrettSaunders']
+    apiVersion = '1.16'
+    depends 'Craftory'
+
+    commands {
+        simplegen {
+            description 'Spawans a new Simple Generator Block above your head'
+            permission 'craftoryexample.simplegen'
+            usage '/<command>'
+        }
+    }
+
+}
+
 description = 'craftory-example'

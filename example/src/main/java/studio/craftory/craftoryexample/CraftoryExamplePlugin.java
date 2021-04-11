@@ -2,6 +2,7 @@ package studio.craftory.craftoryexample;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import kr.entree.spigradle.annotations.PluginMain;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -22,6 +23,7 @@ import studio.craftory.craftoryexample.blocks.CopperOre;
 import studio.craftory.craftoryexample.blocks.SimpleGenerator;
 import studio.craftory.craftoryexample.items.Wrench;
 
+@PluginMain
 public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryAddon {
 
   @Override

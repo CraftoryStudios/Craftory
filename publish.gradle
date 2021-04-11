@@ -1,0 +1,46 @@
+apply plugin: 'maven-publish'
+
+def getBranch() {
+    def process = 'git branch --show-current'.execute()
+    process.waitFor()
+    return process.text.trim()
+}
+
+def getHash() {
+    def process = 'git rev-parse HEAD'.execute()
+    process.waitFor()
+    return process.text.trim()
+}
+
+java {
+    withSourcesJar()
+}
+
+jar {
+    manifest {
+        attributes (
+                'Build-Jdk': "${System.properties['java.vendor']} ${System.properties['java.vm.version']}",
+                'Created-By': "Gradle ${gradle.gradleVersion}",
+                'Git-Branch': getBranch(),
+                'Git-Hash': getHash()
+        )
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/${System.getenv("GITHUB_REPOSITORY")}")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
