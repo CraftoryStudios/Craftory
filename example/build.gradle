@@ -1,0 +1,15 @@
+plugins {
+    id 'studio.craftory.java-conventions'
+}
+
+dependencies {
+    compileOnly project(':craftory-api')
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "craftorystudios_Craftory_Example"
+    }
+}
+
+description = 'craftory-example'

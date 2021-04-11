@@ -45,7 +45,7 @@ public class ExecutorUtils {
     }
   }
 
-  public static void runMethods(@NonNull Set<TickGroup> tickGroups, @NonNull int tick, @NonNull Map<Class<? extends BaseCustomBlock>, HashMap<Integer,
+  public static void runMethods(@NonNull Set<TickGroup> tickGroups, int tick, @NonNull Map<Class<? extends BaseCustomBlock>, HashMap<Integer,
       ArrayList<Method>>> tickableMethods) {
     for (TickGroup tickGroup : tickGroups) {
       if (tick % tickGroup.tick == 0) {
