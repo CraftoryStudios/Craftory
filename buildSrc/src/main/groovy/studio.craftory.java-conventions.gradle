@@ -12,8 +12,6 @@ repositories {
 }
 
 dependencies {
-    implementation 'ch.jalu:injector:1.0'
-
     compileOnly spigot('1.16.5')
 
     testImplementation 'com.github.seeseemelk:MockBukkit-v1.16:0.25.0'
