@@ -1,12 +1,13 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="PaperDebug" type="JarApplication">
     <option name="JAR_PATH" value="$PROJECT_DIR$/example/debug/spigot/server.jar" />
-    <option name="VM_PARAMETERS" value="-Xmx8G -Xms1G -Dfile.encoding=UTF-8" />
+    <option name="VM_PARAMETERS" value="-Xmx4G -Xms1G -Dfile.encoding=UTF-8" />
     <option name="PROGRAM_PARAMETERS" value="--nogui --log-strip-color" />
-    <option name="WORKING_DIRECTORY" value="C:\GitProjects\CraftoryCore\example\debug\spigot" />
+    <option name="WORKING_DIRECTORY" value="$ProjectFileDir$\example\debug\spigot" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="ALTERNATIVE_JRE_PATH" value="11" />
     <method v="2">
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks="build" externalProjectPath="$PROJECT_DIR$/api" vmOptions="" scriptParameters="" />
       <option name="Gradle.BeforeRunTask" enabled="false" tasks="prepareSpigotPlugins" externalProjectPath="$PROJECT_DIR$/example" vmOptions="" scriptParameters="" />
       <option name="Gradle.BeforeRunTask" enabled="true" tasks="downloadPaper" externalProjectPath="$PROJECT_DIR$/example" vmOptions="" scriptParameters="" />
     </method>
