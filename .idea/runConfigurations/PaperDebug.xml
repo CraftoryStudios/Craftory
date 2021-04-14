@@ -5,7 +5,7 @@
     <option name="PROGRAM_PARAMETERS" value="--nogui --log-strip-color" />
     <option name="WORKING_DIRECTORY" value="$ProjectFileDir$\example\debug\spigot" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-    <option name="ALTERNATIVE_JRE_PATH" value="12" />
+    <option name="ALTERNATIVE_JRE_PATH" value="11" />
     <method v="2">
       <option name="Gradle.BeforeRunTask" enabled="true" tasks="build" externalProjectPath="$PROJECT_DIR$/api" vmOptions="" scriptParameters="" />
       <option name="Gradle.BeforeRunTask" enabled="false" tasks="prepareSpigotPlugins" externalProjectPath="$PROJECT_DIR$/example" vmOptions="" scriptParameters="" />
