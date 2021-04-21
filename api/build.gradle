@@ -1,0 +1,44 @@
+plugins {
+    id 'studio.craftory.java-conventions'
+}
+
+apply from: "$rootDir/publish.gradle"
+
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.0'
+    implementation 'ch.jalu:injector:1.0'
+}
+
+version '1.0.0'
+
+spigot {
+    name 'Craftory'
+    description 'Plugin Extended Framework'
+    authors = ['BrettSaunders']
+    apiVersion = '1.16'
+
+    commands {
+        spawnItem {
+            description 'Spawns a custom or normal Item.'
+            permission 'craftory.items.spawnItem'
+            aliases 'give', 'i'
+            usage '/<spawnItem> <name> <amount>'
+        }
+    }
+
+    permissions {
+        'craftory.item.spawnItem' {
+            description 'Allows you to spawn items'
+            defaults 'op'
+        }
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "craftorystudios_Craftory_Core"
+    }
+}
+
+tasks.publish.dependsOn(shadowJar)
+description = 'craftory-api'
