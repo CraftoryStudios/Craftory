@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -31,7 +32,7 @@ public class AssetLinker extends BukkitRunnable {
   private Map<Class<? extends CraftoryRenderer>, Map<String, String[]>> assetsToGenerate = new HashMap<>();
   private BlockAssetGenerator blockAssetGenerator = new BlockAssetGenerator();
   private Map<String, String> itemsToGenerate = new HashMap<>();
-  private Map<Material, Set<String>> itemsOfType = new HashMap<>();
+  private Map<Material, Set<String>> itemsOfType = new EnumMap<>(Material.class);
   private ObjectMapper mapper = new ObjectMapper();
   @Inject
   private BlockRenderManager blockRenderManager;
@@ -93,8 +94,9 @@ public class AssetLinker extends BukkitRunnable {
   }
 
   private void buildItemFiles(Map<String, Integer> data) {
-    Map<Material, ObjectNode> files = new HashMap<>();
-    for (Material material: itemsOfType.keySet()) {
+    Map<Material, ObjectNode> files = new EnumMap<>(Material.class);
+    for (Entry<Material, Set<String>> entry: itemsOfType.entrySet()) {
+      Material material = entry.getKey();
       ObjectNode root = mapper.createObjectNode();
       root.put("parent","minecraft:item/generated");
       ObjectNode textures = mapper.createObjectNode();
@@ -105,7 +107,7 @@ public class AssetLinker extends BukkitRunnable {
       }
       root.set("textures", textures);
       ArrayNode overrides = mapper.createArrayNode();
-      Set<String> items = itemsOfType.get(material);
+      Set<String> items = entry.getValue();
       for (String item: items) {
         ObjectNode override = mapper.createObjectNode();
         ObjectNode predicate = mapper.createObjectNode();
@@ -122,10 +124,9 @@ public class AssetLinker extends BukkitRunnable {
   }
 
   private void saveItemFiles(Map<Material, ObjectNode> files) {
-    String path = "/assets/minecraft/models/item/";
-    String low = ResourcePack.RESOURCE_PACK_PATH + "/low" + path;
-    String normal = ResourcePack.RESOURCE_PACK_PATH + "/normal" + path;
-    String high = ResourcePack.RESOURCE_PACK_PATH + "/high" + path;
+    String low = ResourcePack.RESOURCE_PACK_PATH + "/low" + ResourcePack.ITEMS_PATH;
+    String normal = ResourcePack.RESOURCE_PACK_PATH + "/normal" + ResourcePack.ITEMS_PATH;
+    String high = ResourcePack.RESOURCE_PACK_PATH + "/high" + ResourcePack.ITEMS_PATH;
     File file = new File(low);
     file.mkdirs();
     file = new File(normal);
@@ -133,9 +134,9 @@ public class AssetLinker extends BukkitRunnable {
     file = new File(high);
     file.mkdirs();
     for (Entry<Material, ObjectNode> entry: files.entrySet()) {
-      saveObject(low + entry.getKey().toString().toLowerCase(Locale.ROOT) + ".json", entry.getValue());
-      saveObject(normal + entry.getKey().toString().toLowerCase(Locale.ROOT) + ".json", entry.getValue());
-      saveObject(high + entry.getKey().toString().toLowerCase(Locale.ROOT) + ".json", entry.getValue());
+      saveObject(low + entry.getKey().toString().toLowerCase(Locale.ROOT) + ResourcePack.JSON, entry.getValue());
+      saveObject(normal + entry.getKey().toString().toLowerCase(Locale.ROOT) + ResourcePack.JSON, entry.getValue());
+      saveObject(high + entry.getKey().toString().toLowerCase(Locale.ROOT) + ResourcePack.JSON, entry.getValue());
     }
   }
 
