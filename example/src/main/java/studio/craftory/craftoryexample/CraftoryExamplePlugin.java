@@ -45,7 +45,7 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
     ItemDataKey magicalPower = new ItemDataKey(new NamespacedKey(this, "magical-power"), PersistentDataType.INTEGER);
     CustomItem wrench = CustomItem.builder()
         .name("wrench").unbreakable(true)
-        .modelPath("CraftoryExample/models/items/wrench.json")
+        .modelPath("craftoryexample:items/wrench")
         .attackDamage(1).handler(PlayerInteractEvent.class, Wrench::onClick)
         .displayName("Wrench").material(Material.STICK)
         .displayNameColour(ChatColor.AQUA).holdEffect(
@@ -54,7 +54,7 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
     wrench.register(this);
 
     CustomItem.builder().name("superstar").displayName("Super Star").material(Material.NETHER_STAR)
-        .modelPath("CraftoryExample/models/items/superstar.json").build().register(this);
+        .modelPath("craftoryexample:items/superstar").build().register(this);
 
   }
 
@@ -79,7 +79,7 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
   @Override
   public URL getAddonResources() {
     try {
-      return new URL("https://www.dropbox.com/s/l6q9uevu2cjpcju/CraftoryCore.zip?raw=1");
+      return new URL("https://www.dropbox.com/s/1n0tgldil2ov098/CraftoryCore.zip?dl=0?raw=1");
     } catch (MalformedURLException e) {
       Log.error(e.toString());
     }

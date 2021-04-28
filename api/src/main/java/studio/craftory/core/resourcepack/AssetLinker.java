@@ -60,6 +60,7 @@ public class AssetLinker extends BukkitRunnable {
   }
 
   private void buildItemRenderData() {
+    Log.warn("Building render data");
     Map<String, Integer> data = null;
     if (Files.exists(Paths.get(ResourcePack.ITEM_RENDER_DATA))) {
       data = readRenderData();
@@ -86,7 +87,7 @@ public class AssetLinker extends BukkitRunnable {
         id -= 1;
       }
     }
-
+    Log.warn("Render data: " + data.toString());
     saveRenderData(data);
     buildItemFiles(data);
   }
@@ -116,6 +117,7 @@ public class AssetLinker extends BukkitRunnable {
       root.set("overrides", overrides);
       files.put(material, root);
     }
+    Log.warn("Item files " + files.toString());
     saveItemFiles(files);
   }
 
@@ -131,9 +133,9 @@ public class AssetLinker extends BukkitRunnable {
     file = new File(high);
     file.mkdirs();
     for (Entry<Material, ObjectNode> entry: files.entrySet()) {
-      saveObject(low + entry.getKey().toString().toLowerCase(Locale.ROOT), entry.getValue());
-      saveObject(normal + entry.getKey().toString().toLowerCase(Locale.ROOT), entry.getValue());
-      saveObject(high + entry.getKey().toString().toLowerCase(Locale.ROOT), entry.getValue());
+      saveObject(low + entry.getKey().toString().toLowerCase(Locale.ROOT) + ".json", entry.getValue());
+      saveObject(normal + entry.getKey().toString().toLowerCase(Locale.ROOT) + ".json", entry.getValue());
+      saveObject(high + entry.getKey().toString().toLowerCase(Locale.ROOT) + ".json", entry.getValue());
     }
   }
 

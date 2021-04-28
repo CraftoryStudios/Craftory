@@ -40,5 +40,9 @@ sonarqube {
     }
 }
 
+shadowJar {
+    relocate 'ch.jalu.injector', 'studio.craftory.core.libs.injector'
+}
+
 tasks.publish.dependsOn(shadowJar)
 description = 'craftory-api'

@@ -39,7 +39,7 @@ public class CustomBlockRegistry {
   private final Map<String, CraftoryBlockKey> craftoryBlockKeyMap = new HashMap<>();
 
   @Synchronized
-  public CraftoryBlockKey registerCustomBlockClass(@NonNull Plugin plugin, @NonNull Class<?> block) {
+  public CraftoryBlockKey registerCustomBlockClass(@NonNull Plugin plugin, @NonNull Class<?> block, @NonNull String model) {
     CraftoryBlockKey craftoryBlockKey = new CraftoryBlockKey(plugin, block);
     if (!blockTypes.containsKey(craftoryBlockKey)) {
 
@@ -50,8 +50,8 @@ public class CustomBlockRegistry {
           registerCustomBlockTickables((Class<? extends BaseCustomBlock>) block);
 
           CustomItem.builder().name(craftoryBlockKey.getName()).displayName(
-              craftoryBlockKey.getName()).attribute(BLOCK_ITEM_DATA_KEY, craftoryBlockKey.toString()).material(
-              Material.STONE).build().register(plugin);
+              craftoryBlockKey.getName()).material(Material.STONE).attribute(BLOCK_ITEM_DATA_KEY, craftoryBlockKey.toString()).material(
+              Material.STONE).modelPath(model).build().register(plugin);
           Log.debug("CustomBlock Register: " + block.getName());
         } else {
           Log.warn("Couldn't get constructor for custom block: " + craftoryBlockKey.getName());
