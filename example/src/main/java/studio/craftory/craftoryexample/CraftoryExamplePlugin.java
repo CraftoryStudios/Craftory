@@ -45,6 +45,7 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
     ItemDataKey magicalPower = new ItemDataKey(new NamespacedKey(this, "magical-power"), PersistentDataType.INTEGER);
     CustomItem wrench = CustomItem.builder()
         .name("wrench").unbreakable(true)
+        .modelPath("CraftoryExample/models/items/wrench.json")
         .attackDamage(1).handler(PlayerInteractEvent.class, Wrench::onClick)
         .displayName("Wrench").material(Material.STICK)
         .displayNameColour(ChatColor.AQUA).holdEffect(
@@ -52,7 +53,8 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
         .attribute(magicalPower, 100).build();
     wrench.register(this);
 
-    CustomItem.builder().name("superstar").displayName("Super Star").material(Material.NETHER_STAR).build().register(this);
+    CustomItem.builder().name("superstar").displayName("Super Star").material(Material.NETHER_STAR)
+        .modelPath("CraftoryExample/models/items/superstar.json").build().register(this);
 
   }
 

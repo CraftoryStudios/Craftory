@@ -34,7 +34,7 @@ public class CustomItemManager {
   /* Registering */
   public void registerCustomItem(@NonNull CustomItem item) {
     String itemName = item.getUniqueName();
-    assetLinker.registerItemForAssignment(itemName);
+    assetLinker.registerItemForAssignment(itemName, item.getModelPath(), item.getMaterial());
     customItemCache.put(itemName, item);
     Log.debug("Registered custom item '" + itemName + "'");
     if (item.hasHoldEffects()) {
