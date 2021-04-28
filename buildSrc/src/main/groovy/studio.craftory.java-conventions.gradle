@@ -1,0 +1,64 @@
+plugins {
+    id 'java-library'
+    id 'idea'
+    id "org.sonarqube"
+    id "io.freefair.lombok"
+    id 'com.github.johnrengelman.shadow'
+    id 'kr.entree.spigradle'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly spigot('1.16.5')
+
+    testImplementation 'com.github.seeseemelk:MockBukkit-v1.16:0.25.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.+'
+    testImplementation 'org.mockito:mockito-core:3.+'
+
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    ignoreFailures = false
+}
+
+shadowJar {
+    classifier = ''
+}
+tasks.build.dependsOn(shadowJar)
+tasks.prepareSpigotPlugins.dependsOn(shadowJar)
+
+group = 'studio.craftory'
+version = '1.0.0'
+
+java.sourceCompatibility = JavaVersion.VERSION_11
+java.targetCompatibility = JavaVersion.VERSION_11
+
+sonarqube {
+    properties {
+        property "sonar.organization", "craftorystudios"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
+}
+
+spigot {
+    debug {
+        jvmArgs '-Xmx12G'
+        buildVersion '1.16.5'
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.javadoc.enabled(false)
+
+defaultTasks 'build'

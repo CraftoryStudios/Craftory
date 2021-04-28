@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact build-on-make="true" name="CopyJar-spigot-1.16.1">
-    <output-path>$PROJECT_DIR$/testServers/spigot/1.16.1/plugins</output-path>
-    <root id="root">
-      <element id="file-copy" path="$PROJECT_DIR$/testServers/spigot/1.16.4/plugins/core-1.0.0.jar" />
-    </root>
-  </artifact>
-</component>
