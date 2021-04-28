@@ -2,6 +2,7 @@ package studio.craftory.craftoryexample;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Optional;
 import kr.entree.spigradle.annotations.PluginMain;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -60,7 +61,13 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
 
   @Override
   public void craftoryOnEnable() {
-    ItemStack res = Craftory.getCustomItemManager().getCustomItem("craftoryexample:wrench").get();
+    Optional<ItemStack> itemStackOptional = Craftory.getCustomItemManager().getCustomItem("craftoryexample:wrench");
+    ItemStack res = null;
+    if (itemStackOptional.isPresent()) {
+      res = itemStackOptional.get();
+    } else {
+      throw new NullPointerException("ItemStack can't be null");
+    }
     res.setAmount(6);
     ShapedCraftingRecipe.builder().name("wrenchdoubler").recipe(new String[]{"XWX", "XWX", "XWX"}).commonItemIngredient('W',"craftoryexample:wrench").result(res).build().register(this);
     res.setAmount(1);
