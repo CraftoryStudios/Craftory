@@ -7,22 +7,22 @@ import java.util.Optional;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import studio.craftory.core.api.CustomBlockAPI;
 import studio.craftory.core.data.IntRange;
 import studio.craftory.core.terrian.retro.RetroGeneration;
 import studio.craftory.core.terrian.retro.population.ore.VanillaOre;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TestVanillaOreGeneration {
 
   @Mock
@@ -37,7 +37,7 @@ public class TestVanillaOreGeneration {
   WorldMock worldMock = new WorldMock();
 
 
-  @Before
+  @BeforeEach
   public void init() {
     //Setup Ore
     HashSet<Material> replaceable = new HashSet<>();
