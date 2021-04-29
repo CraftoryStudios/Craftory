@@ -16,11 +16,8 @@ public class SafeBlockLocation {
 
   @NonNull
   private SafeWorld safeWorld;
-  @NonNull
   private int x;
-  @NonNull
   private int y;
-  @NonNull
   private int z;
 
   public SafeBlockLocation(@NonNull Location location) {

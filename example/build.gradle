@@ -1,0 +1,32 @@
+plugins {
+    id 'studio.craftory.java-conventions'
+}
+
+dependencies {
+    compileOnly project(':craftory-api')
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "craftorystudios_Craftory_Example"
+    }
+}
+
+spigot {
+    name 'CraftoryExample'
+    description 'Plugin Extended Framework'
+    authors = ['BrettSaunders']
+    apiVersion = '1.16'
+    depends 'Craftory'
+
+    commands {
+        simplegen {
+            description 'Spawans a new Simple Generator Block above your head'
+            permission 'craftoryexample.simplegen'
+            usage '/<command>'
+        }
+    }
+
+}
+
+description = 'craftory-example'
