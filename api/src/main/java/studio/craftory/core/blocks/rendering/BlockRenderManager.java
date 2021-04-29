@@ -1,4 +1,4 @@
-package studio.craftory.core.blocks;
+package studio.craftory.core.blocks.rendering;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,10 +18,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.rendering.renderers.DefaultRenderer;
-import studio.craftory.core.blocks.rendering.CraftoryRenderer;
 import studio.craftory.core.blocks.rendering.renderers.DefaultRotationalRenderer;
-import studio.craftory.core.data.RenderData;
 import studio.craftory.core.data.CraftoryDirection;
+import studio.craftory.core.data.RenderData;
 import studio.craftory.core.data.events.ResourcePackBuilt;
 import studio.craftory.core.data.keys.CraftoryBlockKey;
 import studio.craftory.core.utils.Log;

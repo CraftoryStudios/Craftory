@@ -26,7 +26,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import studio.craftory.core.Craftory;
-import studio.craftory.core.errors.CraftoryItemHasNoMetaException;
+import studio.craftory.core.data.errors.CraftoryItemHasNoMetaException;
 import studio.craftory.core.utils.StringUtils;
 
 @UtilityClass

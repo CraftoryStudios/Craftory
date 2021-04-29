@@ -10,7 +10,7 @@ import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import studio.craftory.core.Craftory;
-import studio.craftory.core.blocks.BlockRenderManager;
+import studio.craftory.core.blocks.rendering.BlockRenderManager;
 import studio.craftory.core.blocks.rendering.CraftoryRenderer;
 import studio.craftory.core.data.events.ResourcePackBuilt;
 import studio.craftory.core.data.keys.CraftoryBlockKey;

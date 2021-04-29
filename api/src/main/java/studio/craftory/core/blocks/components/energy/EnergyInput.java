@@ -1,4 +1,4 @@
-package studio.craftory.core.components.energy;
+package studio.craftory.core.blocks.components.energy;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

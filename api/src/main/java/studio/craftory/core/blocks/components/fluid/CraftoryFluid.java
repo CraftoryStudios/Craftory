@@ -1,4 +1,4 @@
-package studio.craftory.core.components.fluid;
+package studio.craftory.core.blocks.components.fluid;
 
 import java.util.Optional;
 import lombok.NonNull;

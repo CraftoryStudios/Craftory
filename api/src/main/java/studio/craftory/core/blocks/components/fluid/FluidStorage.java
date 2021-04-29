@@ -1,4 +1,4 @@
-package studio.craftory.core.components.fluid;
+package studio.craftory.core.blocks.components.fluid;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,7 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Optional;
 import lombok.NonNull;
-import studio.craftory.core.components.energy.EnergyStorage.EnergyStorageData;
 import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.data.persitanceholders.PersistentDataHolder;
 import studio.craftory.core.utils.Reflections;

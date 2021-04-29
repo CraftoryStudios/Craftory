@@ -1,4 +1,4 @@
-package studio.craftory.core.components.fluid;
+package studio.craftory.core.blocks.components.fluid;
 
 import com.google.common.collect.Maps;
 import java.lang.annotation.ElementType;

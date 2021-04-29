@@ -1,4 +1,4 @@
-package studio.craftory.core.errors;
+package studio.craftory.core.data.errors;
 
 public class CraforyException extends RuntimeException {
 

@@ -15,6 +15,7 @@ import lombok.Synchronized;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
+import studio.craftory.core.blocks.rendering.BlockRenderManager;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
 import studio.craftory.core.data.keys.CraftoryBlockKey;

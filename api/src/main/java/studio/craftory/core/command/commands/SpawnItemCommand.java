@@ -1,4 +1,4 @@
-package studio.craftory.core.commands;
+package studio.craftory.core.command.commands;
 
 import java.util.Optional;
 import org.bukkit.command.Command;
