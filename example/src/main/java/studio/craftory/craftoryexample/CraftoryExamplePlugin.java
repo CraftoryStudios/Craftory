@@ -86,7 +86,7 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
   @Override
   public URL getAddonResources() {
     try {
-      return new URL("https://www.dropbox.com/s/1n0tgldil2ov098/CraftoryCore.zip?dl=0?raw=1");
+      return new URL("https://www.dropbox.com/s/1n0tgldil2ov098/CraftoryCore.zip?raw=1");
     } catch (MalformedURLException e) {
       Log.error(e.toString());
     }
