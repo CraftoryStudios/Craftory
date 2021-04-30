@@ -31,6 +31,7 @@ public class Constants {
     public static final String TEMP_PATH = Craftory.getInstance().getDataFolder() + "/temp";
     public static final String ITEM_RENDER_DATA = Craftory.getInstance().getDataFolder() + "/ItemRenderData.json";
     public static final int ITEM_ID_START_VALUE = -1000;
+    public static final String[] QUALITIES = {"low", "normal", "high"};
   }
 
 }
