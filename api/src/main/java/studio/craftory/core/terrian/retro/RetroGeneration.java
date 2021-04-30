@@ -48,14 +48,17 @@ public class RetroGeneration implements Listener {
   public void saveGeneratedChunks() {
     for (Entry<World, Set<String>> visitedChunksInWorld : visitedChunks.entrySet()) {
       File file =
-          new File(Craftory.getInstance().getServer().getWorldContainer().getAbsolutePath() + "/" + visitedChunksInWorld.getKey().getName() +
+          new File(Craftory.getInstance().getServer().getWorldContainer().getAbsolutePath() + File.separator + visitedChunksInWorld.getKey().getName() +
               "/Craftory");
       file.mkdirs();
       file = new File(file, "chunkGenerations.json");
       try {
         if (file.exists())
-          file.createNewFile();
-        objectMapper.writeValue(file, visitedChunksInWorld.getValue());
+          if (file.createNewFile()) {
+            objectMapper.writeValue(file, visitedChunksInWorld.getValue());
+          } else {
+            Log.error("Couldn't save retro chunk data, save file couldn't be created");
+          }
       } catch (Exception e) {
         Log.error("Couldn't save retro chunk data");
       }
@@ -65,7 +68,7 @@ public class RetroGeneration implements Listener {
   public void loadGeneratedChunks() {
     for (World world : Craftory.getInstance().getServer().getWorlds()) {
       File file =
-          new File(Craftory.getInstance().getServer().getWorldContainer().getAbsolutePath() + "/" +world.getName() +
+          new File(Craftory.getInstance().getServer().getWorldContainer().getAbsolutePath() + File.separator +world.getName() +
               "/Craftory", "chunkGenerations.json");
       if (file.exists()) {
         try {

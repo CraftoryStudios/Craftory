@@ -23,7 +23,7 @@ import studio.craftory.core.terrian.retro.RetroGeneration;
 import studio.craftory.core.terrian.retro.population.ore.VanillaOre;
 
 @ExtendWith(MockitoExtension.class)
-public class TestVanillaOreGeneration {
+class TestVanillaOreGeneration {
 
   @Mock
   CustomBlockAPI customBlockAPI;
@@ -67,7 +67,7 @@ public class TestVanillaOreGeneration {
 
   @Test
   @DisplayName("Vanilla Ore Generation - Test multiple runs on same seed produce same result")
-  public void testSameGenerationSpots() {
+  void testSameGenerationSpots() {
     Assertions.assertTrue(locations1.isEmpty());
     retroGeneration.populateOre(chunk);
     Assertions.assertFalse(locations1.isEmpty());
