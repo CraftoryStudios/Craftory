@@ -27,7 +27,6 @@ import studio.craftory.core.listeners.CustomBlockListener;
 import studio.craftory.core.listeners.WorldListener;
 import studio.craftory.core.recipes.RecipeManager;
 import studio.craftory.core.resourcepack.AssetLinker;
-import studio.craftory.core.utils.EventListener;
 import studio.craftory.core.utils.Log;
 
 @PluginMain
@@ -87,14 +86,13 @@ public final class Craftory extends JavaPlugin {
 
     //Register Events
     PluginManager pluginManager = getServer().getPluginManager();
+    pluginManager.registerEvents(blockRenderManager, instance);
     pluginManager.registerEvents(injector.getSingleton(CustomBlockListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(WorldListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ChunkListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ItemEventManager.class), instance);
     pluginManager.registerEvents(recipeManager, instance);
-    pluginManager.registerEvents(injector.getSingleton(EventListener.class), instance);
-
-
+    pluginManager.registerEvents(customItemManager, instance);
     //Executor
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
     syncExecutionManager.runTaskTimer(this, 20L,1L);

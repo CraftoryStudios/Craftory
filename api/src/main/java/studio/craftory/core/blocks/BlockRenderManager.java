@@ -14,6 +14,8 @@ import java.util.Map.Entry;
 import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.rendering.CraftoryRenderer;
 import studio.craftory.core.blocks.rendering.renderers.DefaultRenderer;
@@ -24,7 +26,7 @@ import studio.craftory.core.data.events.ResourcePackBuilt;
 import studio.craftory.core.data.keys.CraftoryBlockKey;
 import studio.craftory.core.utils.Log;
 
-public class BlockRenderManager {
+public class BlockRenderManager implements Listener {
   private final ObjectMapper mapper;
 
   @Getter
@@ -36,6 +38,7 @@ public class BlockRenderManager {
     registerDefaultRenders();
   }
 
+  @EventHandler
   public void onResourcePackBuilt(ResourcePackBuilt event) {
     loadRenderData();
   }

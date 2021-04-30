@@ -12,13 +12,15 @@ import java.util.Set;
 import javax.inject.Inject;
 import lombok.NonNull;
 import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import studio.craftory.core.data.events.ResourcePackBuilt;
 import studio.craftory.core.resourcepack.AssetLinker;
 import studio.craftory.core.utils.Constants.ResourcePack;
 import studio.craftory.core.utils.Log;
 
-public class CustomItemManager {
+public class CustomItemManager implements Listener {
 
   protected static final Map<String, CustomItem> customItemCache = new HashMap<>();
   private static final Map<String, CustomItem> unqiueItemCache = new HashMap<>();
@@ -53,6 +55,7 @@ public class CustomItemManager {
     }
   }
 
+  @EventHandler
   public void onResourcePackBuilt(ResourcePackBuilt e) {
     assignRenderIds();
   }
