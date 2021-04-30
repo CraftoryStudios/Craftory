@@ -77,7 +77,7 @@ public class AssetLinker extends BukkitRunnable {
     if (Files.exists(Paths.get(ResourcePack.ITEM_RENDER_DATA))) {
       data = readRenderData();
       if (data != null) {
-        data = buildFromExistingItemRenderData(data);
+        buildFromExistingItemRenderData(data);
       }
     }
     if (data == null){
@@ -149,7 +149,7 @@ public class AssetLinker extends BukkitRunnable {
       files.put(material, root);
     }
     Log.debug("Item files " + files.toString());
-    for (String quality: ResourcePack.QUALITIES) {
+    for (String quality: ResourcePack.getQUALITIES()) {
       saveItemFiles(files, quality);
     }
   }
@@ -178,7 +178,7 @@ public class AssetLinker extends BukkitRunnable {
   }
 
   private void saveItemFiles(Map<Material, ObjectNode> files, String quality) {
-    String path = ResourcePack.RESOURCE_PACK_PATH + "/" + quality + ResourcePack.ITEMS_PATH;
+    String path = Paths.get(ResourcePack.RESOURCE_PACK_PATH, "/", quality, ResourcePack.ITEMS_PATH).toString();
     File file = new File(path);
     file.mkdirs();
     for (Entry<Material, ObjectNode> entry: files.entrySet()) {
