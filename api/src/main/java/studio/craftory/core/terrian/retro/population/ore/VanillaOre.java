@@ -1,9 +1,15 @@
 package studio.craftory.core.terrian.retro.population.ore;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.IntRange;
@@ -15,6 +21,26 @@ public class VanillaOre extends Ore{
   public VanillaOre(Class<? extends BaseCustomBlock> material, Set<Material> replaceable,  IntRange amount,
       IntRange height, IntRange oreSizeRange) {
     super(material, replaceable, amount, height);
+    this.oreSizeRange = oreSizeRange;
+  }
+
+  public VanillaOre(Class<? extends BaseCustomBlock> material, Material replaceable,  IntRange amount,
+      IntRange height, IntRange oreSizeRange) {
+    super(material, new HashSet<>(){{add(replaceable);}}, amount, height);
+    this.oreSizeRange = oreSizeRange;
+  }
+
+  public VanillaOre(Class<? extends BaseCustomBlock> material, Tag replaceable,  IntRange amount,
+      IntRange height, IntRange oreSizeRange) {
+    super(material, replaceable.getValues(), amount, height);
+    this.oreSizeRange = oreSizeRange;
+  }
+
+  public VanillaOre(Class<? extends BaseCustomBlock> material, List<Tag> replaceable,  IntRange amount,
+      IntRange height, IntRange oreSizeRange) {
+
+    super(material, (Set<Material>) replaceable.stream().map(i -> i.getValues()).flatMap(Collection::stream).collect(Collectors.toUnmodifiableSet()), amount,
+        height);
     this.oreSizeRange = oreSizeRange;
   }
 
