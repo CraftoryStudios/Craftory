@@ -34,6 +34,7 @@ public class CustomItem {
   @Getter
   private final String name;
   private final String displayName;
+  @Getter
   private final Material material;
   private ItemStack itemStack;
   private final Integer attackSpeed;
@@ -53,6 +54,8 @@ public class CustomItem {
 
   @Singular private final Map<ItemDataKey, Object> attributes;
 
+  @Getter private final String modelPath;
+
   public boolean hasHoldEffects() {
     return !holdEffects.isEmpty();
   }
@@ -70,7 +73,7 @@ public class CustomItem {
   }
 
   public void createItem(int renderID) {
-    if (plugin==null || name==null || material==null || displayName==null) {
+    if (plugin==null || name==null || material==null || displayName==null || modelPath==null) {
       throw new IllegalArgumentException("Attempted to register Custom item that was missing either: plugin, name, material or display-name");
     }
     this.renderID = renderID;

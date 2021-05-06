@@ -95,15 +95,12 @@ public final class Craftory extends JavaPlugin {
     pluginManager.registerEvents(injector.getSingleton(ChunkListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ItemEventManager.class), instance);
     pluginManager.registerEvents(recipeManager, instance);
-
-
+    pluginManager.registerEvents(customItemManager, instance);
     //Executor
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
     syncExecutionManager.runTaskTimer(this, 20L,1L);
     getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
 
-    AssetLinker linker = injector.getSingleton(AssetLinker.class);
-    linker.runTaskLater(this, 1);
     instance.getServer().getScheduler().runTaskLater(this, this::afterEnable, 1);
 
     //Commands
@@ -114,19 +111,22 @@ public final class Craftory extends JavaPlugin {
 
   }
 
-  public void onResourcesSetup() {
-    //Register Events
-    PluginManager pluginManager = getServer().getPluginManager();
-    retroGeneration = injector.getSingleton(RetroGeneration.class);
-    pluginManager.registerEvents(retroGeneration, instance);
-  }
-
   public void afterEnable() {
+    AssetLinker linker = injector.getSingleton(AssetLinker.class);
+    linker.run();
+
     for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
       if (CraftoryAddon.class.isAssignableFrom(plugin.getClass())) {
         ((CraftoryAddon) plugin).craftoryOnEnable();
       }
     }
+  }
+
+  public void onResourcesSetup() {
+    //Register Events
+    PluginManager pluginManager = getServer().getPluginManager();
+    retroGeneration = injector.getSingleton(RetroGeneration.class);
+    pluginManager.registerEvents(retroGeneration, instance);
   }
 
   @Override
