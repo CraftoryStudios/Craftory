@@ -1,16 +1,8 @@
 package studio.craftory.core.terrian.retro.population.ore;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.IntRange;

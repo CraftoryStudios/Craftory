@@ -23,7 +23,7 @@ public abstract class Ore {
   protected final IntRange height;
   protected CustomBlockAPI customBlockAPI;
 
-  public Ore(Class<? extends BaseCustomBlock> material,  IntRange amount,
+  protected Ore(Class<? extends BaseCustomBlock> material,  IntRange amount,
       IntRange height, Material... replaceable) {
     this.material = material;
     this.replaceable = new HashSet<>(Arrays.asList(replaceable));

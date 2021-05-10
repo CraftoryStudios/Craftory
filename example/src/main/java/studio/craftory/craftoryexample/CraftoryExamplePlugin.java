@@ -3,8 +3,6 @@ package studio.craftory.craftoryexample;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
-import java.util.Arrays;
-import java.util.HashSet;
 import kr.entree.spigradle.annotations.PluginMain;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
