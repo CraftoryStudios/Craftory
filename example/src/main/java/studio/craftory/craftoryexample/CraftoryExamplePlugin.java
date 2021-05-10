@@ -86,8 +86,8 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
     ShapelessCraftingRecipe.builder().name("superVersion").commonItemIngredient("craftoryexample:superstar", 3).result(emeralds).build().register(this);
 
     Craftory.getRetoGeneration().registerOre(new VanillaOre(CopperOre.class,
-        Material.STONE, new IntRange(20,33), new IntRange(5, 60),
-        new IntRange(3,10)));
+         new IntRange(20,33), new IntRange(5, 60),
+        new IntRange(3,10), Material.STONE));
   }
 
   @Override

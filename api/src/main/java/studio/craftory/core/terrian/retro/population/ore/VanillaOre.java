@@ -1,6 +1,7 @@
 package studio.craftory.core.terrian.retro.population.ore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -18,29 +19,9 @@ import studio.craftory.core.data.Vector3;
 public class VanillaOre extends Ore{
   private final IntRange oreSizeRange;
 
-  public VanillaOre(Class<? extends BaseCustomBlock> material, Set<Material> replaceable,  IntRange amount,
-      IntRange height, IntRange oreSizeRange) {
-    super(material, replaceable, amount, height);
-    this.oreSizeRange = oreSizeRange;
-  }
-
-  public VanillaOre(Class<? extends BaseCustomBlock> material, Material replaceable,  IntRange amount,
-      IntRange height, IntRange oreSizeRange) {
-    super(material, new HashSet<>(){{add(replaceable);}}, amount, height);
-    this.oreSizeRange = oreSizeRange;
-  }
-
-  public VanillaOre(Class<? extends BaseCustomBlock> material, Tag replaceable,  IntRange amount,
-      IntRange height, IntRange oreSizeRange) {
-    super(material, replaceable.getValues(), amount, height);
-    this.oreSizeRange = oreSizeRange;
-  }
-
-  public VanillaOre(Class<? extends BaseCustomBlock> material, List<Tag> replaceable,  IntRange amount,
-      IntRange height, IntRange oreSizeRange) {
-
-    super(material, (Set<Material>) replaceable.stream().map(i -> i.getValues()).flatMap(Collection::stream).collect(Collectors.toUnmodifiableSet()), amount,
-        height);
+  public VanillaOre(Class<? extends BaseCustomBlock> material,  IntRange amount,
+      IntRange height, IntRange oreSizeRange, Material... replaceable) {
+    super(material,amount, height, replaceable);
     this.oreSizeRange = oreSizeRange;
   }
 

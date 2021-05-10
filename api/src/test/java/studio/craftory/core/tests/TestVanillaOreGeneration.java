@@ -40,10 +40,8 @@ class TestVanillaOreGeneration {
   @BeforeEach
   public void init() {
     //Setup Ore
-    HashSet<Material> replaceable = new HashSet<>();
-    replaceable.add(Material.AIR);
-    VanillaOre ore = new VanillaOre(TestCustomBlock.class, replaceable, new IntRange(20,33), new IntRange(5, 60),
-        new IntRange(3,10));
+    VanillaOre ore = new VanillaOre(TestCustomBlock.class, new IntRange(20,33), new IntRange(5, 60),
+        new IntRange(3,10), Material.AIR);
     retroGeneration.registerOre(ore);
 
     //Setup Chunk
