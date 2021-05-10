@@ -53,12 +53,10 @@ public class RetroGeneration implements Listener {
       file.mkdirs();
       file = new File(file, "chunkGenerations.json");
       try {
-        if (file.exists())
-          if (file.createNewFile()) {
-            objectMapper.writeValue(file, visitedChunksInWorld.getValue());
-          } else {
-            Log.error("Couldn't save retro chunk data, save file couldn't be created");
-          }
+        if (!file.exists() && !file.createNewFile()) {
+          Log.error("Couldn't save retro chunk data, save file couldn't be created");
+        }
+        objectMapper.writeValue(file, visitedChunksInWorld.getValue());
       } catch (Exception e) {
         Log.error("Couldn't save retro chunk data");
       }
