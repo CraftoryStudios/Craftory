@@ -179,7 +179,7 @@ public class AssetLinker extends BukkitRunnable {
   }
 
   private void saveItemFiles(Map<Material, ObjectNode> files, String quality) {
-    String path = Paths.get(ResourcePack.RESOURCE_PACK_PATH, File.separator, quality, ResourcePack.ITEMS_PATH).toString();
+    String path = Paths.get(ResourcePack.RESOURCE_PACK_PATH, File.separator, quality, ResourcePack.ITEMS_PATH).toString() + File.separator;
     File file = new File(path);
     file.mkdirs();
     for (Entry<Material, ObjectNode> entry: files.entrySet()) {
