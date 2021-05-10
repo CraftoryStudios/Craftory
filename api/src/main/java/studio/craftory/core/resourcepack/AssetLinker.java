@@ -47,6 +47,7 @@ public class AssetLinker extends BukkitRunnable {
     }
     ResourcePackBuilt builtEvent = new ResourcePackBuilt();
     Bukkit.getPluginManager().callEvent(builtEvent);
+    Craftory.getInstance().onResourcesSetup();
   }
 
   public void registerBlockAssets(@NonNull CraftoryBlockKey blockKey, Class<? extends CraftoryRenderer> renderer, @NonNull String[] textures) {

@@ -15,10 +15,12 @@ import org.bukkit.potion.PotionEffectType;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.CraftoryAddon;
 import studio.craftory.core.blocks.rendering.renderers.DefaultRotationalRenderer;
+import studio.craftory.core.data.IntRange;
 import studio.craftory.core.data.keys.ItemDataKey;
 import studio.craftory.core.items.CustomItem;
 import studio.craftory.core.recipes.ShapedCraftingRecipe;
 import studio.craftory.core.recipes.ShapelessCraftingRecipe;
+import studio.craftory.core.terrian.retro.population.ore.VanillaOre;
 import studio.craftory.core.utils.Log;
 import studio.craftory.craftoryexample.blocks.CopperOre;
 import studio.craftory.craftoryexample.blocks.SimpleGenerator;
@@ -81,6 +83,9 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
     emeralds.setAmount(64);
     ShapelessCraftingRecipe.builder().name("superVersion").commonItemIngredient("craftoryexample:superstar", 3).result(emeralds).build().register(this);
 
+    Craftory.getRetoGeneration().registerOre(new VanillaOre(CopperOre.class,
+         new IntRange(20,33), new IntRange(5, 60),
+        new IntRange(3,10), Material.STONE));
   }
 
   @Override

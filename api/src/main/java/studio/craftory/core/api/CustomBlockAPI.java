@@ -11,19 +11,19 @@ import studio.craftory.core.blocks.rendering.CraftoryRenderer;
 import studio.craftory.core.blocks.rendering.renderers.DefaultRenderer;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.data.CraftoryDirection;
-import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.data.keys.CraftoryBlockKey;
+import studio.craftory.core.data.keys.CraftoryDataKey;
 import studio.craftory.core.resourcepack.AssetLinker;
 import studio.craftory.core.utils.Log;
 
 public class CustomBlockAPI {
 
   @Inject
-  public CustomBlockRegistry blockRegister;
+  private CustomBlockRegistry blockRegister;
   @Inject
-  public CustomBlockManager customBlockManager;
+  private CustomBlockManager customBlockManager;
   @Inject
-  public AssetLinker assetLinker;
+  private AssetLinker assetLinker;
 
   public void registerCustomBlock(@NonNull Plugin plugin, @NonNull Class<? extends BaseCustomBlock> customBlock,
       @NonNull String[] textures, @NonNull Class<? extends CraftoryRenderer> renderer) {
