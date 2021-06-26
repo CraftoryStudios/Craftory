@@ -15,7 +15,7 @@ spigot {
     name 'Craftory'
     description 'Plugin Extended Framework'
     authors = ['BrettSaunders']
-    apiVersion = '1.16'
+    apiVersion = '1.17'
 
     commands {
         spawnItem {

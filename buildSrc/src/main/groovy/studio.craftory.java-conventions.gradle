@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly spigot('1.16.5')
+    compileOnly spigot('1.17')
 
     testImplementation 'com.github.seeseemelk:MockBukkit-v1.16:0.25.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
