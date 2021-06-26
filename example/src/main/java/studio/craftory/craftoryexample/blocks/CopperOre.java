@@ -3,7 +3,7 @@ package studio.craftory.craftoryexample.blocks;
 import lombok.NonNull;
 import org.bukkit.Location;
 import studio.craftory.core.blocks.templates.ComplexCustomBlock;
-import studio.craftory.core.data.CraftoryDirection;
+import studio.craftory.core.containers.CraftoryDirection;
 
 
 public class CopperOre extends ComplexCustomBlock {

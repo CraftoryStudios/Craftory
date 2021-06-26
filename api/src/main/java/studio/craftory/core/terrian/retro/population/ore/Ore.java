@@ -10,8 +10,8 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import studio.craftory.core.api.CustomBlockAPI;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
-import studio.craftory.core.data.IntRange;
-import studio.craftory.core.data.Vector3;
+import studio.craftory.core.containers.IntRange;
+import studio.craftory.core.containers.Vector3;
 
 @Getter
 @RequiredArgsConstructor

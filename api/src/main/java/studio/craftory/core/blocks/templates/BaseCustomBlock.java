@@ -5,7 +5,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerInteractEvent;
-import studio.craftory.core.data.CraftoryDirection;
+import studio.craftory.core.containers.CraftoryDirection;
 
 public abstract class BaseCustomBlock {
 

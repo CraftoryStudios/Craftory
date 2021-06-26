@@ -1,8 +1,8 @@
 package studio.craftory.core.blocks.rendering;
 
 import org.bukkit.block.Block;
-import studio.craftory.core.data.RenderData;
-import studio.craftory.core.data.CraftoryDirection;
+import studio.craftory.core.containers.RenderData;
+import studio.craftory.core.containers.CraftoryDirection;
 import studio.craftory.core.resourcepack.BlockAssetGenerator;
 
 public interface CraftoryRenderer {

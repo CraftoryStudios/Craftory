@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import studio.craftory.core.api.CustomBlockAPI;
-import studio.craftory.core.data.IntRange;
+import studio.craftory.core.containers.IntRange;
 import studio.craftory.core.terrian.retro.RetroGeneration;
 import studio.craftory.core.terrian.retro.population.ore.VanillaOre;
 

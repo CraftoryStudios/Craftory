@@ -18,7 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.api.CustomBlockAPI;
-import studio.craftory.core.data.Vector3;
+import studio.craftory.core.containers.Vector3;
 import studio.craftory.core.terrian.TerrianUtils;
 import studio.craftory.core.terrian.retro.population.ore.Ore;
 import studio.craftory.core.utils.Log;

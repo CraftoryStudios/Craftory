@@ -12,8 +12,8 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.block.data.type.NoteBlock;
 import studio.craftory.core.blocks.rendering.CraftoryRenderer;
-import studio.craftory.core.data.CraftoryDirection;
-import studio.craftory.core.data.RenderData;
+import studio.craftory.core.containers.CraftoryDirection;
+import studio.craftory.core.containers.RenderData;
 import studio.craftory.core.resourcepack.BlockAssetGenerator;
 import studio.craftory.core.utils.Log;
 

@@ -15,7 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import studio.craftory.core.data.events.ResourcePackBuilt;
+import studio.craftory.core.containers.events.ResourcePackBuilt;
 import studio.craftory.core.resourcepack.AssetLinker;
 import studio.craftory.core.utils.Constants.ResourcePack;
 import studio.craftory.core.utils.Log;

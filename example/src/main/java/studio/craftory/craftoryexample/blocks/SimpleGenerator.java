@@ -5,10 +5,10 @@ import org.bukkit.Location;
 import org.bukkit.event.player.PlayerInteractEvent;
 import studio.craftory.core.annotations.Tickable;
 import studio.craftory.core.blocks.templates.ComplexCustomBlock;
-import studio.craftory.core.components.energy.EnergyOutput;
-import studio.craftory.core.components.energy.EnergyOutput.EnergyOutputData;
-import studio.craftory.core.components.energy.EnergyStorage.EnergyStorageData;
-import studio.craftory.core.data.CraftoryDirection;
+import studio.craftory.core.blocks.components.energy.EnergyOutput;
+import studio.craftory.core.blocks.components.energy.EnergyOutput.EnergyOutputData;
+import studio.craftory.core.blocks.components.energy.EnergyStorage.EnergyStorageData;
+import studio.craftory.core.containers.CraftoryDirection;
 
 @EnergyOutputData(maxExtract = 100)
 @EnergyStorageData(capacity = 1000000)

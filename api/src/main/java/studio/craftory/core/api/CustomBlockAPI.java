@@ -10,9 +10,9 @@ import studio.craftory.core.blocks.CustomBlockRegistry;
 import studio.craftory.core.blocks.rendering.CraftoryRenderer;
 import studio.craftory.core.blocks.rendering.renderers.DefaultRenderer;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
-import studio.craftory.core.data.CraftoryDirection;
-import studio.craftory.core.data.keys.CraftoryBlockKey;
-import studio.craftory.core.data.keys.CraftoryDataKey;
+import studio.craftory.core.containers.CraftoryDirection;
+import studio.craftory.core.containers.keys.CraftoryBlockKey;
+import studio.craftory.core.containers.keys.CraftoryDataKey;
 import studio.craftory.core.resourcepack.AssetLinker;
 import studio.craftory.core.utils.Log;
 

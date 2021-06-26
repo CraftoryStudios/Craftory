@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import lombok.NonNull;
 import studio.craftory.core.Craftory;
-import studio.craftory.core.data.CraftoryDirection;
+import studio.craftory.core.containers.CraftoryDirection;
 import studio.craftory.core.utils.Log;
 
 public class BlockAssetGenerator {

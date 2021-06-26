@@ -3,7 +3,7 @@ package studio.craftory.core.blocks.templates;
 
 import lombok.NonNull;
 import org.bukkit.Location;
-import studio.craftory.core.data.CraftoryDirection;
+import studio.craftory.core.containers.CraftoryDirection;
 
 public abstract class BasicCustomBlock extends BaseCustomBlock {
 

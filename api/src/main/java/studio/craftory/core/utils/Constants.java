@@ -5,7 +5,7 @@ import lombok.experimental.UtilityClass;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataType;
 import studio.craftory.core.Craftory;
-import studio.craftory.core.data.keys.ItemDataKey;
+import studio.craftory.core.containers.keys.ItemDataKey;
 
 @UtilityClass
 public class Constants {

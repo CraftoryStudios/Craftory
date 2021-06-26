@@ -25,7 +25,7 @@ import studio.craftory.core.items.ItemEventManager;
 import studio.craftory.core.listeners.ChunkListener;
 import studio.craftory.core.listeners.CustomBlockListener;
 import studio.craftory.core.listeners.WorldListener;
-import studio.craftory.core.recipes.RecipeManager;
+import studio.craftory.core.items.recipes.RecipeManager;
 import studio.craftory.core.resourcepack.AssetLinker;
 import studio.craftory.core.terrian.retro.RetroGeneration;
 import studio.craftory.core.utils.Log;

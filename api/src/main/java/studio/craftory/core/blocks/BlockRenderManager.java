@@ -20,10 +20,10 @@ import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.rendering.CraftoryRenderer;
 import studio.craftory.core.blocks.rendering.renderers.DefaultRenderer;
 import studio.craftory.core.blocks.rendering.renderers.DefaultRotationalRenderer;
-import studio.craftory.core.data.CraftoryDirection;
-import studio.craftory.core.data.RenderData;
-import studio.craftory.core.data.events.ResourcePackBuilt;
-import studio.craftory.core.data.keys.CraftoryBlockKey;
+import studio.craftory.core.containers.CraftoryDirection;
+import studio.craftory.core.containers.RenderData;
+import studio.craftory.core.containers.events.ResourcePackBuilt;
+import studio.craftory.core.containers.keys.CraftoryBlockKey;
 import studio.craftory.core.utils.Log;
 
 public class BlockRenderManager implements Listener {

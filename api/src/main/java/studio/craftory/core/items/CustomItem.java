@@ -25,7 +25,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import studio.craftory.core.Craftory;
-import studio.craftory.core.data.keys.ItemDataKey;
+import studio.craftory.core.containers.keys.ItemDataKey;
 
 @Builder(toBuilder = true)
 public class CustomItem {

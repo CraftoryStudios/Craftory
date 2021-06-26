@@ -22,8 +22,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.blocks.BlockRenderManager;
 import studio.craftory.core.blocks.rendering.CraftoryRenderer;
-import studio.craftory.core.data.events.ResourcePackBuilt;
-import studio.craftory.core.data.keys.CraftoryBlockKey;
+import studio.craftory.core.containers.events.ResourcePackBuilt;
+import studio.craftory.core.containers.keys.CraftoryBlockKey;
 import studio.craftory.core.utils.Constants.ResourcePack;
 import studio.craftory.core.utils.Log;
 

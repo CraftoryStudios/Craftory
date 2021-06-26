@@ -2,7 +2,7 @@ package studio.craftory.core.blocks.rendering.renderers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import studio.craftory.core.data.CraftoryDirection;
+import studio.craftory.core.containers.CraftoryDirection;
 import studio.craftory.core.resourcepack.BlockAssetGenerator;
 import studio.craftory.core.utils.Log;
 

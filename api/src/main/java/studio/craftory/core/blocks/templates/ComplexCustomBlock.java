@@ -2,10 +2,10 @@ package studio.craftory.core.blocks.templates;
 
 import lombok.NonNull;
 import org.bukkit.Location;
-import studio.craftory.core.data.CraftoryDirection;
-import studio.craftory.core.data.persitanceholders.DataHolder;
-import studio.craftory.core.data.persitanceholders.PersistentDataHolder;
-import studio.craftory.core.data.persitanceholders.VolatileDataHolder;
+import studio.craftory.core.containers.CraftoryDirection;
+import studio.craftory.core.containers.persitanceholders.DataHolder;
+import studio.craftory.core.containers.persitanceholders.PersistentDataHolder;
+import studio.craftory.core.containers.persitanceholders.VolatileDataHolder;
 
 public abstract class ComplexCustomBlock extends BaseCustomBlock implements PersistentDataHolder, VolatileDataHolder {
 
