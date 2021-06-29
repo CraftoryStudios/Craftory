@@ -8,6 +8,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
@@ -42,6 +43,7 @@ public final class Craftory extends JavaPlugin {
   private SyncExecutionManager syncExecutionManager;
   private CustomBlockManager customBlockManager;
   private BlockRenderManager blockRenderManager;
+  private FileConfiguration pluginConfiguration = getConfig();
 
   //External
   private CustomItemManager customItemManager;
@@ -84,6 +86,13 @@ public final class Craftory extends JavaPlugin {
 
   @Override
   public void onEnable() {
+    //Setup Config
+    pluginConfiguration.addDefault("developerDebug", false);
+    pluginConfiguration.options().copyDefaults(true);
+    saveConfig();
+
+    Log.setDebug(pluginConfiguration.getBoolean("developerDebug"));
+
     //Load Data
     getServer().getWorlds().forEach(world -> customBlockManager.getDataStorageManager().registerWorld(world));
 
