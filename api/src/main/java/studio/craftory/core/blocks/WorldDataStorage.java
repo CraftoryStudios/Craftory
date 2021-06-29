@@ -43,7 +43,7 @@ public class WorldDataStorage {
     this.world = world;
     this.blockRegister = blockRegister;
     this.mapper = mapper;
-    file = new File(world.getWorldFolder(), "craftory/worldStorage.json");
+    file = new File(world.getWorldFolder(), "craftory/blocks.json");
     setupSaveFile();
   }
 
@@ -58,14 +58,14 @@ public class WorldDataStorage {
         Log.error("Couldn't create save file");
         Log.error(e.toString());
       }
-    }
-    file = new File(file, "blocks.json");
-
-    try {
-      rootNode = (ObjectNode) mapper.readTree(file);
-    } catch (IOException e) {
-      //Doesn't exist so create
       rootNode = mapper.createObjectNode();
+    } else {
+      try {
+        rootNode = (ObjectNode) mapper.readTree(file);
+      } catch (IOException e) {
+        //Doesn't exist so create
+        rootNode = mapper.createObjectNode();
+      }
     }
   }
 
@@ -75,6 +75,7 @@ public class WorldDataStorage {
     } catch (IOException e) {
       Log.error("Failed to save world: "+ world.getName());
       Log.debug(rootNode.asText());
+      Log.debug(e.toString());
     }
   }
 
