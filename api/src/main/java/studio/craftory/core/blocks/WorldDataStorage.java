@@ -3,6 +3,7 @@ package studio.craftory.core.blocks;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.IOException;
@@ -10,8 +11,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.StringJoiner;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Synchronized;
@@ -27,9 +30,6 @@ import studio.craftory.core.utils.Log;
 
 public class WorldDataStorage {
 
-  private static final String CUSTOMBLOCK_TYPE_KEY = "type";
-  private static final String CUSTOMBLOCK_DIRECTION_KEY = "direction";
-  private static final String CUSTOMBLOCK_PERSISTENT_DATA_KEY = "persistentData";
   private static final String CHUNKS_KEY = "chunks";
   private final CustomBlockRegistry blockRegister;
   private final ObjectMapper mapper;
@@ -74,7 +74,6 @@ public class WorldDataStorage {
       mapper.writeValue(file, rootNode);
     } catch (IOException e) {
       Log.error("Failed to save world: "+ world.getName());
-      Log.debug(rootNode.asText());
       Log.debug(e.toString());
     }
   }
@@ -96,8 +95,6 @@ public class WorldDataStorage {
 
   @Synchronized
   private void writeCustomBlock(@NonNull final ObjectNode chunkRoot, @NonNull final BaseCustomBlock customBlock) {
-    ObjectNode objectRoot = mapper.createObjectNode();
-
     //Get block type key
     Optional<CraftoryBlockKey> key = blockRegister.getBlockKey(customBlock);
     if (!key.isPresent())  {
@@ -106,13 +103,25 @@ public class WorldDataStorage {
     }
 
     //Write Custom Block data to JSON Node
-    objectRoot.put(CUSTOMBLOCK_TYPE_KEY, key.get().toString());
-    objectRoot.put(CUSTOMBLOCK_DIRECTION_KEY, customBlock.getFacingDirection().label);
+    StringJoiner blockData = new StringJoiner(";");
+    blockData.add(key.get().toString());
+    blockData.add(String.valueOf(customBlock.getFacingDirection().label));
+
     if (ComplexCustomBlock.class.isAssignableFrom(customBlock.getClass())) {
-      objectRoot.set(CUSTOMBLOCK_PERSISTENT_DATA_KEY, persistentDataToNode((ComplexCustomBlock) customBlock));
+      //TODO ensure persistent data doesn't contain ; symbol
+      String temp = null;
+      try {
+        temp = mapper.writeValueAsString(persistentDataToNode((ComplexCustomBlock) customBlock));
+      } catch (JsonProcessingException e) {
+        e.printStackTrace();
+      }
+      Log.error(temp);
+      blockData.add(temp);
+    } else {
+      blockData.add("{}");
     }
 
-    chunkRoot.set(getLocationKey(customBlock.getLocation()), objectRoot);
+    chunkRoot.put(getLocationKey(customBlock.getLocation()), blockData.toString());
   }
 
   @Synchronized
@@ -139,15 +148,23 @@ public class WorldDataStorage {
 
     Set<BaseCustomBlock> customBlocks = new HashSet<>();
     Iterator<Map.Entry<String, JsonNode>> fields = chunkData.fields();
-    Map.Entry<String, JsonNode> field;
+    Entry<String, JsonNode> field;
     while (fields.hasNext()) {
       field = fields.next();
+      String[] blockData = field.getValue().textValue().split(";");
+
+      //TODO recover corrupted data
+      if (blockData.length < 3) {
+        Log.warn("Block data corrupted for location " + field.getKey());
+        continue;
+      }
+
       //Get Block Values
-      CraftoryBlockKey craftoryBlockKey = new CraftoryBlockKey(field.getValue().get("type").asText());
+      CraftoryBlockKey craftoryBlockKey = new CraftoryBlockKey(blockData[0]);
       String[] splitKey = field.getKey().split(";");
       Location location = new Location(chunk.getWorld(), Integer.parseInt(splitKey[0]), Integer.parseInt(splitKey[1]),
           Integer.parseInt(splitKey[2]));
-      CraftoryDirection direction = CraftoryDirection.valueOfLabel((byte) field.getValue().get(CUSTOMBLOCK_DIRECTION_KEY).asInt());
+      CraftoryDirection direction = CraftoryDirection.valueOfLabel((byte) Integer.parseInt(blockData[1]));
 
       Optional<? extends BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(craftoryBlockKey, location, direction);
       if (!customBlock.isPresent()) return Optional.empty();
@@ -155,7 +172,13 @@ public class WorldDataStorage {
       //Inject Persistent Data
       if (ComplexCustomBlock.class.isAssignableFrom(customBlock.get().getClass())) {
 
-        JsonNode persistentData = field.getValue().get(CUSTOMBLOCK_PERSISTENT_DATA_KEY);
+        JsonNode persistentData = null;
+        try {
+          persistentData = mapper.readTree(blockData[2]);
+        } catch (JsonProcessingException e) {
+          e.printStackTrace();
+        }
+
         if (persistentData != null) {
           Iterator<Map.Entry<String, JsonNode>> iterator = persistentData.fields();
           Map.Entry<String, JsonNode> data;

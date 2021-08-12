@@ -34,6 +34,8 @@ public class CustomBlockRegistry {
 
   private final Map<CraftoryBlockKey, Constructor<? extends BaseCustomBlock>> blockTypes = new HashMap<>();
   private final Map<Class<? extends BaseCustomBlock>, CraftoryBlockKey> blockKeys = new HashMap<>();
+  //TODO Generate id's for blocks
+
 
   private final Map<String, CraftoryDataKey> craftoryDataKeyMap = new HashMap<>();
   private final Map<String, CraftoryBlockKey> craftoryBlockKeyMap = new HashMap<>();
