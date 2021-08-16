@@ -6,6 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Optional;
 import lombok.NonNull;
+import org.bukkit.NamespacedKey;
+import org.bukkit.persistence.PersistentDataType;
+import studio.craftory.core.Craftory;
 import studio.craftory.core.containers.keys.CraftoryDataKey;
 import studio.craftory.core.containers.persitanceholders.PersistentDataHolder;
 import studio.craftory.core.utils.Reflections;
@@ -13,8 +16,8 @@ import studio.craftory.core.utils.Reflections;
 public interface FluidStorage extends PersistentDataHolder {
 
   //Data Storage Keys
-  CraftoryDataKey STORED_FLUID_TYPE = new CraftoryDataKey("CraftoryCore", "storedFluidType", CraftoryFluid.class);
-  CraftoryDataKey STORED_FLUID_AMOUNT = new CraftoryDataKey("CraftoryCore", "storedFluidAmount", Long.class);
+  //NamespacedKey STORED_FLUID_TYPE = new NamespacedKey(Craftory.getInstance(), "storedFluidType");
+  NamespacedKey STORED_FLUID_AMOUNT = new NamespacedKey(Craftory.getInstance(), "storedFluidAmount");
 
   /**
    * @return Maximum amount of fluid object can store
@@ -26,16 +29,16 @@ public interface FluidStorage extends PersistentDataHolder {
   /**
    * @return Current type of fluid object has stored
    */
-  default Optional<CraftoryFluid> getStoredFluidType() {
-    return getPersistentData().get(STORED_FLUID_TYPE);
-  }
+//  default Optional<CraftoryFluid> getStoredFluidType() {
+//    return getPersistentData().get(STORED_FLUID_TYPE, PersistentDataType.STRING);
+//  }
 
   /**
    *
    * @return Current amount of fluid object has stored
    */
   default long getStoredFluidAmount() {
-    return (long) getPersistentData().get(STORED_FLUID_AMOUNT).orElse(0L);
+    return getPersistentData().getOrDefault(STORED_FLUID_AMOUNT, PersistentDataType.LONG, 0L);
   }
 
   default long getFreeSpace() {
@@ -48,9 +51,9 @@ public interface FluidStorage extends PersistentDataHolder {
    * @param amount
    */
   default void setStoredFluidAmount(final long amount) {
-    if (!getStoredFluidType().isPresent()) {
-      throw new IllegalStateException("Tried to set the amount of fluid in an empty storage!");
-    }
+//    if (!getStoredFluidType().isPresent()) {
+//      throw new IllegalStateException("Tried to set the amount of fluid in an empty storage!");
+//    }
       setStoredFluidInternal(amount);
   }
 
@@ -62,12 +65,12 @@ public interface FluidStorage extends PersistentDataHolder {
     setStoredFluidAmount(getStoredFluidAmount() - amount);
   }
 
-  default void setStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {
-    if (!setStoredFluidInternal(amount)) {
-      return;
-    }
-    getPersistentData().set(STORED_FLUID_TYPE, fluidType);
-  }
+//  default void setStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {
+//    if (!setStoredFluidInternal(amount)) {
+//      return;
+//    }
+//    getPersistentData().set(STORED_FLUID_TYPE, fluidType);
+//  }
 
   default boolean setStoredFluidInternal(long amount) {
     long newAmount;
@@ -80,21 +83,21 @@ public interface FluidStorage extends PersistentDataHolder {
     }
 
     if (newAmount == 0) {
-      getPersistentData().remove(STORED_FLUID_TYPE);
+//      getPersistentData().remove(STORED_FLUID_TYPE);
       getPersistentData().remove(STORED_FLUID_AMOUNT);
       return false;
     }
-    getPersistentData().set(STORED_FLUID_AMOUNT, newAmount);
+    getPersistentData().set(STORED_FLUID_AMOUNT, PersistentDataType.LONG, newAmount);
     return true;
   }
 
-  default void increaseStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {
-    setStoredFluid(fluidType, getStoredFluidAmount() + amount);
-  }
-
-  default void decreaseStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {
-    setStoredFluid(fluidType, getStoredFluidAmount() - amount);
-  }
+//  default void increaseStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {
+//    setStoredFluid(fluidType, getStoredFluidAmount() + amount);
+//  }
+//
+//  default void decreaseStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {
+//    setStoredFluid(fluidType, getStoredFluidAmount() - amount);
+//  }
 
   @Target(ElementType.TYPE)
   @Retention(RetentionPolicy.RUNTIME)

@@ -18,7 +18,7 @@ public class DefaultRotationalRenderer extends DefaultRenderer {
       for (int i = 0; i < 6; i++) {
         String data = blockAssetGenerator.generateBlockState();
         renderFileData.add(data);
-        blockAssetGenerator.addBlockStateToPack(data, assetsData[0], CraftoryDirection.valueOfLabel(i));
+        blockAssetGenerator.addBlockStateToPack(data, assetsData[0], CraftoryDirection.valueOfLabel((byte)i));
       }
       blockAssetGenerator.addToRenderFile(blockKey, renderFileData);
     } else {

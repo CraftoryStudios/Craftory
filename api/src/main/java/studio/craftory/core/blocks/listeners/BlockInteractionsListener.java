@@ -1,4 +1,4 @@
-package studio.craftory.core.listeners;
+package studio.craftory.core.blocks.listeners;
 
 import java.util.Optional;
 import javax.inject.Inject;
@@ -16,21 +16,21 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import studio.craftory.core.blocks.CustomBlock;
 import studio.craftory.core.blocks.CustomBlockManager;
-import studio.craftory.core.blocks.CustomBlockRegistry;
-import studio.craftory.core.blocks.templates.BaseCustomBlock;
+import studio.craftory.core.blocks.BlockRegistry;
 import studio.craftory.core.containers.CraftoryDirection;
 import studio.craftory.core.containers.keys.CraftoryBlockKey;
 import studio.craftory.core.items.CustomItemUtils;
 import studio.craftory.core.utils.Constants.Keys;
 import studio.craftory.core.utils.Log;
 
-public class CustomBlockListener implements Listener {
+public class BlockInteractionsListener implements Listener {
 
   @Inject
   private CustomBlockManager customBlockManager;
   @Inject
-  private CustomBlockRegistry blockRegistry;
+  private BlockRegistry blockRegistry;
 
   @EventHandler
   public void onCustomBlockPlace(BlockPlaceEvent blockPlaceEvent) {
@@ -56,8 +56,8 @@ public class CustomBlockListener implements Listener {
   @EventHandler
   public void onCustomBlockClick(PlayerInteractEvent playerInteractEvent) {
     if (playerInteractEvent.getAction() != Action.LEFT_CLICK_BLOCK && playerInteractEvent.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-    Optional<BaseCustomBlock> customBlock = customBlockManager.getLoadedCustomBlockAt(playerInteractEvent.getClickedBlock().getLocation());
-    customBlock.ifPresent(baseCustomBlock -> baseCustomBlock.onPlayerClick(playerInteractEvent));
+    Optional<CustomBlock> customBlock = customBlockManager.getLoadedCustomBlockAt(playerInteractEvent.getClickedBlock().getLocation());
+    customBlock.ifPresent(CustomBlock -> CustomBlock.onPlayerClick(playerInteractEvent));
   }
 
   private CraftoryDirection getDirection(Player player) {

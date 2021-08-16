@@ -14,7 +14,6 @@ import lombok.Synchronized;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
-import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.containers.CraftoryDirection;
 import studio.craftory.core.containers.keys.CraftoryBlockKey;
 import studio.craftory.core.containers.keys.CraftoryDataKey;
@@ -25,15 +24,15 @@ import studio.craftory.core.utils.Log;
 
 /** Class based on LogisticsCraft's Logistics-API (MIT) and the LogisticsTypeRegister class **/
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-public class CustomBlockRegistry {
+public class BlockRegistry {
 
   @Inject
   private AsyncExecutionManager asyncExecutionManager;
   @Inject
   private SyncExecutionManager syncExecutionManager;
 
-  private final Map<CraftoryBlockKey, Constructor<? extends BaseCustomBlock>> blockTypes = new HashMap<>();
-  private final Map<Class<? extends BaseCustomBlock>, CraftoryBlockKey> blockKeys = new HashMap<>();
+  private final Map<CraftoryBlockKey, Constructor<? extends CustomBlock>> blockTypes = new HashMap<>();
+  private final Map<Class<? extends CustomBlock>, CraftoryBlockKey> blockKeys = new HashMap<>();
   //TODO Generate id's for blocks
 
 
@@ -48,8 +47,8 @@ public class CustomBlockRegistry {
         Optional<Constructor<?>> constructor = getConstructor(block);
         if (constructor.isPresent()) {
 
-          addCustomBlockKeys((Class<? extends BaseCustomBlock>) block, (Constructor<? extends BaseCustomBlock>) constructor.get(), craftoryBlockKey);
-          registerCustomBlockTickables((Class<? extends BaseCustomBlock>) block);
+          addCustomBlockKeys((Class<? extends CustomBlock>) block, (Constructor<? extends CustomBlock>) constructor.get(), craftoryBlockKey);
+          registerCustomBlockTickables((Class<? extends CustomBlock>) block);
 
           CustomItem.builder().name(craftoryBlockKey.getName()).displayName(
               craftoryBlockKey.getName()).material(Material.STONE).attribute(BLOCK_ITEM_DATA_KEY, craftoryBlockKey.toString()).material(
@@ -66,13 +65,13 @@ public class CustomBlockRegistry {
   }
 
   @Synchronized
-  public boolean isBlockClassRegistered(@NonNull BaseCustomBlock block) {
+  public boolean isBlockClassRegistered(@NonNull CustomBlock block) {
     return blockKeys.containsKey(block.getClass());
   }
 
-  public Optional<BaseCustomBlock> getNewCustomBlockInstance(@NonNull CraftoryBlockKey key,  @NonNull Location location,
+  public Optional<CustomBlock> getNewCustomBlockInstance(@NonNull CraftoryBlockKey key,  @NonNull Location location,
       @NonNull CraftoryDirection direction) {
-    Optional<Constructor<? extends BaseCustomBlock>> constructor = Optional.ofNullable(blockTypes.get(key));
+    Optional<Constructor<? extends CustomBlock>> constructor = Optional.ofNullable(blockTypes.get(key));
     Location blockLocation = location.getBlock().getLocation();
 
     if (constructor.isPresent()) {
@@ -87,12 +86,12 @@ public class CustomBlockRegistry {
   }
 
   @Synchronized
-  public Optional<CraftoryBlockKey> getBlockKey(@NonNull BaseCustomBlock block) {
+  public Optional<CraftoryBlockKey> getBlockKey(@NonNull CustomBlock block) {
     return getBlockKey(block.getClass());
   }
 
   @Synchronized
-  public Optional<CraftoryBlockKey> getBlockKey(@NonNull Class<? extends BaseCustomBlock> block) {
+  public Optional<CraftoryBlockKey> getBlockKey(@NonNull Class<? extends CustomBlock> block) {
     return Optional.ofNullable(blockKeys.get(block));
   }
 
@@ -115,13 +114,13 @@ public class CustomBlockRegistry {
     return Optional.ofNullable(craftoryDataKeyMap.get(key));
   }
 
-  private void addCustomBlockKeys(Class<? extends BaseCustomBlock> clazz, Constructor<? extends BaseCustomBlock> constructor, CraftoryBlockKey key) {
+  private void addCustomBlockKeys(Class<? extends CustomBlock> clazz, Constructor<? extends CustomBlock> constructor, CraftoryBlockKey key) {
     blockTypes.put(key, constructor);
     blockKeys.put(clazz, key);
     craftoryBlockKeyMap.put(key.toString(), key);
   }
 
-  private void registerCustomBlockTickables(Class<? extends BaseCustomBlock> block) {
+  private void registerCustomBlockTickables(Class<? extends CustomBlock> block) {
     asyncExecutionManager.registerTickableClass(block);
     syncExecutionManager.registerTickableClass(block);
   }

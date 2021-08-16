@@ -26,14 +26,14 @@ import studio.craftory.core.containers.events.ResourcePackBuilt;
 import studio.craftory.core.containers.keys.CraftoryBlockKey;
 import studio.craftory.core.utils.Log;
 
-public class BlockRenderManager implements Listener {
+public class BlockRenderer implements Listener {
   private final ObjectMapper mapper;
 
   @Getter
   private Map<String, CraftoryRenderer> renderers = new HashMap<>();
   private Map<String, RenderData> blockToRenderDataMap = new HashMap<>();
 
-  public BlockRenderManager() {
+  public BlockRenderer() {
     mapper = new ObjectMapper();
     registerDefaultRenders();
   }

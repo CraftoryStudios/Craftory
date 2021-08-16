@@ -20,7 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 import studio.craftory.core.Craftory;
-import studio.craftory.core.blocks.BlockRenderManager;
+import studio.craftory.core.blocks.BlockRenderer;
 import studio.craftory.core.blocks.rendering.CraftoryRenderer;
 import studio.craftory.core.containers.events.ResourcePackBuilt;
 import studio.craftory.core.containers.keys.CraftoryBlockKey;
@@ -35,7 +35,7 @@ public class AssetLinker extends BukkitRunnable {
   private Map<Material, Set<String>> itemsOfType = new EnumMap<>(Material.class);
   private ObjectMapper mapper = new ObjectMapper();
   @Inject
-  private BlockRenderManager blockRenderManager;
+  private BlockRenderer blockRenderer;
 
   @Override
   public void run() {
@@ -63,7 +63,7 @@ public class AssetLinker extends BukkitRunnable {
 
   private void linkCustomBlockAssets() {
     for (Entry<Class<? extends CraftoryRenderer>, Map<String, String[]>> rendererAssets : assetsToGenerate.entrySet()) {
-      CraftoryRenderer renderer = blockRenderManager.getRenderers().get(rendererAssets.getKey().getSimpleName());
+      CraftoryRenderer renderer = blockRenderer.getRenderers().get(rendererAssets.getKey().getSimpleName());
 
       for (Entry<String, String[]> blockAssets : rendererAssets.getValue().entrySet()) {
         renderer.generateAssets(blockAssets.getKey(), blockAssets.getValue(), blockAssetGenerator);

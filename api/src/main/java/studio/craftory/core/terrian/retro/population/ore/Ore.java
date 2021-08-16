@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import studio.craftory.core.api.CustomBlockAPI;
-import studio.craftory.core.blocks.templates.BaseCustomBlock;
+import studio.craftory.core.blocks.CustomBlock;
 import studio.craftory.core.containers.IntRange;
 import studio.craftory.core.containers.Vector3;
 
@@ -17,13 +17,13 @@ import studio.craftory.core.containers.Vector3;
 @RequiredArgsConstructor
 public abstract class Ore {
 
-  protected final Class<? extends BaseCustomBlock> material;
+  protected final Class<? extends CustomBlock> material;
   protected final Set<Material> replaceable;
   protected final IntRange amount;
   protected final IntRange height;
   protected CustomBlockAPI customBlockAPI;
 
-  protected Ore(Class<? extends BaseCustomBlock> material,  IntRange amount,
+  protected Ore(Class<? extends CustomBlock> material,  IntRange amount,
       IntRange height, Material... replaceable) {
     this.material = material;
     this.replaceable = new HashSet<>(Arrays.asList(replaceable));

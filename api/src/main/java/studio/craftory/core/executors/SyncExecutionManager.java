@@ -14,14 +14,14 @@ import java.util.Optional;
 import java.util.Set;
 import lombok.NonNull;
 import org.bukkit.scheduler.BukkitRunnable;
-import studio.craftory.core.blocks.templates.BaseCustomBlock;
+import studio.craftory.core.blocks.CustomBlock;
 
 public class SyncExecutionManager extends BukkitRunnable {
 
   private HashSet<TickGroup> tickGroups;
   private HashMap<Integer, TickGroup> tickGroupsMap;
-  private HashMap<Class<? extends BaseCustomBlock>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
-  private Map<Integer, HashSet<BaseCustomBlock>> removeBacklog;
+  private HashMap<Class<? extends CustomBlock>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
+  private Map<Integer, HashSet<CustomBlock>> removeBacklog;
   private int tick;
   private int maxTick;
 
@@ -49,11 +49,11 @@ public class SyncExecutionManager extends BukkitRunnable {
     }
   }
 
-  public void registerTickableClass(@NonNull Class<? extends BaseCustomBlock> clazz) {
+  public void registerTickableClass(@NonNull Class<? extends CustomBlock> clazz) {
     ExecutorUtils.registerTickableClass(clazz, tickableMethods, false);
   }
 
-  public void removeTickableObject(@NonNull BaseCustomBlock tickableObject) {
+  public void removeTickableObject(@NonNull CustomBlock tickableObject) {
     Optional<Set<Integer>> tickKeys = getTickKeys(tickableObject);
     if (!tickKeys.isPresent()) return;
 
@@ -64,12 +64,12 @@ public class SyncExecutionManager extends BukkitRunnable {
   }
 
   private void cleanUpTickableObjects() {
-    for (Iterator<Map.Entry<Integer, HashSet<BaseCustomBlock>>> it = removeBacklog.entrySet().iterator(); it.hasNext();) {
-      Map.Entry<Integer, HashSet<BaseCustomBlock>> entry = it.next();
+    for (Iterator<Map.Entry<Integer, HashSet<CustomBlock>>> it = removeBacklog.entrySet().iterator(); it.hasNext();) {
+      Map.Entry<Integer, HashSet<CustomBlock>> entry = it.next();
         TickGroup tickGroup = tickGroupsMap.get(entry.getKey());
 
-        for (Iterator<BaseCustomBlock> iterator = entry.getValue().iterator(); iterator.hasNext();) {
-          BaseCustomBlock customBlock = iterator.next();
+        for (Iterator<CustomBlock> iterator = entry.getValue().iterator(); iterator.hasNext();) {
+          CustomBlock customBlock = iterator.next();
           tickGroup.getTickables().remove(customBlock);
           iterator.remove();
         }
@@ -85,14 +85,14 @@ public class SyncExecutionManager extends BukkitRunnable {
     }
   }
 
-  private Optional<Set<Integer>> getTickKeys(@NonNull BaseCustomBlock tickableObject) {
+  private Optional<Set<Integer>> getTickKeys(@NonNull CustomBlock tickableObject) {
     if (!tickableMethods.containsKey(tickableObject.getClass())) return Optional.empty();
     Set<Integer> tickKeys = tickableMethods.get(tickableObject.getClass()).keySet();
     if (tickKeys.isEmpty()) return Optional.empty();
     return Optional.of(tickKeys);
   }
 
-  public void addTickableObject(@NonNull BaseCustomBlock tickableObject) {
+  public void addTickableObject(@NonNull CustomBlock tickableObject) {
     if (tickableMethods.containsKey(tickableObject.getClass())) {
       Set<Integer> tickKeys = tickableMethods.get(tickableObject.getClass()).keySet();
       for (Integer integer : tickKeys) {

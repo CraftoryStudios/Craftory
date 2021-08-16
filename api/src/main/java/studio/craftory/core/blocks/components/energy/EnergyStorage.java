@@ -4,6 +4,9 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.bukkit.NamespacedKey;
+import org.bukkit.persistence.PersistentDataType;
+import studio.craftory.core.Craftory;
 import studio.craftory.core.containers.keys.CraftoryDataKey;
 import studio.craftory.core.containers.persitanceholders.PersistentDataHolder;
 import studio.craftory.core.containers.persitanceholders.VolatileDataHolder;
@@ -15,7 +18,7 @@ import studio.craftory.core.utils.Reflections;
 public interface EnergyStorage extends PersistentDataHolder, VolatileDataHolder {
 
   //Data Storage Keys
-  CraftoryDataKey STORED_ENERGY_KEY = new CraftoryDataKey("CraftoryCore", "storedEnergy", Long.class);
+  NamespacedKey STORED_ENERGY_KEY = new NamespacedKey(Craftory.getInstance(), "storedEnergy");
 
   //Annotations
   @Target(ElementType.TYPE)
@@ -38,7 +41,7 @@ public interface EnergyStorage extends PersistentDataHolder, VolatileDataHolder 
    */
   default long getEnergyStored() {
     synchronized (this) {
-      return (long) getPersistentData().get(STORED_ENERGY_KEY).orElse(0L);
+      return getPersistentData().getOrDefault(STORED_ENERGY_KEY, PersistentDataType.LONG, 0L);
     }
   }
 
@@ -65,7 +68,7 @@ public interface EnergyStorage extends PersistentDataHolder, VolatileDataHolder 
         return;
       }
 
-      getPersistentData().set(STORED_ENERGY_KEY, newEnergy);
+      getPersistentData().set(STORED_ENERGY_KEY, PersistentDataType.LONG, newEnergy);
     }
   }
 

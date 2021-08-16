@@ -15,17 +15,18 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import studio.craftory.core.api.CustomBlockAPI;
-import studio.craftory.core.blocks.BlockRenderManager;
+import studio.craftory.core.blocks.BlockRenderer;
 import studio.craftory.core.blocks.CustomBlockManager;
-import studio.craftory.core.blocks.CustomBlockRegistry;
+import studio.craftory.core.blocks.BlockRegistry;
+import studio.craftory.core.blocks.storage.CraftoryBlockKeyDataType;
+import studio.craftory.core.blocks.storage.CraftoryDirectionDataType;
 import studio.craftory.core.commands.SpawnItemCommand;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
 import studio.craftory.core.items.CustomItemManager;
 import studio.craftory.core.items.ItemEventManager;
-import studio.craftory.core.listeners.ChunkListener;
-import studio.craftory.core.listeners.CustomBlockListener;
-import studio.craftory.core.listeners.WorldListener;
+import studio.craftory.core.blocks.listeners.ChunkListener;
+import studio.craftory.core.blocks.listeners.BlockInteractionsListener;
 import studio.craftory.core.items.recipes.RecipeManager;
 import studio.craftory.core.resourcepack.AssetLinker;
 import studio.craftory.core.terrian.retro.RetroGeneration;
@@ -42,8 +43,9 @@ public final class Craftory extends JavaPlugin {
   private AsyncExecutionManager asyncExecutionManager;
   private SyncExecutionManager syncExecutionManager;
   private CustomBlockManager customBlockManager;
-  private BlockRenderManager blockRenderManager;
+  private BlockRenderer blockRenderer;
   private FileConfiguration pluginConfiguration = getConfig();
+  private BlockRegistry registry;
 
   //External
   private CustomItemManager customItemManager;
@@ -57,6 +59,8 @@ public final class Craftory extends JavaPlugin {
   public static RecipeManager getRecipeManager() { return instance.recipeManager; }
   public static CustomBlockAPI getCustomBlockAPI() {return instance.customBlockAPI; }
   public static RetroGeneration getRetoGeneration() {return instance.retroGeneration; }
+
+  public static BlockRegistry blockRegistry() { return instance.registry; }
 
   @Override
   public void onLoad() {
@@ -74,8 +78,8 @@ public final class Craftory extends JavaPlugin {
     syncExecutionManager = injector.getSingleton(SyncExecutionManager.class);
 
     //Custom Block
-    injector.getSingleton(CustomBlockRegistry.class);
-    blockRenderManager = injector.getSingleton(BlockRenderManager.class);
+    registry = injector.getSingleton(BlockRegistry.class);
+    blockRenderer = injector.getSingleton(BlockRenderer.class);
     customBlockManager = injector.getSingleton(CustomBlockManager.class);
 
     //API
@@ -93,18 +97,15 @@ public final class Craftory extends JavaPlugin {
 
     Log.setDebug(pluginConfiguration.getBoolean("developerDebug"));
 
-    //Load Data
-    getServer().getWorlds().forEach(world -> customBlockManager.getDataStorageManager().registerWorld(world));
-
     //Register Events
     PluginManager pluginManager = getServer().getPluginManager();
-    pluginManager.registerEvents(blockRenderManager, instance);
-    pluginManager.registerEvents(injector.getSingleton(CustomBlockListener.class), instance);
-    pluginManager.registerEvents(injector.getSingleton(WorldListener.class), instance);
+    pluginManager.registerEvents(blockRenderer, instance);
+    pluginManager.registerEvents(injector.getSingleton(BlockInteractionsListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ChunkListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ItemEventManager.class), instance);
     pluginManager.registerEvents(recipeManager, instance);
     pluginManager.registerEvents(customItemManager, instance);
+
     //Executor
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
     syncExecutionManager.runTaskTimer(this, 20L,1L);
@@ -141,8 +142,6 @@ public final class Craftory extends JavaPlugin {
   @Override
   public void onDisable() {
     retroGeneration.saveGeneratedChunks();
-    customBlockManager.getDataStorageManager().writeAll();
-    customBlockManager.getDataStorageManager().saveAll();
   }
 
   public Craftory() {
