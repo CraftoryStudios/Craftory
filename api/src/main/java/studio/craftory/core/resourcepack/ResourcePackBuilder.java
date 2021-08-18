@@ -1,12 +1,18 @@
 package studio.craftory.core.resourcepack;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -18,7 +24,7 @@ import studio.craftory.core.utils.Log;
 @UtilityClass
 public class ResourcePackBuilder {
 
-  private static final ObjectMapper objectMapper = new ObjectMapper();
+  private static Gson gson = new Gson();
 
   public static void run() {
     File tempDirectory = new File(ResourcePack.TEMP_PATH);
@@ -72,33 +78,29 @@ public class ResourcePackBuilder {
   }
 
   private static void mergeJSON(File source, File dest) {
-    try {
-      JsonNode sourceNode = objectMapper.readTree(source);
-      JsonNode destNode = objectMapper.readTree(dest);
-      objectMapper.writeValue(dest, merge(destNode, sourceNode));
+    try (FileWriter fw = new FileWriter(dest)){
+      JsonObject sourceNode = new JsonParser().parse(new FileReader(source)).getAsJsonObject();
+      JsonObject destNode = new JsonParser().parse(new FileReader(dest)).getAsJsonObject();
+      gson.toJson( merge(destNode, sourceNode), fw);
     } catch (IOException e) {
       Log.error(e.toString());
     }
   }
 
-  private static JsonNode merge(JsonNode mainNode, JsonNode updateNode) {
-    Iterator<String> fieldNames = updateNode.fieldNames();
-    while (fieldNames.hasNext()) {
-
-      String fieldName = fieldNames.next();
-      JsonNode jsonNode = mainNode.get(fieldName);
+  private static JsonObject merge(JsonObject mainNode, JsonObject updateNode) {
+    for (Entry<String, JsonElement> element :  updateNode.entrySet()) {
+      JsonObject jsonNode = (JsonObject) mainNode.get(element.getKey());
       // if field exists and is an embedded object
-      if (jsonNode != null && jsonNode.isObject()) {
-        merge(jsonNode, updateNode.get(fieldName));
+      if (jsonNode != null && jsonNode.isJsonObject()) {
+        merge(jsonNode, (JsonObject) updateNode.get(element.getKey()));
       }
       else {
-        if (mainNode instanceof ObjectNode) {
+        if (mainNode.isJsonObject()) {
           // Overwrite field
-          JsonNode value = updateNode.get(fieldName);
-          ((ObjectNode) mainNode).set(fieldName, value);
+          JsonObject value = (JsonObject) updateNode.get(element.getKey());
+          mainNode.add(element.getKey(), value);
         }
       }
-
     }
 
     return mainNode;
