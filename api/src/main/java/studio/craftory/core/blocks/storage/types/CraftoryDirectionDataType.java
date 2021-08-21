@@ -1,4 +1,4 @@
-package studio.craftory.core.blocks.storage;
+package studio.craftory.core.blocks.storage.types;
 
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
