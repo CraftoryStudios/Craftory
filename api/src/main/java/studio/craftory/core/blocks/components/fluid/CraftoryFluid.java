@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import studio.craftory.core.containers.keys.CraftoryKey;
 
+// TODO redo as registry of fluids instead of recreate each time
 @Value
 public class CraftoryFluid {
 
@@ -37,6 +38,11 @@ public class CraftoryFluid {
       return false;
     CraftoryFluid fluid = (CraftoryFluid) object;
     return getId().equals(fluid.getId());
+  }
+
+  @Override
+  public String toString() {
+    return id.toString() + "|" + displayName + "|" + representingItem.getType() + "|" + gaseous;
   }
 
   @Override

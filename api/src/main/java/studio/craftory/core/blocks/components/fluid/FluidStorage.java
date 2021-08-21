@@ -9,6 +9,7 @@ import lombok.NonNull;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataType;
 import studio.craftory.core.Craftory;
+import studio.craftory.core.blocks.storage.StorageTypes;
 import studio.craftory.core.containers.keys.CraftoryDataKey;
 import studio.craftory.core.containers.persitanceholders.PersistentDataHolder;
 import studio.craftory.core.utils.Reflections;
@@ -16,7 +17,7 @@ import studio.craftory.core.utils.Reflections;
 public interface FluidStorage extends PersistentDataHolder {
 
   //Data Storage Keys
-  //NamespacedKey STORED_FLUID_TYPE = new NamespacedKey(Craftory.getInstance(), "storedFluidType");
+  NamespacedKey STORED_FLUID_TYPE = new NamespacedKey(Craftory.getInstance(), "storedFluidType");
   NamespacedKey STORED_FLUID_AMOUNT = new NamespacedKey(Craftory.getInstance(), "storedFluidAmount");
 
   /**
@@ -29,9 +30,9 @@ public interface FluidStorage extends PersistentDataHolder {
   /**
    * @return Current type of fluid object has stored
    */
-//  default Optional<CraftoryFluid> getStoredFluidType() {
-//    return getPersistentData().get(STORED_FLUID_TYPE, PersistentDataType.STRING);
-//  }
+  default Optional<CraftoryFluid> getStoredFluidType() {
+    return Optional.ofNullable(getPersistentData().get(STORED_FLUID_TYPE, StorageTypes.FLUID));
+  }
 
   /**
    *
@@ -51,10 +52,10 @@ public interface FluidStorage extends PersistentDataHolder {
    * @param amount
    */
   default void setStoredFluidAmount(final long amount) {
-//    if (!getStoredFluidType().isPresent()) {
-//      throw new IllegalStateException("Tried to set the amount of fluid in an empty storage!");
-//    }
-      setStoredFluidInternal(amount);
+    if (!getStoredFluidType().isPresent()) {
+      throw new IllegalStateException("Tried to set the amount of fluid in an empty storage!");
+    }
+    setStoredFluidInternal(amount);
   }
 
   default void increaseStoredFluidAmount(final long amount) {
@@ -65,12 +66,12 @@ public interface FluidStorage extends PersistentDataHolder {
     setStoredFluidAmount(getStoredFluidAmount() - amount);
   }
 
-//  default void setStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {
-//    if (!setStoredFluidInternal(amount)) {
-//      return;
-//    }
-//    getPersistentData().set(STORED_FLUID_TYPE, fluidType);
-//  }
+  default void setStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {
+    if (!setStoredFluidInternal(amount)) {
+      return;
+    }
+    getPersistentData().set(STORED_FLUID_TYPE, StorageTypes.FLUID,fluidType);
+  }
 
   default boolean setStoredFluidInternal(long amount) {
     long newAmount;
@@ -83,7 +84,7 @@ public interface FluidStorage extends PersistentDataHolder {
     }
 
     if (newAmount == 0) {
-//      getPersistentData().remove(STORED_FLUID_TYPE);
+      getPersistentData().remove(STORED_FLUID_TYPE);
       getPersistentData().remove(STORED_FLUID_AMOUNT);
       return false;
     }
@@ -91,13 +92,13 @@ public interface FluidStorage extends PersistentDataHolder {
     return true;
   }
 
-//  default void increaseStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {
-//    setStoredFluid(fluidType, getStoredFluidAmount() + amount);
-//  }
-//
-//  default void decreaseStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {
-//    setStoredFluid(fluidType, getStoredFluidAmount() - amount);
-//  }
+  default void increaseStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {
+    setStoredFluid(fluidType, getStoredFluidAmount() + amount);
+  }
+
+  default void decreaseStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {
+    setStoredFluid(fluidType, getStoredFluidAmount() - amount);
+  }
 
   @Target(ElementType.TYPE)
   @Retention(RetentionPolicy.RUNTIME)

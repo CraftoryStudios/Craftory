@@ -1,10 +1,12 @@
 package studio.craftory.core.resourcepack;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.EnumMap;
@@ -33,7 +35,7 @@ public class AssetLinker extends BukkitRunnable {
   private BlockAssetGenerator blockAssetGenerator = new BlockAssetGenerator();
   private Map<String, String> itemsToGenerate = new HashMap<>();
   private Map<Material, Set<String>> itemsOfType = new EnumMap<>(Material.class);
-  private ObjectMapper mapper = new ObjectMapper();
+  private Gson gson = new Gson();
   @Inject
   private BlockRenderer blockRenderer;
 
@@ -92,7 +94,7 @@ public class AssetLinker extends BukkitRunnable {
   private Map<String, Integer> readRenderData() {
     File file = new File(ResourcePack.ITEM_RENDER_DATA);
     try {
-      return  mapper.readValue(file, new TypeReference<Map<String, Integer>>(){});
+      return  gson.fromJson(new FileReader(file), new TypeToken<Map<String, Integer>>(){}.getType());
     } catch (Exception e) {
       Log.warn("Failed to read existing item render data");
       Log.warn(e.toString());
@@ -115,7 +117,7 @@ public class AssetLinker extends BukkitRunnable {
     return data;
   }
 
-  private  Map<String, Integer> buildFreshItemRenderData() {
+  private Map<String, Integer> buildFreshItemRenderData() {
     Map<String, Integer> data = new HashMap<>();
     int id = ResourcePack.ITEM_ID_START_VALUE;
     for (String name: itemsToGenerate.keySet()) {
@@ -127,8 +129,8 @@ public class AssetLinker extends BukkitRunnable {
 
   private void saveRenderData(Map<String, Integer> data) {
     File file = new File(ResourcePack.ITEM_RENDER_DATA);
-    try {
-      mapper.writeValue(file, data);
+    try (FileWriter fw = new FileWriter(file)){
+      gson.toJson(data, fw);
     } catch (Exception e) {
       Log.warn("Failed to save item render data");
       Log.warn(e.toString());
@@ -136,16 +138,16 @@ public class AssetLinker extends BukkitRunnable {
   }
 
   private void buildItemFiles(Map<String, Integer> data) {
-    Map<Material, ObjectNode> files = new EnumMap<>(Material.class);
+    Map<Material, JsonObject> files = new EnumMap<>(Material.class);
     for (Entry<Material, Set<String>> entry: itemsOfType.entrySet()) {
       // Build JSON for the item model file
       Material material = entry.getKey();
-      ObjectNode root = mapper.createObjectNode();
-      root.put("parent","minecraft:item/generated");
+      JsonObject root = new JsonObject();
+      root.addProperty("parent","minecraft:item/generated");
 
-      root.set("textures", createItemTextureJSON(material));
+      root.add("textures", createItemTextureJSON(material));
 
-      root.set("overrides", createItemOverridesJSON(entry.getValue(), data));
+      root.add("overrides", createItemOverridesJSON(entry.getValue(), data));
 
       files.put(material, root);
     }
@@ -155,42 +157,42 @@ public class AssetLinker extends BukkitRunnable {
     }
   }
 
-  private ObjectNode createItemTextureJSON(Material material) {
-    ObjectNode textures = mapper.createObjectNode();
+  private JsonObject createItemTextureJSON(Material material) {
+    JsonObject textures = new JsonObject();
     if (material.isBlock()) {
-      textures.put("layer0","minecraft:block/" + material.toString().toLowerCase(Locale.ROOT));
+      textures.addProperty("layer0","minecraft:block/" + material.toString().toLowerCase(Locale.ROOT));
     } else {
-      textures.put("layer0","minecraft:item/" + material.toString().toLowerCase(Locale.ROOT));
+      textures.addProperty("layer0","minecraft:item/" + material.toString().toLowerCase(Locale.ROOT));
     }
     return textures;
   }
 
-  private ArrayNode createItemOverridesJSON(Set<String> items, Map<String, Integer> data) {
-    ArrayNode overrides = mapper.createArrayNode();
+  private JsonArray createItemOverridesJSON(Set<String> items, Map<String, Integer> data) {
+    JsonArray overrides = new JsonArray();
     for (String item: items) {
-      ObjectNode override = mapper.createObjectNode();
-      ObjectNode predicate = mapper.createObjectNode();
-      predicate.put("custom_model_data", data.get(item));
-      override.set("predicate", predicate);
-      override.put("model", itemsToGenerate.get(item));
+      JsonObject override = new JsonObject();
+      JsonObject predicate = new JsonObject();
+      predicate.addProperty("custom_model_data", data.get(item));
+      override.add("predicate", predicate);
+      override.addProperty("model", itemsToGenerate.get(item));
       overrides.add(override);
     }
     return overrides;
   }
 
-  private void saveItemFiles(Map<Material, ObjectNode> files, String quality) {
+  private void saveItemFiles(Map<Material, JsonObject> files, String quality) {
     String path = Paths.get(ResourcePack.RESOURCE_PACK_PATH, File.separator, quality, ResourcePack.ITEMS_PATH).toString() + File.separator;
     File file = new File(path);
     file.mkdirs();
-    for (Entry<Material, ObjectNode> entry: files.entrySet()) {
+    for (Entry<Material, JsonObject> entry: files.entrySet()) {
       saveObject(path + entry.getKey().toString().toLowerCase(Locale.ROOT) + ResourcePack.JSON, entry.getValue());
     }
   }
 
-  private void saveObject(String path, ObjectNode objectNode) {
+  private void saveObject(String path, JsonObject objectNode) {
     File file = new File(path);
-    try {
-      mapper.writeValue(file, objectNode);
+    try (FileWriter fw = new FileWriter(file)){
+      gson.toJson(objectNode, fw);
     } catch (Exception e) {
       Log.error(e.getMessage());
     }

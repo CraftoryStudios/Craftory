@@ -1,8 +1,10 @@
 package studio.craftory.core.terrian.retro;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -30,7 +32,7 @@ public class RetroGeneration implements Listener {
 
   private HashSet<Ore> ores = new HashSet<>();
   private Map<World, Set<String>> visitedChunks = new HashMap<>();
-  private final ObjectMapper objectMapper = new ObjectMapper();
+  private final Gson gson = new Gson();
 
   public RetroGeneration() {
     loadGeneratedChunks();
@@ -52,11 +54,11 @@ public class RetroGeneration implements Listener {
               "/Craftory");
       file.mkdirs();
       file = new File(file, "chunkGenerations.json");
-      try {
+      try (FileWriter fw = new FileWriter(file)){
         if (!file.exists() && !file.createNewFile()) {
           Log.error("Couldn't save retro chunk data, save file couldn't be created");
         }
-        objectMapper.writeValue(file, visitedChunksInWorld.getValue());
+        gson.toJson(visitedChunksInWorld.getValue(), fw);
       } catch (Exception e) {
         Log.error("Couldn't save retro chunk data");
       }
@@ -70,7 +72,7 @@ public class RetroGeneration implements Listener {
               "/Craftory", "chunkGenerations.json");
       if (file.exists()) {
         try {
-          visitedChunks.put(world, objectMapper.readValue(file, new TypeReference<Set<String>>() {}));
+          gson.fromJson(new FileReader(file), new TypeToken<HashSet<String>>(){}.getType());
         } catch (Exception e) {
           Log.error("Couldn't load retro chunk data");
         }

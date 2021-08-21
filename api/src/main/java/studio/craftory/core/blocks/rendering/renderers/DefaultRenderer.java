@@ -1,7 +1,7 @@
 package studio.craftory.core.blocks.rendering.renderers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import lombok.NonNull;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
@@ -18,6 +18,8 @@ import studio.craftory.core.resourcepack.BlockAssetGenerator;
 import studio.craftory.core.utils.Log;
 
 public class DefaultRenderer implements CraftoryRenderer {
+
+  private static Gson gson = new Gson();
 
   @Override
   public void render(@NonNull Block block, @NonNull CraftoryDirection direction, @NonNull RenderData renderData) {
@@ -64,10 +66,8 @@ public class DefaultRenderer implements CraftoryRenderer {
 
   @Override
   public void generateAssets(String blockKey, String[] assetsData, BlockAssetGenerator blockAssetGenerator) {
-    ObjectMapper mapper = new ObjectMapper();
-
     if (assetsData.length == 1 || assetsData.length == 6) {
-      ArrayNode renderFileData = mapper.createArrayNode();
+      JsonArray renderFileData = new JsonArray();
       renderFileData.add(this.getClass().getSimpleName());
       for (int i = 0; i < assetsData.length; i++) {
         String data = blockAssetGenerator.generateBlockState();

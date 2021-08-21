@@ -18,8 +18,6 @@ import studio.craftory.core.api.CustomBlockAPI;
 import studio.craftory.core.blocks.BlockRenderer;
 import studio.craftory.core.blocks.CustomBlockManager;
 import studio.craftory.core.blocks.BlockRegistry;
-import studio.craftory.core.blocks.storage.CraftoryBlockKeyDataType;
-import studio.craftory.core.blocks.storage.CraftoryDirectionDataType;
 import studio.craftory.core.commands.SpawnItemCommand;
 import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
