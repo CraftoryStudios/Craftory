@@ -2,6 +2,7 @@ package studio.craftory.core.containers;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.bukkit.block.BlockFace;
 
 public enum CraftoryDirection {
   NORTH(0),
@@ -26,6 +27,23 @@ public enum CraftoryDirection {
 
   public static CraftoryDirection valueOfLabel(int label) {
     return BY_LABEL.get(label);
+  }
+
+  public static CraftoryDirection getCraftoryDirection(BlockFace blockFace) {
+    switch (blockFace) {
+      case UP:
+        return CraftoryDirection.UP;
+      case DOWN:
+        return CraftoryDirection.DOWN;
+      case EAST:
+        return CraftoryDirection.EAST;
+      case WEST:
+        return CraftoryDirection.WEST;
+      case SOUTH:
+        return CraftoryDirection.SOUTH;
+      default:
+        return CraftoryDirection.NORTH;
+    }
   }
 
   @Override

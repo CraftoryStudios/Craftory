@@ -2,7 +2,9 @@ package studio.craftory.core.listeners;
 
 import java.util.Optional;
 import javax.inject.Inject;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,6 +24,8 @@ import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.containers.CraftoryDirection;
 import studio.craftory.core.containers.keys.CraftoryBlockKey;
 import studio.craftory.core.items.CustomItemUtils;
+import studio.craftory.core.utils.Constants;
+import studio.craftory.core.utils.Constants.BlockLists;
 import studio.craftory.core.utils.Constants.Keys;
 import studio.craftory.core.utils.Log;
 
@@ -33,39 +37,10 @@ public class CustomBlockListener implements Listener {
   private CustomBlockRegistry blockRegistry;
 
   @EventHandler
-  public void onCustomBlockPlace(BlockPlaceEvent blockPlaceEvent) {
-    //Check is Custom Block Being Placed
-    if (!blockPlaceEvent.getItemInHand().hasItemMeta()) return;
-    ItemStack itemStack = blockPlaceEvent.getItemInHand();
-    CustomItemUtils.validateItemStackMeta(itemStack);
-    PersistentDataContainer dataHolder = itemStack.getItemMeta().getPersistentDataContainer();
-    if (!dataHolder.has(Keys.BLOCK_ITEM_KEY, PersistentDataType.STRING)) return;
-
-    //Get Custom Block Data
-    CraftoryDirection direction = getDirection(blockPlaceEvent.getPlayer());
-    String blockKey = dataHolder.get(Keys.BLOCK_ITEM_KEY, PersistentDataType.STRING);
-
-    Optional<CraftoryBlockKey> blockKeyOptional = blockRegistry.getBlockKey(blockKey);
-    if (blockKeyOptional.isPresent()) {
-      customBlockManager.placeCustomBlock(blockKeyOptional.get(), blockPlaceEvent.getBlock().getLocation(), direction);
-    } else {
-      Log.warn("Unable to place custom block");
-    }
-  }
-
-  @EventHandler
   public void onCustomBlockClick(PlayerInteractEvent playerInteractEvent) {
     if (playerInteractEvent.getAction() != Action.LEFT_CLICK_BLOCK && playerInteractEvent.getAction() != Action.RIGHT_CLICK_BLOCK) return;
     Optional<BaseCustomBlock> customBlock = customBlockManager.getLoadedCustomBlockAt(playerInteractEvent.getClickedBlock().getLocation());
     customBlock.ifPresent(baseCustomBlock -> baseCustomBlock.onPlayerClick(playerInteractEvent));
-  }
-
-  private CraftoryDirection getDirection(Player player) {
-    int degrees = (Math.round(player.getLocation().getYaw()) + 270) % 360;
-    if (degrees > 315 || degrees <= 45) return CraftoryDirection.NORTH;
-    if (degrees <= 135) return CraftoryDirection.EAST;
-    if (degrees <= 225) return CraftoryDirection.SOUTH;
-    return CraftoryDirection.WEST;
   }
 
   @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -90,10 +65,51 @@ public class CustomBlockListener implements Listener {
     }
   }
 
+  private boolean isStandingInsideBlock(final Player player, final Location blockLocation) {
+    final Location playerLocation = player.getLocation();
+    return playerLocation.getBlockX() == blockLocation.getBlockX()
+        && (playerLocation.getBlockY() == blockLocation.getBlockY()
+        || playerLocation.getBlockY() + 1 == blockLocation.getBlockY())
+        && playerLocation.getBlockZ() == blockLocation.getBlockZ();
+  }
+
   @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   public void onNoteBlockInteract(PlayerInteractEvent event) {
+    if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
+      return;
+
+    // Cancel block interaction if custom block of type notebook
     if (event.hasBlock() && event.getClickedBlock().getType() == Material.NOTE_BLOCK && customBlockManager.containsCustomBlock(event.getClickedBlock().getLocation())) {
       event.setCancelled(true);
+    }
+
+    // Check is Custom Block Being Placedd
+    final ItemStack item = event.getItem();
+    if (item == null && !item.hasItemMeta()) return;
+    if (!item.getItemMeta().getPersistentDataContainer().has(Keys.BLOCK_ITEM_KEY, PersistentDataType.STRING)) return;
+
+    // Get Custom Block Data
+    final String blockKey = item.getItemMeta().getPersistentDataContainer().get(Keys.BLOCK_ITEM_KEY, PersistentDataType.STRING);
+    final Optional<CraftoryBlockKey> blockKeyOptional = blockRegistry.getBlockKey(blockKey);
+
+    // Place Custom Block
+    if (blockKeyOptional.isPresent()) {
+      final CraftoryDirection direction = CraftoryDirection.getCraftoryDirection(event.getBlockFace().getOppositeFace());
+
+      // Determine block place location
+      final Location target;
+      if (BlockLists.REPLACEABLE_BLOCKS.contains(event.getClickedBlock().getType())) {
+        target = event.getClickedBlock().getLocation();
+      } else {
+        target = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation();
+      }
+
+      if (isStandingInsideBlock(event.getPlayer(), target)) return;
+
+      customBlockManager.placeCustomBlock(blockKeyOptional.get(), target, direction);
+      event.setCancelled(true);
+    } else {
+      Log.warn("Unable to place custom block");
     }
   }
 }

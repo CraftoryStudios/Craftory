@@ -1,7 +1,10 @@
 package studio.craftory.core.utils;
 
+import java.util.Arrays;
+import java.util.List;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataType;
 import studio.craftory.core.Craftory;
@@ -34,6 +37,12 @@ public class Constants {
     public static final int ITEM_ID_START_VALUE = -1000;
     @Getter
     private static final String[] QUALITIES = {"low", "normal", "high"};
+  }
+
+  public static class BlockLists {
+    public static final List<Material> REPLACEABLE_BLOCKS = Arrays
+        .asList(Material.SNOW, Material.VINE, Material.GRASS, Material.TALL_GRASS, Material.SEAGRASS, Material.FERN,
+            Material.LARGE_FERN);
   }
 
 }
