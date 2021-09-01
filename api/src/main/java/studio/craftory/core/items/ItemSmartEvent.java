@@ -28,6 +28,7 @@ public enum ItemSmartEvent {
     eventClass = clazz;
   }
 
+  
   Class<?> getEventClass() { return eventClass; }
 
   String getValidationString(Event event) {

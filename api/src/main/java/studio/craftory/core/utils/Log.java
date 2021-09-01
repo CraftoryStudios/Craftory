@@ -23,12 +23,14 @@ public final class Log {
   @Setter
   private Logger logger;
 
+  
   public static void info(@NonNull String... logMessages) {
     for (String logMessage : logMessages) {
       logger.info(INFO_COLOR + logMessage);
     }
   }
 
+  
   public static void infoDiscrete(@NonNull String... logMessages) {
     for (String logMessage : logMessages) {
       logger.info(PREFIX  + logMessage);

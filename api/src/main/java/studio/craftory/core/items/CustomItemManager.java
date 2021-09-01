@@ -26,6 +26,7 @@ public class CustomItemManager implements Listener {
   private static final Map<String, CustomItem> unqiueItemCache = new HashMap<>();
   private static final Set<String> duplicateItemNames = new HashSet<>();
   private Map<String, Integer> customItemRenderIdCache = new HashMap<>();
+  
   @Inject
   private AssetLinker assetLinker;
 
@@ -65,7 +66,7 @@ public class CustomItemManager implements Listener {
     ObjectMapper mapper = new ObjectMapper();
     if(renderIdFile.exists()) {
       try {
-        customItemRenderIdCache = mapper.readValue(renderIdFile, new TypeReference<Map<String, Integer>>() {});
+        customItemRenderIdCache = mapper.readValue(renderIdFile, new TypeReference<>() {});
         Log.debug("Loaded item render data: " + customItemRenderIdCache.toString());
       } catch (IOException e) {
         Log.error("Couldn't read item render data");

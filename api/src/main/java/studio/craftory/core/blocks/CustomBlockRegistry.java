@@ -27,8 +27,10 @@ import studio.craftory.core.utils.Log;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class CustomBlockRegistry {
 
+  
   @Inject
   private AsyncExecutionManager asyncExecutionManager;
+  
   @Inject
   private SyncExecutionManager syncExecutionManager;
 
@@ -65,6 +67,7 @@ public class CustomBlockRegistry {
     return craftoryBlockKey;
   }
 
+  
   @Synchronized
   public boolean isBlockClassRegistered(@NonNull BaseCustomBlock block) {
     return blockKeys.containsKey(block.getClass());

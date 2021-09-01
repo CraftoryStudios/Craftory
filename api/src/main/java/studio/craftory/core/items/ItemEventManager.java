@@ -36,6 +36,7 @@ public class ItemEventManager implements Listener {
     basicEvents.put(event.getSimpleName(), temp);
   }
 
+  
   public static boolean registerSmartEvent(Class<?> event, String triggerItemName, Consumer<Event> method) {
     if (ItemSmartEvent.isValid(event)) {
       ItemSmartEvent itemSmartEvent = ItemSmartEvent.fromClass(event);

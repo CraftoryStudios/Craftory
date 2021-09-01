@@ -9,6 +9,7 @@ import org.bukkit.event.world.WorldUnloadEvent;
 import studio.craftory.core.blocks.CustomBlockManager;
 
 public class WorldListener implements Listener {
+  
   @Inject
   private CustomBlockManager customBlockManager;
 

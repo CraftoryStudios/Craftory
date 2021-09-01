@@ -43,7 +43,7 @@ public final class Craftory extends JavaPlugin {
   private SyncExecutionManager syncExecutionManager;
   private CustomBlockManager customBlockManager;
   private BlockRenderManager blockRenderManager;
-  private FileConfiguration pluginConfiguration = getConfig();
+  private final FileConfiguration pluginConfiguration = getConfig();
 
   //External
   private CustomItemManager customItemManager;
@@ -56,6 +56,7 @@ public final class Craftory extends JavaPlugin {
   }
   public static RecipeManager getRecipeManager() { return instance.recipeManager; }
   public static CustomBlockAPI getCustomBlockAPI() {return instance.customBlockAPI; }
+  
   public static RetroGeneration getRetoGeneration() {return instance.retroGeneration; }
 
   @Override

@@ -23,10 +23,12 @@ public class CraftoryFluid {
     this.gaseous = gaseous;
   }
 
+  
   public Optional<Plugin> getRegisteringPlugin() {
    return this.id.getPlugin();
   }
 
+  
   public String getInternalName() {
     return this.id.getName();
   }

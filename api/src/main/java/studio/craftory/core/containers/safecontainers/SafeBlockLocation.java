@@ -32,18 +32,22 @@ public class SafeBlockLocation {
     return getWorld().map(world -> new Location(world, x, y, z));
   }
 
+  
   public Optional<Block> getBlock() {
     return getLocation().map(Location::getBlock);
   }
 
+  
   public Optional<Chunk> getChunk() {
     return getLocation().map(Location::getChunk);
   }
 
+  
   public Integer getChunkX() {
     return (int) Math.ceil(x / 16f);
   }
 
+  
   public Integer getChunkZ() {
     return (int) Math.ceil(z / 16f);
   }

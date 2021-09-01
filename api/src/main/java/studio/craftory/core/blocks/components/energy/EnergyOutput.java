@@ -17,6 +17,7 @@ public interface EnergyOutput extends EnergyStorage {
    * @param energyRequested Maximum amount of energy to extract
    * @return Amount of energy extracted
    */
+  
   default long extractEnergy(final long energyRequested) {
     synchronized (this) {
       long energyOutputted = Math.min(getEnergyStored(), Math.min(getMaxEnergyOutput(), energyRequested));

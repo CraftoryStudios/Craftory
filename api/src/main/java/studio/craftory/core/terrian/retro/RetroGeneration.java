@@ -25,11 +25,12 @@ import studio.craftory.core.utils.Log;
 
 public class RetroGeneration implements Listener {
 
+  
   @Inject
   public CustomBlockAPI customBlockAPI;
 
-  private HashSet<Ore> ores = new HashSet<>();
-  private Map<World, Set<String>> visitedChunks = new HashMap<>();
+  private final HashSet<Ore> ores = new HashSet<>();
+  private final Map<World, Set<String>> visitedChunks = new HashMap<>();
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   public RetroGeneration() {
@@ -70,7 +71,7 @@ public class RetroGeneration implements Listener {
               "/Craftory", "chunkGenerations.json");
       if (file.exists()) {
         try {
-          visitedChunks.put(world, objectMapper.readValue(file, new TypeReference<Set<String>>() {}));
+          visitedChunks.put(world, objectMapper.readValue(file, new TypeReference<>() {}));
         } catch (Exception e) {
           Log.error("Couldn't load retro chunk data");
         }

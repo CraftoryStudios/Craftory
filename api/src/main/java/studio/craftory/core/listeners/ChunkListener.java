@@ -9,6 +9,7 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import studio.craftory.core.blocks.CustomBlockManager;
 
 public class ChunkListener implements Listener {
+  
   @Inject
   private CustomBlockManager customBlockManager;
 

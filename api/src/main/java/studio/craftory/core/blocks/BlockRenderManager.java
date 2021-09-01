@@ -30,8 +30,8 @@ public class BlockRenderManager implements Listener {
   private final ObjectMapper mapper;
 
   @Getter
-  private Map<String, CraftoryRenderer> renderers = new HashMap<>();
-  private Map<String, RenderData> blockToRenderDataMap = new HashMap<>();
+  private final Map<String, CraftoryRenderer> renderers = new HashMap<>();
+  private final Map<String, RenderData> blockToRenderDataMap = new HashMap<>();
 
   public BlockRenderManager() {
     mapper = new ObjectMapper();
@@ -96,7 +96,7 @@ public class BlockRenderManager implements Listener {
   }
 
   private RenderData extractRenderData(@NonNull JsonNode node) {
-    ArrayList<String> renderDetails = mapper.convertValue(node, new TypeReference<ArrayList<String>>() {});
+    ArrayList<String> renderDetails = mapper.convertValue(node, new TypeReference<>() {});
     CraftoryRenderer renderer = renderers.get(renderDetails.get(0));
     renderDetails.remove(0);
     return new RenderData(renderer, renderDetails);

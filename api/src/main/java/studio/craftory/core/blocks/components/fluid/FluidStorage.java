@@ -45,15 +45,16 @@ public interface FluidStorage extends PersistentDataHolder {
   /**
    * Sets amount of
    *
-   * @param amount
+   * @param amount of field stored
    */
   default void setStoredFluidAmount(final long amount) {
-    if (!getStoredFluidType().isPresent()) {
+    if (getStoredFluidType().isEmpty()) {
       throw new IllegalStateException("Tried to set the amount of fluid in an empty storage!");
     }
       setStoredFluidInternal(amount);
   }
 
+  
   default void increaseStoredFluidAmount(final long amount) {
     setStoredFluidAmount(getStoredFluidAmount() + amount);
   }
@@ -92,6 +93,7 @@ public interface FluidStorage extends PersistentDataHolder {
     setStoredFluid(fluidType, getStoredFluidAmount() + amount);
   }
 
+  
   default void decreaseStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {
     setStoredFluid(fluidType, getStoredFluidAmount() - amount);
   }

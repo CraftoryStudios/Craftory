@@ -69,10 +69,10 @@ public class DefaultRenderer implements CraftoryRenderer {
     if (assetsData.length == 1 || assetsData.length == 6) {
       ArrayNode renderFileData = mapper.createArrayNode();
       renderFileData.add(this.getClass().getSimpleName());
-      for (int i = 0; i < assetsData.length; i++) {
+      for (String assetsDatum : assetsData) {
         String data = blockAssetGenerator.generateBlockState();
         renderFileData.add(data);
-        blockAssetGenerator.addBlockStateToPack(data, assetsData[i], CraftoryDirection.NORTH);
+        blockAssetGenerator.addBlockStateToPack(data, assetsDatum, CraftoryDirection.NORTH);
       }
       blockAssetGenerator.addToRenderFile(blockKey, renderFileData);
     } else {

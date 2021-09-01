@@ -42,9 +42,10 @@ public class CraftoryDataKey implements Serializable {
   }
 
   private void register() {
-    Craftory.getInstance().getCustomBlockAPI().registerDataKey(this);
+    Craftory.getCustomBlockAPI().registerDataKey(this);
   }
 
+  
   public Optional<Plugin> getPlugin() {
     return new SafePlugin(this.namespace).getPlugin();
   }

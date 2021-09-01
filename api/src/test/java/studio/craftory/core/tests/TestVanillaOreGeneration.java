@@ -33,8 +33,8 @@ class TestVanillaOreGeneration {
   RetroGeneration retroGeneration = new RetroGeneration();
 
 
-  HashSet<Location> locations1 = new HashSet<>();
-  WorldMock worldMock = new WorldMock();
+  final HashSet<Location> locations1 = new HashSet<>();
+  final WorldMock worldMock = new WorldMock();
 
 
   @BeforeEach
@@ -47,7 +47,7 @@ class TestVanillaOreGeneration {
     //Setup Chunk
     Mockito.when(chunk.getX()).thenReturn(3);
     Mockito.when(chunk.getZ()).thenReturn(11);
-    Mockito.when(chunk.getWorld().getSeed()).thenReturn(4462149151511762283l);
+    Mockito.when(chunk.getWorld().getSeed()).thenReturn(4462149151511762283L);
     Mockito.when(chunk.getBlock(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt())).thenAnswer(invocation -> {
       int x = invocation.getArgument(0, Integer.class);
       int y = invocation.getArgument(1, Integer.class);

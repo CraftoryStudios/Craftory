@@ -15,16 +15,15 @@ import org.bukkit.potion.PotionEffectType;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.CraftoryAddon;
 import studio.craftory.core.blocks.rendering.renderers.DefaultRotationalRenderer;
-import studio.craftory.core.containers.IntRange;
 import studio.craftory.core.containers.keys.ItemDataKey;
 import studio.craftory.core.items.CustomItem;
 import studio.craftory.core.items.recipes.ShapedCraftingRecipe;
 import studio.craftory.core.items.recipes.ShapelessCraftingRecipe;
-import studio.craftory.core.terrian.retro.population.ore.VanillaOre;
 import studio.craftory.core.utils.Log;
 import studio.craftory.craftoryexample.blocks.CopperOre;
 import studio.craftory.craftoryexample.blocks.SimpleGenerator;
 import studio.craftory.craftoryexample.items.Wrench;
+
 
 @PluginMain
 public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryAddon {
@@ -61,10 +60,11 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
 
   }
 
+  
   @Override
   public void craftoryOnEnable() {
     Optional<ItemStack> itemStackOptional = Craftory.getCustomItemManager().getCustomItem("craftoryexample:wrench");
-    ItemStack res = null;
+    ItemStack res;
     if (itemStackOptional.isPresent()) {
       res = itemStackOptional.get();
     } else {
@@ -82,12 +82,9 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
     ItemStack emeralds = new ItemStack(Material.EMERALD_BLOCK);
     emeralds.setAmount(64);
     ShapelessCraftingRecipe.builder().name("superVersion").commonItemIngredient("craftoryexample:superstar", 3).result(emeralds).build().register(this);
-
-//    Craftory.getRetoGeneration().registerOre(new VanillaOre(CopperOre.class,
-//         new IntRange(20,33), new IntRange(5, 60),
-//        new IntRange(3,10), Material.STONE));
   }
 
+  
   @Override
   public URL getAddonResources() {
     try {

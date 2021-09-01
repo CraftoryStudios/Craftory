@@ -18,6 +18,7 @@ public interface FluidOutput extends FluidStorage {
    * @param limit Maximum amount of fluid to extract
    * @return Entry of Fluid Type extracted and amount extracted
    */
+  
   default Optional<Entry<CraftoryFluid, Long>> extractFluid(final long limit) {
     Optional<CraftoryFluid> fluidOptional = getStoredFluidType();
     if (fluidOptional.isPresent()) {
@@ -36,9 +37,10 @@ public interface FluidOutput extends FluidStorage {
    * @param limit Maximum amount of fluid to extract
    * @return Amount of fluid extracted
    */
+  
   default long extractFluid(@NonNull final CraftoryFluid fluidType, final long limit) {
     Optional<CraftoryFluid> fluidOptional = getStoredFluidType();
-    if (!fluidOptional.isPresent() || !fluidOptional.get().equals(fluidType)) {
+    if (fluidOptional.isEmpty() || !fluidOptional.get().equals(fluidType)) {
       return 0L;
     }
 

@@ -18,12 +18,14 @@ import studio.craftory.core.blocks.templates.BaseCustomBlock;
 
 public class SyncExecutionManager extends BukkitRunnable {
 
-  private HashSet<TickGroup> tickGroups;
-  private HashMap<Integer, TickGroup> tickGroupsMap;
-  private HashMap<Class<? extends BaseCustomBlock>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
-  private Map<Integer, HashSet<BaseCustomBlock>> removeBacklog;
+  private final HashSet<TickGroup> tickGroups;
+  private final HashMap<Integer, TickGroup> tickGroupsMap;
+  private final HashMap<Class<? extends BaseCustomBlock>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
+  private final Map<Integer, HashSet<BaseCustomBlock>> removeBacklog;
+  private final int maxTick;
+
   private int tick;
-  private int maxTick;
+
 
   public SyncExecutionManager() {
     tickGroups = new HashSet<>();
@@ -55,7 +57,7 @@ public class SyncExecutionManager extends BukkitRunnable {
 
   public void removeTickableObject(@NonNull BaseCustomBlock tickableObject) {
     Optional<Set<Integer>> tickKeys = getTickKeys(tickableObject);
-    if (!tickKeys.isPresent()) return;
+    if (tickKeys.isEmpty()) return;
 
     for (Integer key : tickKeys.get()) {
       removeBacklog.computeIfAbsent(key, a -> new HashSet<>())
@@ -107,13 +109,12 @@ public class SyncExecutionManager extends BukkitRunnable {
         tickGroups.add(tickGroup);
         tickGroupsMap.put(integer, tickGroup);
       }
-    } else {
-      //Error
     }
   }
 
 
 
+  
   private Collection<Method> getMethodsRecursively(@NonNull Class<?> startClass, @NonNull Class<?> exclusiveParent) {
     Collection<Method> methods = Lists.newArrayList(startClass.getDeclaredMethods());
     Class<?> parentClass = startClass.getSuperclass();

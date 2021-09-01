@@ -27,8 +27,10 @@ import studio.craftory.core.utils.Log;
 
 public class CustomBlockListener implements Listener {
 
+  
   @Inject
   private CustomBlockManager customBlockManager;
+  
   @Inject
   private CustomBlockRegistry blockRegistry;
 

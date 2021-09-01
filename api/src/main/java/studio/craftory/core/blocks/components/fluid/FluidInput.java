@@ -10,6 +10,7 @@ import studio.craftory.core.utils.Reflections;
 
 public interface FluidInput extends FluidStorage {
 
+  
   default long receiveFluid(@NonNull CraftoryFluid fluid, final long availableFluid) {
     Optional<CraftoryFluid> fluidOptional = getStoredFluidType();
     if (fluidOptional.isPresent()) {

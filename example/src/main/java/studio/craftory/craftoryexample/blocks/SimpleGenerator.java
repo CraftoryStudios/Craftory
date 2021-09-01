@@ -18,11 +18,13 @@ public class SimpleGenerator extends ComplexCustomBlock implements EnergyOutput 
     super(location, facingDirection);
   }
 
+  
   @Tickable(ticks = 2)
   public void generateEnergy() {
     increaseStoredEnergy(100);
   }
 
+  
   @Override
   public void onPlayerClick(PlayerInteractEvent playerInteractEvent) {
     playerInteractEvent.getPlayer().sendMessage("Generate Energy: " + getEnergyStored());

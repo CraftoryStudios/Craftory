@@ -20,7 +20,7 @@ public enum CraftoryDirection {
     }
   }
 
-  private CraftoryDirection(int label) {
+  CraftoryDirection(int label) {
     this.label = label;
   }
 

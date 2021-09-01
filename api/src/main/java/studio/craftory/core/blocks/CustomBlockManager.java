@@ -61,10 +61,10 @@ public class CustomBlockManager {
         addToExecutorSchedule(customBlock);
       }
 
-      Log.debug("Block loaded: " + location.toString());
+      Log.debug("Block loaded: " + location);
       return true;
     } else {
-      Log.warn("Trying to load a customBlock at occupied location: " + location.toString());
+      Log.warn("Trying to load a customBlock at occupied location: " + location);
     }
     return false;
   }
@@ -99,6 +99,7 @@ public class CustomBlockManager {
    * @param save     if the block should be saved
    * @throws IllegalArgumentException if the given location isn't loaded
    */
+  
   @Synchronized
   public void unloadCustomBlock(@NonNull final Location location, boolean save) {
 
@@ -200,7 +201,7 @@ public class CustomBlockManager {
   @NonNull CraftoryDirection direction) {
     Optional<BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(craftoryBlockKey, location, direction);
 
-    if (!customBlock.isPresent()) {
+    if (customBlock.isEmpty()) {
       Log.warn("Unable to place CustomBlock: " + craftoryBlockKey.getName() + " at location: " + location);
       return Optional.empty();
     }
@@ -216,9 +217,7 @@ public class CustomBlockManager {
 
   @Synchronized
   public Set<Chunk> getCustomChunksInWorld(@NonNull World world) {
-    HashSet<Chunk> chunks = customBlocks.keySet().stream().filter(chunk -> chunk.getWorld().equals(world))
-                                          .collect(Collectors.toCollection(HashSet::new));
-    return Collections.unmodifiableSet(chunks);
+    return customBlocks.keySet().stream().filter(chunk -> chunk.getWorld().equals(world)).collect(Collectors.toUnmodifiableSet());
   }
 
   private void addToExecutorSchedule(@NonNull final BaseCustomBlock block) {

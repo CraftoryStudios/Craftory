@@ -14,7 +14,7 @@ public class DataHolder {
 
   //Data container for component data
   @Getter
-  private Map<CraftoryDataKey, Object> data = new HashMap<>();
+  private final Map<CraftoryDataKey, Object> data = new HashMap<>();
 
   /**
    * Set the property value with the given key.

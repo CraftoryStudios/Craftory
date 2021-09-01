@@ -18,7 +18,7 @@ public class DataStorageManager {
   private final CustomBlockRegistry blockRegister;
   private final ObjectMapper mapper;
 
-  private Map<World, WorldDataStorage> worldsStorage;
+  private final Map<World, WorldDataStorage> worldsStorage;
 
   public DataStorageManager(CustomBlockManager customBlockManager, CustomBlockRegistry blockRegister) {
     this.customBlockManager = customBlockManager;

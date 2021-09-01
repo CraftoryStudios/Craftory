@@ -3,7 +3,6 @@ package studio.craftory.core.blocks;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.IOException;
@@ -31,13 +30,14 @@ import studio.craftory.core.utils.Log;
 public class WorldDataStorage {
 
   private static final String CHUNKS_KEY = "chunks";
+
+  @Getter
+  private final World world;
+  private final File file;
   private final CustomBlockRegistry blockRegister;
   private final ObjectMapper mapper;
 
-  @Getter
-  private World world;
   private ObjectNode rootNode;
-  private File file;
 
   public WorldDataStorage(@NonNull final World world, CustomBlockRegistry blockRegister, ObjectMapper mapper) {
     this.world = world;
@@ -97,7 +97,7 @@ public class WorldDataStorage {
   private void writeCustomBlock(@NonNull final ObjectNode chunkRoot, @NonNull final BaseCustomBlock customBlock) {
     //Get block type key
     Optional<CraftoryBlockKey> key = blockRegister.getBlockKey(customBlock);
-    if (!key.isPresent())  {
+    if (key.isEmpty())  {
       Log.warn("Error saving block");
       throw new IllegalStateException("Custom Block can't be saved as it isn't registered");
     }
@@ -167,7 +167,7 @@ public class WorldDataStorage {
       CraftoryDirection direction = CraftoryDirection.valueOfLabel((byte) Integer.parseInt(blockData[1]));
 
       Optional<? extends BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(craftoryBlockKey, location, direction);
-      if (!customBlock.isPresent()) return Optional.empty();
+      if (customBlock.isEmpty()) return Optional.empty();
 
       //Inject Persistent Data
       if (ComplexCustomBlock.class.isAssignableFrom(customBlock.get().getClass())) {

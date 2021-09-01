@@ -42,7 +42,7 @@ public class ResourcePackBuilder {
         FileUtils.downloadResource(((CraftoryAddon) plugin).getAddonResources(), zipFile);
         FileUtils.unZip(zipFile, assetDirectory);
         FileUtils.copyResources(assetDirectory.getAbsolutePath(), new File(ResourcePack.RESOURCE_PACK_PATH).getAbsolutePath(),
-            (source, dest) -> mergeResources(source, dest));
+            ResourcePackBuilder::mergeResources);
 
         FileUtils.recursiveDirectoryDelete(ResourcePack.ASSETS_PATH);
       }
@@ -52,7 +52,7 @@ public class ResourcePackBuilder {
 
   private static void mergeResources(File source, File dest) {
     Optional<String> fileExtensionOptional = getExtension(dest.getName());
-    if (!fileExtensionOptional.isPresent()) {
+    if (fileExtensionOptional.isEmpty()) {
       Log.warn("Unknown file in resource pack", dest.getName());
       return;
     }

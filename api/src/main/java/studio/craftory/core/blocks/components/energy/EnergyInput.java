@@ -17,6 +17,7 @@ public interface EnergyInput extends EnergyStorage {
    * @param availableEnergy Amount of energy that is available to be insert into objects energy storage
    * @return Amount of energy that was stored
    */
+  
   default long receiveEnergy(final long availableEnergy) {
     synchronized (this) {
       long energyReceived = Math.min(getFreeSpace(), Math.min(getMaxEnergyInput(), availableEnergy));

@@ -21,11 +21,11 @@ import studio.craftory.core.blocks.templates.BaseCustomBlock;
 
 public class AsyncExecutionManager extends BukkitRunnable {
 
-  private List<HashSet<TickGroup>> tickGroups;
-  private List<HashMap<Integer, TickGroup>> tickGroupsMap;
-  private Map<Class<? extends BaseCustomBlock>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
-  private Map<Class<? extends BaseCustomBlock>, ArrayList<Integer>> threadTaskDistribution;
-  private Map<Integer, HashSet<BaseCustomBlock>> removeBacklog;
+  private final List<HashSet<TickGroup>> tickGroups;
+  private final List<HashMap<Integer, TickGroup>> tickGroupsMap;
+  private final Map<Class<? extends BaseCustomBlock>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
+  private final Map<Class<? extends BaseCustomBlock>, ArrayList<Integer>> threadTaskDistribution;
+  private final Map<Integer, HashSet<BaseCustomBlock>> removeBacklog;
   private final LongAdder tick;
   private final ExecutorService executor;
   private final int threadCount;
@@ -62,7 +62,7 @@ public class AsyncExecutionManager extends BukkitRunnable {
 
   public void removeTickableObject(@NonNull BaseCustomBlock tickableObject) {
     Optional<Set<Integer>> tickKeys = getTickKeys(tickableObject);
-    if (!tickKeys.isPresent()) return;
+    if (tickKeys.isEmpty()) return;
 
     for (Integer key : tickKeys.get()) {
       removeBacklog.computeIfAbsent(key, a -> new HashSet<>())
@@ -88,7 +88,7 @@ public class AsyncExecutionManager extends BukkitRunnable {
 
   public void addTickableObject(@NonNull BaseCustomBlock tickableObject) {
     Optional<Set<Integer>> tickKeys = getTickKeys(tickableObject);
-    if (!tickKeys.isPresent()) return;
+    if (tickKeys.isEmpty()) return;
 
     int exectionThread = getExecutionThread(tickableObject.getClass());
     HashMap<Integer,TickGroup> threadTickGroupMap = tickGroupsMap.get(exectionThread);
@@ -138,6 +138,7 @@ public class AsyncExecutionManager extends BukkitRunnable {
 
 
 
+  
   private Collection<Method> getMethodsRecursively(@NonNull Class<?> startClass, @NonNull Class<?> exclusiveParent) {
     Collection<Method> methods = Lists.newArrayList(startClass.getDeclaredMethods());
     Class<?> parentClass = startClass.getSuperclass();
