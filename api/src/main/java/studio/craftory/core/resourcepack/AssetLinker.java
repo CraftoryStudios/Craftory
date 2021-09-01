@@ -42,6 +42,7 @@ public class AssetLinker extends BukkitRunnable {
   @Override
   public void run() {
     //Need better system later
+    //noinspection SpellCheckingInspection
     if (!Files.exists(Paths.get(Craftory.getInstance().getDataFolder() + "/resourcepacks"))) {
       ResourcePackBuilder.run();
       linkCustomBlockAssets();

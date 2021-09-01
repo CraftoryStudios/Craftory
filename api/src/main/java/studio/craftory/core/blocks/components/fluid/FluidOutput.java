@@ -13,7 +13,7 @@ import studio.craftory.core.utils.Reflections;
 public interface FluidOutput extends FluidStorage {
 
   /**
-   * Extracts fluid from the objects storage up to the maximum amount requested.
+   * Extracts fluid from the objects' storage up to the maximum amount requested.
    *
    * @param limit Maximum amount of fluid to extract
    * @return Entry of Fluid Type extracted and amount extracted
@@ -30,7 +30,7 @@ public interface FluidOutput extends FluidStorage {
   }
 
   /**
-   * Extracts fluid from the objects storage up to the maximum amount requested,
+   * Extracts fluid from the objects' storage up to the maximum amount requested,
    * if fluid storage contains the fluid type provided
    *
    * @param limit Maximum amount of fluid to extract

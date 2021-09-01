@@ -5,7 +5,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -15,7 +14,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import lombok.NonNull;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.containers.CraftoryDirection;
@@ -148,7 +146,7 @@ public class BlockAssetGenerator {
           variants.add(builder.toString(), noteblockState);
           nodeObject.add("variants", variants);
         try (FileWriter fw = new FileWriter(path.toFile())){
-          gson.toJson(node, fw);
+          gson.toJson(nodeObject, fw);
         } catch (IOException e) {
           Log.error(e.toString());
         }

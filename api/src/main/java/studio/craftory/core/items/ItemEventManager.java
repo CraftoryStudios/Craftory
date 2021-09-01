@@ -79,7 +79,7 @@ public class ItemEventManager implements Listener {
     if (ItemSmartEvent.isValid(eventClass)) {
       ItemSmartEvent itemSmartEvent = ItemSmartEvent.fromClass(eventClass);
       if(smartEvents.containsKey(itemSmartEvent)) {
-        // Some how validate here and get a string to map to the right methods
+        // Somehow validate here and get a string to map to the right methods
         // e.g. Get the name of the custom item in player hand
         String triggerItemName = itemSmartEvent.getValidationString(event);
         if(smartEvents.get(itemSmartEvent).containsKey(triggerItemName)){

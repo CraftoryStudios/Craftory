@@ -90,8 +90,8 @@ public class AsyncExecutionManager extends BukkitRunnable {
     Optional<Set<Integer>> tickKeys = getTickKeys(tickableObject);
     if (!tickKeys.isPresent()) return;
 
-    int exectionThread = getExecutionThread(tickableObject.getClass());
-    HashMap<Integer,TickGroup> threadTickGroupMap = tickGroupsMap.get(exectionThread);
+    int executionThread = getExecutionThread(tickableObject.getClass());
+    HashMap<Integer,TickGroup> threadTickGroupMap = tickGroupsMap.get(executionThread);
     for (Integer integer : tickKeys.get()) {
       TickGroup tickGroup;
       if (threadTickGroupMap.containsKey(integer)) {
@@ -101,8 +101,8 @@ public class AsyncExecutionManager extends BukkitRunnable {
       }
 
       tickGroup.getTickables().add(tickableObject);
-      tickGroups.get(exectionThread).add(tickGroup);
-      tickGroupsMap.get(exectionThread).put(integer, tickGroup);
+      tickGroups.get(executionThread).add(tickGroup);
+      tickGroupsMap.get(executionThread).put(integer, tickGroup);
     }
   }
 

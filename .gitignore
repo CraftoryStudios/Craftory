@@ -129,3 +129,8 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 /example/debug/spigot/
+
+#Eclipse
+.project
+.classpath
+.settings
