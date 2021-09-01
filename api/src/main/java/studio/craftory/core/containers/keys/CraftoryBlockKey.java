@@ -24,7 +24,7 @@ public class CraftoryBlockKey {
     this.name = keySplit[1];
   }
 
-  
+
   public Optional<Plugin> getPlugin() {
     return new SafePlugin(this.namespace).getPlugin();
   }

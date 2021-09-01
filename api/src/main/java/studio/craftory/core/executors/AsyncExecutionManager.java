@@ -62,7 +62,9 @@ public class AsyncExecutionManager extends BukkitRunnable {
 
   public void removeTickableObject(@NonNull BaseCustomBlock tickableObject) {
     Optional<Set<Integer>> tickKeys = getTickKeys(tickableObject);
-    if (tickKeys.isEmpty()) return;
+    if (tickKeys.isEmpty()) {
+      return;
+    }
 
     for (Integer key : tickKeys.get()) {
       removeBacklog.computeIfAbsent(key, a -> new HashSet<>())
@@ -88,10 +90,12 @@ public class AsyncExecutionManager extends BukkitRunnable {
 
   public void addTickableObject(@NonNull BaseCustomBlock tickableObject) {
     Optional<Set<Integer>> tickKeys = getTickKeys(tickableObject);
-    if (tickKeys.isEmpty()) return;
+    if (tickKeys.isEmpty()) {
+      return;
+    }
 
     int exectionThread = getExecutionThread(tickableObject.getClass());
-    HashMap<Integer,TickGroup> threadTickGroupMap = tickGroupsMap.get(exectionThread);
+    HashMap<Integer, TickGroup> threadTickGroupMap = tickGroupsMap.get(exectionThread);
     for (Integer integer : tickKeys.get()) {
       TickGroup tickGroup;
       if (threadTickGroupMap.containsKey(integer)) {
@@ -107,9 +111,13 @@ public class AsyncExecutionManager extends BukkitRunnable {
   }
 
   private Optional<Set<Integer>> getTickKeys(@NonNull BaseCustomBlock tickableObject) {
-    if (!tickableMethods.containsKey(tickableObject.getClass())) return Optional.empty();
+    if (!tickableMethods.containsKey(tickableObject.getClass())) {
+      return Optional.empty();
+    }
     Set<Integer> tickKeys = tickableMethods.get(tickableObject.getClass()).keySet();
-    if (tickKeys.isEmpty()) return Optional.empty();
+    if (tickKeys.isEmpty()) {
+      return Optional.empty();
+    }
     return Optional.of(tickKeys);
   }
 
@@ -131,14 +139,12 @@ public class AsyncExecutionManager extends BukkitRunnable {
       for (int l = 1; l < threadCount; l++) {
         threadTasks.add(0);
       }
-      threadTaskDistribution.put(clazz,threadTasks);
+      threadTaskDistribution.put(clazz, threadTasks);
       return 0;
     }
   }
 
 
-
-  
   private Collection<Method> getMethodsRecursively(@NonNull Class<?> startClass, @NonNull Class<?> exclusiveParent) {
     Collection<Method> methods = Lists.newArrayList(startClass.getDeclaredMethods());
     Class<?> parentClass = startClass.getSuperclass();

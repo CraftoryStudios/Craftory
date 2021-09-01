@@ -22,7 +22,6 @@ public class ExecutorUtils {
 
     HashMap<Integer, ArrayList<Method>> tickMethods = new HashMap<>();
 
-
     Reflections.getMethodsRecursively(clazz, Object.class).forEach(method -> {
       Tickable tickable = method.getAnnotation(Tickable.class);
 
@@ -50,7 +49,7 @@ public class ExecutorUtils {
     for (TickGroup tickGroup : tickGroups) {
       if (tick % tickGroup.tick == 0) {
         for (BaseCustomBlock tickable : tickGroup.getTickables()) {
-          for (Method method: tickableMethods.get(tickable.getClass()).get(tickGroup.tick)) {
+          for (Method method : tickableMethods.get(tickable.getClass()).get(tickGroup.tick)) {
             try {
               method.invoke(tickable);
             } catch (IllegalAccessException | InvocationTargetException e) {

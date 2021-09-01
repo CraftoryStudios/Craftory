@@ -90,8 +90,7 @@ public class ResourcePackBuilder {
       // if field exists and is an embedded object
       if (jsonNode != null && jsonNode.isObject()) {
         merge(jsonNode, updateNode.get(fieldName));
-      }
-      else {
+      } else {
         if (mainNode instanceof ObjectNode) {
           // Overwrite field
           JsonNode value = updateNode.get(fieldName);

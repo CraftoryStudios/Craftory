@@ -25,6 +25,8 @@ import studio.craftory.core.terrian.retro.population.ore.VanillaOre;
 @ExtendWith(MockitoExtension.class)
 class TestVanillaOreGeneration {
 
+  final HashSet<Location> locations1 = new HashSet<>();
+  final WorldMock worldMock = new WorldMock();
   @Mock
   CustomBlockAPI customBlockAPI;
   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
@@ -32,16 +34,11 @@ class TestVanillaOreGeneration {
   @InjectMocks
   RetroGeneration retroGeneration = new RetroGeneration();
 
-
-  final HashSet<Location> locations1 = new HashSet<>();
-  final WorldMock worldMock = new WorldMock();
-
-
   @BeforeEach
   public void init() {
     //Setup Ore
-    VanillaOre ore = new VanillaOre(TestCustomBlock.class, new IntRange(20,33), new IntRange(5, 60),
-        new IntRange(3,10), Material.AIR);
+    VanillaOre ore = new VanillaOre(TestCustomBlock.class, new IntRange(20, 33), new IntRange(5, 60),
+        new IntRange(3, 10), Material.AIR);
     retroGeneration.registerOre(ore);
 
     //Setup Chunk

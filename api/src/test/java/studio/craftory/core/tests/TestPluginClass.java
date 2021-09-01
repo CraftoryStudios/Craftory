@@ -10,7 +10,7 @@ import studio.craftory.core.Craftory;
 
 public class TestPluginClass {
 
-  
+
   @BeforeAll
   public static void load() {
     MockBukkit.mock();

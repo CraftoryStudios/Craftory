@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import studio.craftory.core.containers.keys.CraftoryDataKey;
 
-/** Class inspired by LogisticsCraft's Logistics-API and the DataHolder class **/
+/**
+ * Class inspired by LogisticsCraft's Logistics-API and the DataHolder class
+ **/
 @NoArgsConstructor
 public class DataHolder {
 
@@ -19,9 +21,9 @@ public class DataHolder {
   /**
    * Set the property value with the given key.
    *
-   * @param key   the property key
+   * @param key the property key
    * @param value the value
-   * @param <T>   the value type
+   * @param <T> the value type
    */
   public <T> void set(@NonNull CraftoryDataKey key, T value) {
     data.put(key, value);
@@ -39,7 +41,8 @@ public class DataHolder {
   /**
    * Get the property value with the given key.
    *
-   * @param key  the property key
+   * @param key the property key
+   *
    * @return the saved value
    */
   @SuppressWarnings("unchecked")

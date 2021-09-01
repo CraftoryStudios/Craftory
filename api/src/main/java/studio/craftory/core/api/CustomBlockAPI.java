@@ -18,13 +18,13 @@ import studio.craftory.core.utils.Log;
 
 public class CustomBlockAPI {
 
-  
+
   @Inject
   private CustomBlockRegistry blockRegister;
-  
+
   @Inject
   private CustomBlockManager customBlockManager;
-  
+
   @Inject
   private AssetLinker assetLinker;
 
@@ -40,13 +40,13 @@ public class CustomBlockAPI {
   }
 
   public Optional<BaseCustomBlock> placeCustomBlock(@NonNull Location location, @NonNull Class<? extends BaseCustomBlock> customBlockClazz,
-  @NonNull CraftoryDirection craftoryDirection) {
+      @NonNull CraftoryDirection craftoryDirection) {
     Optional<CraftoryBlockKey> key = blockRegister.getBlockKey(customBlockClazz);
     if (key.isEmpty()) {
       Log.warn("Tried to place a custom block that doesn't exist or isn't registered");
       return Optional.empty();
     }
-    return customBlockManager.placeCustomBlock(key.get(),location,craftoryDirection);
+    return customBlockManager.placeCustomBlock(key.get(), location, craftoryDirection);
   }
 
   public Optional<BaseCustomBlock> placeCustomBlock(@NonNull Location location, @NonNull Class<? extends BaseCustomBlock> customBlockClazz) {

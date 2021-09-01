@@ -6,6 +6,7 @@ import lombok.Getter;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 
 public class TickGroup {
+
   final int tick;
 
   @Getter

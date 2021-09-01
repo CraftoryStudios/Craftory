@@ -21,7 +21,7 @@ public class Reflections {
     return result;
   }
 
-  
+
   public static Collection<Field> getFieldsRecursively(@NonNull Class<?> startClass, @NonNull Class<?> exclusiveParent) {
     Collection<Field> fields = Lists.newArrayList(startClass.getDeclaredFields());
     Class<?> parentClass = startClass.getSuperclass();

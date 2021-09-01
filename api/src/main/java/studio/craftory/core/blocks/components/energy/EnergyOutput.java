@@ -15,9 +15,10 @@ public interface EnergyOutput extends EnergyStorage {
    * Extracts energy from objects storage up to the maximum amount requested.
    *
    * @param energyRequested Maximum amount of energy to extract
+   *
    * @return Amount of energy extracted
    */
-  
+
   default long extractEnergy(final long energyRequested) {
     synchronized (this) {
       long energyOutputted = Math.min(getEnergyStored(), Math.min(getMaxEnergyOutput(), energyRequested));
@@ -37,6 +38,7 @@ public interface EnergyOutput extends EnergyStorage {
   @Target(ElementType.TYPE)
   @Retention(RetentionPolicy.RUNTIME)
   @interface EnergyOutputData {
+
     int maxExtract();
   }
 }

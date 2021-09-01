@@ -56,7 +56,7 @@ public class RecipeManager implements Listener {
 
     } else {
       // If it's not one of our recipes don't let it use any custom items
-      for (ItemStack item: e.getInventory().getMatrix()) {
+      for (ItemStack item : e.getInventory().getMatrix()) {
         if (item != null && CustomItemUtils.isCustomItem(item)) {
           e.getInventory().setResult(new ItemStack(Material.AIR));
           return;

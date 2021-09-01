@@ -11,21 +11,19 @@ import studio.craftory.core.containers.keys.ItemDataKey;
 public class Constants {
 
   public static class Keys {
-    private Keys(){}
 
     public static final NamespacedKey BLOCK_ITEM_KEY = new NamespacedKey(Craftory.getInstance(), "blockItemKey");
     public static final ItemDataKey BLOCK_ITEM_DATA_KEY = new ItemDataKey(BLOCK_ITEM_KEY, PersistentDataType.STRING);
     public static final NamespacedKey ITEM_NAME_NAMESPACED_KEY = new NamespacedKey(Craftory.getInstance(), "CUSTOM_ITEM_NAME");
-
     public static final NamespacedKey CHARGE_NAMESPACED_KEY = new NamespacedKey(Craftory.getInstance(), "CHARGE");
     public static final NamespacedKey MAX_CHARGE_NAMESPACED_KEY = new NamespacedKey(Craftory.getInstance(), "MAX_CHARGE");
+    private Keys() {}
 
   }
 
   public static class ResourcePack {
-    private ResourcePack(){}
 
-    public static final String RESOURCE_PACK_PATH = Craftory.getInstance().getDataFolder() +"/resourcepacks";
+    public static final String RESOURCE_PACK_PATH = Craftory.getInstance().getDataFolder() + "/resourcepacks";
     public static final String ASSETS_PATH = Craftory.getInstance().getDataFolder() + "/assets";
     public static final String ITEMS_PATH = "/assets/minecraft/models/item/";
     public static final String JSON = ".json";
@@ -34,6 +32,7 @@ public class Constants {
     public static final int ITEM_ID_START_VALUE = -1000;
     @Getter
     private static final String[] QUALITIES = {"low", "normal", "high"};
+    private ResourcePack() {}
   }
 
 }

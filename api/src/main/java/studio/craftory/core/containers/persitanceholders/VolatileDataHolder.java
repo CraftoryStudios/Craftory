@@ -7,6 +7,6 @@ public interface VolatileDataHolder {
    *
    * @return the DataHolder
    */
-  
+
   DataHolder getVolatileData();
 }

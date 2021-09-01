@@ -15,7 +15,7 @@ public class SpawnItemCommand implements CommandExecutor {
   @Override
   public boolean onCommand(@NonNull CommandSender sender, @NonNull Command command, @NonNull String label, @NonNull String[] args) {
     if (sender instanceof Player && args.length > 0) {
-      Player player = (Player)sender;
+      Player player = (Player) sender;
       String itemName = args[0];
       Optional<ItemStack> itemStack;
 
@@ -30,9 +30,9 @@ public class SpawnItemCommand implements CommandExecutor {
         }
       }
 
-      if(itemStack.isPresent()) {
+      if (itemStack.isPresent()) {
         ItemStack item = itemStack.get();
-        int amount = args.length > 1 ? ParseUtils.parseOrDefault(args[1],1) : 1;
+        int amount = args.length > 1 ? ParseUtils.parseOrDefault(args[1], 1) : 1;
         item.setAmount(amount);
         player.getInventory().addItem(item);
         return true;

@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Pair<X, Y> {
+
   private X key;
   private Y value;
 }

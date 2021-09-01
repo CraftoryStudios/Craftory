@@ -5,6 +5,7 @@ import lombok.Getter;
 import studio.craftory.core.blocks.rendering.CraftoryRenderer;
 
 public class RenderData {
+
   @Getter
   private final CraftoryRenderer renderer;
   @Getter

@@ -19,26 +19,28 @@ import studio.craftory.core.Craftory;
 import studio.craftory.core.items.CustomItemUtils;
 
 @Builder
-public class ShapelessCraftingRecipe implements ICraftingRecipe{
+public class ShapelessCraftingRecipe implements ICraftingRecipe {
 
-  @Getter
-  private NamespacedKey namespacedKey;
-
-
-  private ShapelessRecipe bukkitRecipe;
   private final String name;
   private final ItemStack result;
   private final String permission;
-
-  @Singular private final Map<Material, Integer> vanillaIngredients;
+  @Singular
+  private final Map<Material, Integer> vanillaIngredients;
   // Full names of allowed custom items
-  @Singular private final Map<String, Integer> uniqueItemIngredients;
+  @Singular
+  private final Map<String, Integer> uniqueItemIngredients;
+  @Getter
+  private NamespacedKey namespacedKey;
+  private ShapelessRecipe bukkitRecipe;
   // Common names of allowed custom items from any plugin
-  @Singular private Map<String, Integer> commonItemIngredients;
+  @Singular
+  private Map<String, Integer> commonItemIngredients;
 
   @Override
   public boolean hasPermission(Player player) {
-    if (permission==null) return true;
+    if (permission == null) {
+      return true;
+    }
     return player.hasPermission(permission);
   }
 
@@ -50,7 +52,7 @@ public class ShapelessCraftingRecipe implements ICraftingRecipe{
     Map<String, Integer> uniqueCounts = new HashMap<>(uniqueItemIngredients);
     Map<String, Integer> commonCounts = new HashMap<>(commonItemIngredients);
 
-    BiFunction<Object,Integer, Integer> subtractOne = (k, x) -> x-=1;
+    BiFunction<Object, Integer, Integer> subtractOne = (k, x) -> x -= 1;
     for (int i = 0; i < 9; i++) {
 
       item = matrix[i];
@@ -63,13 +65,16 @@ public class ShapelessCraftingRecipe implements ICraftingRecipe{
           uniqueCounts.computeIfPresent(itemName, subtractOne);
           commonCounts.computeIfPresent(commonName, subtractOne);
         } else {
-          vanillaCounts.computeIfPresent(item.getType(), (k, x) -> x-=1);
+          vanillaCounts.computeIfPresent(item.getType(), (k, x) -> x -= 1);
         }
       }
     }
 
     Predicate<Integer> greaterThanZero = x -> x > 0;
-    if (vanillaCounts.values().stream().anyMatch(greaterThanZero) || uniqueCounts.values().stream().anyMatch(greaterThanZero) || commonCounts.values().stream().anyMatch(greaterThanZero)) {
+    if (vanillaCounts.values().stream().anyMatch(greaterThanZero) || uniqueCounts.values().stream().anyMatch(greaterThanZero) || commonCounts.values()
+                                                                                                                                             .stream()
+                                                                                                                                             .anyMatch(
+                                                                                                                                                 greaterThanZero)) {
       e.getInventory().setResult(new ItemStack(Material.AIR));
     }
   }
@@ -91,7 +96,7 @@ public class ShapelessCraftingRecipe implements ICraftingRecipe{
 
     // Make common ingredients only contain the common part of the item name
     Map<String, Integer> formattedCommonIngredients = new HashMap<>();
-    commonItemIngredients.forEach((item, amount) -> formattedCommonIngredients.put(item.split(":")[1],amount));
+    commonItemIngredients.forEach((item, amount) -> formattedCommonIngredients.put(item.split(":")[1], amount));
     commonItemIngredients = formattedCommonIngredients;
   }
 }

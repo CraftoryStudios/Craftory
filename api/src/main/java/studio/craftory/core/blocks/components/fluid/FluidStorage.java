@@ -31,15 +31,10 @@ public interface FluidStorage extends PersistentDataHolder {
   }
 
   /**
-   *
    * @return Current amount of fluid object has stored
    */
   default long getStoredFluidAmount() {
     return (long) getPersistentData().get(STORED_FLUID_AMOUNT).orElse(0L);
-  }
-
-  default long getFreeSpace() {
-    return getMaxFluidStored() - getStoredFluidAmount();
   }
 
   /**
@@ -51,10 +46,13 @@ public interface FluidStorage extends PersistentDataHolder {
     if (getStoredFluidType().isEmpty()) {
       throw new IllegalStateException("Tried to set the amount of fluid in an empty storage!");
     }
-      setStoredFluidInternal(amount);
+    setStoredFluidInternal(amount);
   }
 
-  
+  default long getFreeSpace() {
+    return getMaxFluidStored() - getStoredFluidAmount();
+  }
+
   default void increaseStoredFluidAmount(final long amount) {
     setStoredFluidAmount(getStoredFluidAmount() + amount);
   }
@@ -93,7 +91,7 @@ public interface FluidStorage extends PersistentDataHolder {
     setStoredFluid(fluidType, getStoredFluidAmount() + amount);
   }
 
-  
+
   default void decreaseStoredFluid(@NonNull final CraftoryFluid fluidType, final long amount) {
     setStoredFluid(fluidType, getStoredFluidAmount() - amount);
   }

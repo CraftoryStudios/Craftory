@@ -27,6 +27,7 @@ import studio.craftory.core.containers.keys.CraftoryBlockKey;
 import studio.craftory.core.utils.Log;
 
 public class BlockRenderManager implements Listener {
+
   private final ObjectMapper mapper;
 
   @Getter
@@ -51,7 +52,7 @@ public class BlockRenderManager implements Listener {
   public void registerRenderer(@NonNull Class<? extends CraftoryRenderer> renderer) {
     try {
       renderers.putIfAbsent(renderer.getSimpleName(), renderer.getDeclaredConstructor().newInstance());
-    } catch (Exception e ) {
+    } catch (Exception e) {
       Log.error("Couldn't register renderer ", renderer.getName());
     }
   }
@@ -87,7 +88,7 @@ public class BlockRenderManager implements Listener {
         if (field.getValue().isArray() && field.getValue().size() > 1) {
           blockToRenderDataMap.put(field.getKey(), extractRenderData(field.getValue()));
         } else {
-          Log.warn("Block type "+ field.getKey() + " doesn't have correct render data");
+          Log.warn("Block type " + field.getKey() + " doesn't have correct render data");
         }
       }
     } else {

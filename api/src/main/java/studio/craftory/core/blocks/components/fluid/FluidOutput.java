@@ -16,9 +16,10 @@ public interface FluidOutput extends FluidStorage {
    * Extracts fluid from the objects storage up to the maximum amount requested.
    *
    * @param limit Maximum amount of fluid to extract
+   *
    * @return Entry of Fluid Type extracted and amount extracted
    */
-  
+
   default Optional<Entry<CraftoryFluid, Long>> extractFluid(final long limit) {
     Optional<CraftoryFluid> fluidOptional = getStoredFluidType();
     if (fluidOptional.isPresent()) {
@@ -31,13 +32,13 @@ public interface FluidOutput extends FluidStorage {
   }
 
   /**
-   * Extracts fluid from the objects storage up to the maximum amount requested,
-   * if fluid storage contains the fluid type provided
+   * Extracts fluid from the objects storage up to the maximum amount requested, if fluid storage contains the fluid type provided
    *
    * @param limit Maximum amount of fluid to extract
+   *
    * @return Amount of fluid extracted
    */
-  
+
   default long extractFluid(@NonNull final CraftoryFluid fluidType, final long limit) {
     Optional<CraftoryFluid> fluidOptional = getStoredFluidType();
     if (fluidOptional.isEmpty() || !fluidOptional.get().equals(fluidType)) {
@@ -60,6 +61,7 @@ public interface FluidOutput extends FluidStorage {
   @Target(ElementType.TYPE)
   @Retention(RetentionPolicy.RUNTIME)
   @interface FluidOutputData {
+
     int maxExtract();
   }
 }
