@@ -14,21 +14,29 @@ public enum ItemSmartEvent {
   PLAYERINTERACTENTITYEVENT(PlayerInteractEntityEvent.class),
   BLOCKBREAKEVENT(BlockBreakEvent.class);
 
-  private final Class<?> eventClass;
-
   private static final Map<Class<?>, ItemSmartEvent> valueMap = new HashMap<>();
 
   static {
-    for (ItemSmartEvent s:  values()) {
+    for (ItemSmartEvent s : values()) {
       valueMap.put(s.eventClass, s);
     }
   }
+
+  private final Class<?> eventClass;
 
   ItemSmartEvent(Class<?> clazz) {
     eventClass = clazz;
   }
 
-  Class<?> getEventClass() { return eventClass; }
+  public static boolean isValid(Class<?> clazz) {
+    return Arrays.stream(values()).anyMatch(e -> e.eventClass.equals(clazz));
+  }
+
+  public static ItemSmartEvent fromClass(Class<?> clazz) {
+    return valueMap.get(clazz);
+  }
+
+  Class<?> getEventClass() {return eventClass;}
 
   String getValidationString(Event event) {
     if (!eventClass.equals(event.getClass())) {
@@ -37,7 +45,9 @@ public enum ItemSmartEvent {
     switch (this) {
       case PLAYERINTERACTEVENT:
         PlayerInteractEvent playerInteractEvent = (PlayerInteractEvent) event;
-        if(playerInteractEvent.getItem()!=null) return CustomItemUtils.getItemName(playerInteractEvent.getItem());
+        if (playerInteractEvent.getItem() != null) {
+          return CustomItemUtils.getItemName(playerInteractEvent.getItem());
+        }
         break;
       case PLAYERINTERACTENTITYEVENT:
         PlayerInteractEntityEvent playerInteractEntityEvent = (PlayerInteractEntityEvent) event;
@@ -47,13 +57,5 @@ public enum ItemSmartEvent {
         return CustomItemUtils.getItemName(blockBreakEvent.getPlayer().getInventory().getItemInMainHand());
     }
     return "";
-  }
-
-  public static boolean isValid(Class<?> clazz) {
-    return Arrays.stream(values()).anyMatch(e -> e.eventClass.equals(clazz));
-  }
-
-  public static ItemSmartEvent fromClass(Class<?> clazz) {
-    return valueMap.get(clazz);
   }
 }

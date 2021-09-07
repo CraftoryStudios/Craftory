@@ -29,11 +29,12 @@ import studio.craftory.core.utils.Log;
 
 public class AssetLinker extends BukkitRunnable {
 
-  private Map<Class<? extends CraftoryRenderer>, Map<String, String[]>> assetsToGenerate = new HashMap<>();
-  private BlockAssetGenerator blockAssetGenerator = new BlockAssetGenerator();
-  private Map<String, String> itemsToGenerate = new HashMap<>();
-  private Map<Material, Set<String>> itemsOfType = new EnumMap<>(Material.class);
-  private ObjectMapper mapper = new ObjectMapper();
+  private final Map<Class<? extends CraftoryRenderer>, Map<String, String[]>> assetsToGenerate = new HashMap<>();
+  private final BlockAssetGenerator blockAssetGenerator = new BlockAssetGenerator();
+  private final Map<String, String> itemsToGenerate = new HashMap<>();
+  private final Map<Material, Set<String>> itemsOfType = new EnumMap<>(Material.class);
+  private final ObjectMapper mapper = new ObjectMapper();
+
   @Inject
   private BlockRenderManager blockRenderManager;
 
@@ -81,10 +82,10 @@ public class AssetLinker extends BukkitRunnable {
         buildFromExistingItemRenderData(data);
       }
     }
-    if (data == null){
+    if (data == null) {
       data = buildFreshItemRenderData();
     }
-    Log.debug("Render data: " + data.toString());
+    Log.debug("Render data: " + data);
     saveRenderData(data);
     buildItemFiles(data);
   }
@@ -92,7 +93,7 @@ public class AssetLinker extends BukkitRunnable {
   private Map<String, Integer> readRenderData() {
     File file = new File(ResourcePack.ITEM_RENDER_DATA);
     try {
-      return  mapper.readValue(file, new TypeReference<Map<String, Integer>>(){});
+      return mapper.readValue(file, new TypeReference<>() {});
     } catch (Exception e) {
       Log.warn("Failed to read existing item render data");
       Log.warn(e.toString());
@@ -100,10 +101,10 @@ public class AssetLinker extends BukkitRunnable {
     return null;
   }
 
-  private Map<String, Integer> buildFromExistingItemRenderData(Map<String, Integer> data) {
+  private void buildFromExistingItemRenderData(Map<String, Integer> data) {
     int id = ResourcePack.ITEM_ID_START_VALUE;
     Set<Integer> usedIds = new HashSet<>(data.values());
-    for (String name: itemsToGenerate.keySet()) {
+    for (String name : itemsToGenerate.keySet()) {
       if (!data.containsKey(name)) {
         while (usedIds.contains(id)) {
           id -= 1;
@@ -112,14 +113,13 @@ public class AssetLinker extends BukkitRunnable {
         id -= 1;
       }
     }
-    return data;
   }
 
-  private  Map<String, Integer> buildFreshItemRenderData() {
+  private Map<String, Integer> buildFreshItemRenderData() {
     Map<String, Integer> data = new HashMap<>();
     int id = ResourcePack.ITEM_ID_START_VALUE;
-    for (String name: itemsToGenerate.keySet()) {
-      data.put(name,id);
+    for (String name : itemsToGenerate.keySet()) {
+      data.put(name, id);
       id -= 1;
     }
     return data;
@@ -137,11 +137,11 @@ public class AssetLinker extends BukkitRunnable {
 
   private void buildItemFiles(Map<String, Integer> data) {
     Map<Material, ObjectNode> files = new EnumMap<>(Material.class);
-    for (Entry<Material, Set<String>> entry: itemsOfType.entrySet()) {
+    for (Entry<Material, Set<String>> entry : itemsOfType.entrySet()) {
       // Build JSON for the item model file
       Material material = entry.getKey();
       ObjectNode root = mapper.createObjectNode();
-      root.put("parent","minecraft:item/generated");
+      root.put("parent", "minecraft:item/generated");
 
       root.set("textures", createItemTextureJSON(material));
 
@@ -149,8 +149,8 @@ public class AssetLinker extends BukkitRunnable {
 
       files.put(material, root);
     }
-    Log.debug("Item files " + files.toString());
-    for (String quality: ResourcePack.getQUALITIES()) {
+    Log.debug("Item files " + files);
+    for (String quality : ResourcePack.getQUALITIES()) {
       saveItemFiles(files, quality);
     }
   }
@@ -158,16 +158,16 @@ public class AssetLinker extends BukkitRunnable {
   private ObjectNode createItemTextureJSON(Material material) {
     ObjectNode textures = mapper.createObjectNode();
     if (material.isBlock()) {
-      textures.put("layer0","minecraft:block/" + material.toString().toLowerCase(Locale.ROOT));
+      textures.put("layer0", "minecraft:block/" + material.toString().toLowerCase(Locale.ROOT));
     } else {
-      textures.put("layer0","minecraft:item/" + material.toString().toLowerCase(Locale.ROOT));
+      textures.put("layer0", "minecraft:item/" + material.toString().toLowerCase(Locale.ROOT));
     }
     return textures;
   }
 
   private ArrayNode createItemOverridesJSON(Set<String> items, Map<String, Integer> data) {
     ArrayNode overrides = mapper.createArrayNode();
-    for (String item: items) {
+    for (String item : items) {
       ObjectNode override = mapper.createObjectNode();
       ObjectNode predicate = mapper.createObjectNode();
       predicate.put("custom_model_data", data.get(item));
@@ -179,10 +179,10 @@ public class AssetLinker extends BukkitRunnable {
   }
 
   private void saveItemFiles(Map<Material, ObjectNode> files, String quality) {
-    String path = Paths.get(ResourcePack.RESOURCE_PACK_PATH, File.separator, quality, ResourcePack.ITEMS_PATH).toString() + File.separator;
+    String path = Paths.get(ResourcePack.RESOURCE_PACK_PATH, File.separator, quality, ResourcePack.ITEMS_PATH) + File.separator;
     File file = new File(path);
     file.mkdirs();
-    for (Entry<Material, ObjectNode> entry: files.entrySet()) {
+    for (Entry<Material, ObjectNode> entry : files.entrySet()) {
       saveObject(path + entry.getKey().toString().toLowerCase(Locale.ROOT) + ResourcePack.JSON, entry.getValue());
     }
   }

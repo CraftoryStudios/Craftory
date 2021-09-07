@@ -27,19 +27,25 @@ import studio.craftory.core.utils.Log;
 
 public class CustomBlockListener implements Listener {
 
+
   @Inject
   private CustomBlockManager customBlockManager;
+
   @Inject
   private CustomBlockRegistry blockRegistry;
 
   @EventHandler
   public void onCustomBlockPlace(BlockPlaceEvent blockPlaceEvent) {
     //Check is Custom Block Being Placed
-    if (!blockPlaceEvent.getItemInHand().hasItemMeta()) return;
+    if (!blockPlaceEvent.getItemInHand().hasItemMeta()) {
+      return;
+    }
     ItemStack itemStack = blockPlaceEvent.getItemInHand();
     CustomItemUtils.validateItemStackMeta(itemStack);
     PersistentDataContainer dataHolder = itemStack.getItemMeta().getPersistentDataContainer();
-    if (!dataHolder.has(Keys.BLOCK_ITEM_KEY, PersistentDataType.STRING)) return;
+    if (!dataHolder.has(Keys.BLOCK_ITEM_KEY, PersistentDataType.STRING)) {
+      return;
+    }
 
     //Get Custom Block Data
     CraftoryDirection direction = getDirection(blockPlaceEvent.getPlayer());
@@ -55,16 +61,24 @@ public class CustomBlockListener implements Listener {
 
   @EventHandler
   public void onCustomBlockClick(PlayerInteractEvent playerInteractEvent) {
-    if (playerInteractEvent.getAction() != Action.LEFT_CLICK_BLOCK && playerInteractEvent.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+    if (playerInteractEvent.getAction() != Action.LEFT_CLICK_BLOCK && playerInteractEvent.getAction() != Action.RIGHT_CLICK_BLOCK) {
+      return;
+    }
     Optional<BaseCustomBlock> customBlock = customBlockManager.getLoadedCustomBlockAt(playerInteractEvent.getClickedBlock().getLocation());
     customBlock.ifPresent(baseCustomBlock -> baseCustomBlock.onPlayerClick(playerInteractEvent));
   }
 
   private CraftoryDirection getDirection(Player player) {
     int degrees = (Math.round(player.getLocation().getYaw()) + 270) % 360;
-    if (degrees > 315 || degrees <= 45) return CraftoryDirection.NORTH;
-    if (degrees <= 135) return CraftoryDirection.EAST;
-    if (degrees <= 225) return CraftoryDirection.SOUTH;
+    if (degrees > 315 || degrees <= 45) {
+      return CraftoryDirection.NORTH;
+    }
+    if (degrees <= 135) {
+      return CraftoryDirection.EAST;
+    }
+    if (degrees <= 225) {
+      return CraftoryDirection.SOUTH;
+    }
     return CraftoryDirection.WEST;
   }
 
@@ -80,9 +94,12 @@ public class CustomBlockListener implements Listener {
 
   @EventHandler
   public void onNoteBlockTwo(BlockFadeEvent e) {
-    if (e.getBlock().getType() != Material.GRASS_BLOCK) return;
+    if (e.getBlock().getType() != Material.GRASS_BLOCK) {
+      return;
+    }
     for (BlockFace face : BlockFace.values()) {
-      if (e.getBlock().getRelative(face).getType() == Material.NOTE_BLOCK && customBlockManager.containsCustomBlock(e.getBlock().getRelative(face).getLocation())) {
+      if (e.getBlock().getRelative(face).getType() == Material.NOTE_BLOCK && customBlockManager.containsCustomBlock(
+          e.getBlock().getRelative(face).getLocation())) {
         e.setCancelled(true);
         e.getBlock().setType(Material.DIRT, false);
         return;
@@ -92,7 +109,8 @@ public class CustomBlockListener implements Listener {
 
   @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   public void onNoteBlockInteract(PlayerInteractEvent event) {
-    if (event.hasBlock() && event.getClickedBlock().getType() == Material.NOTE_BLOCK && customBlockManager.containsCustomBlock(event.getClickedBlock().getLocation())) {
+    if (event.hasBlock() && event.getClickedBlock().getType() == Material.NOTE_BLOCK && customBlockManager.containsCustomBlock(
+        event.getClickedBlock().getLocation())) {
       event.setCancelled(true);
     }
   }

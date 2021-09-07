@@ -67,7 +67,7 @@ public class CustomItemUtils {
 
   public static String getItemName(@NonNull ItemStack itemStack) {
     ItemMeta meta = itemStack.getItemMeta();
-    if (meta!=null){
+    if (meta != null) {
       return meta.getPersistentDataContainer().getOrDefault(ITEM_NAME_NAMESPACED_KEY, PersistentDataType.STRING, itemStack.getType().toString());
     }
     return itemStack.getType().toString();
@@ -130,7 +130,7 @@ public class CustomItemUtils {
 
   public static void setMaxCharge(@NonNull ItemStack itemStack, int maxCharge) {
     validateItemStackMeta(itemStack);
-    if(!itemStack.getItemMeta().getPersistentDataContainer().has(CHARGE_NAMESPACED_KEY, PersistentDataType.INTEGER)) {
+    if (!itemStack.getItemMeta().getPersistentDataContainer().has(CHARGE_NAMESPACED_KEY, PersistentDataType.INTEGER)) {
       setCharge(itemStack, 0);
     }
     setItemPropertyInt(itemStack, MAX_CHARGE_NAMESPACED_KEY, maxCharge);
@@ -158,7 +158,7 @@ public class CustomItemUtils {
     itemStack.getItemMeta().getPersistentDataContainer().set(key, PersistentDataType.INTEGER, value);
   }
 
-  public static void setItemPropertyDouble(@NonNull ItemStack itemStack, @NonNull NamespacedKey key,@NonNull Double value) {
+  public static void setItemPropertyDouble(@NonNull ItemStack itemStack, @NonNull NamespacedKey key, @NonNull Double value) {
     validateItemStackMeta(itemStack);
     itemStack.getItemMeta().getPersistentDataContainer().set(key, PersistentDataType.DOUBLE, value);
   }
@@ -209,7 +209,9 @@ public class CustomItemUtils {
     validateItemStackMeta(itemStack);
     ItemMeta itemMeta = itemStack.getItemMeta();
     List<String> lore = itemMeta.getLore();
-    if(lore==null) lore = new ArrayList<>();
+    if (lore == null) {
+      lore = new ArrayList<>();
+    }
     lore.add(line);
     itemMeta.setLore(lore);
     itemStack.setItemMeta(itemMeta);
@@ -219,7 +221,9 @@ public class CustomItemUtils {
     validateItemStackMeta(itemStack);
     ItemMeta itemMeta = itemStack.getItemMeta();
     List<String> lore = itemMeta.getLore();
-    if(lore==null) lore = new ArrayList<>();
+    if (lore == null) {
+      lore = new ArrayList<>();
+    }
     lore.removeIf(s -> s.contains(replacementKey));
     lore.add(line);
     itemMeta.setLore(lore);
@@ -240,9 +244,9 @@ public class CustomItemUtils {
     }
     if (line == -1) {
       lore.add("");
-      lore.add(ChatColor.WHITE+"Durability "+current + " / "+max);
+      lore.add(ChatColor.WHITE + "Durability " + current + " / " + max);
     } else {
-      lore.set(line,ChatColor.WHITE+"Durability "+current + " / "+max);
+      lore.set(line, ChatColor.WHITE + "Durability " + current + " / " + max);
     }
 
     itemMeta.setLore(lore);
@@ -259,7 +263,7 @@ public class CustomItemUtils {
   }
 
   /* Progress bar */
-  public static ItemStack updateLoreProgressBar(@NonNull ItemStack item,@NonNull String title, int max, int progress) {
+  public static ItemStack updateLoreProgressBar(@NonNull ItemStack item, @NonNull String title, int max, int progress) {
     validateItemStackMeta(item);
     ItemMeta itemMeta = item.getItemMeta();
     List<String> lore = getItemLore(itemMeta);
@@ -271,11 +275,11 @@ public class CustomItemUtils {
       }
     }
     if (line == -1) {
-      lore.add(ChatColor.YELLOW+title+": "+ChatColor.WHITE+progress/max+"%  "+getProgressBar(progress,
+      lore.add(ChatColor.YELLOW + title + ": " + ChatColor.WHITE + progress / max + "%  " + getProgressBar(progress,
           max, 10, '█', ChatColor.GREEN, ChatColor.RED));
     } else {
       lore.set(line,
-          ChatColor.YELLOW+title+": "+ChatColor.WHITE+progress/max+"%  "+getProgressBar(progress,
+          ChatColor.YELLOW + title + ": " + ChatColor.WHITE + progress / max + "%  " + getProgressBar(progress,
               max, 10, '█', ChatColor.GREEN, ChatColor.RED));
     }
 
@@ -295,7 +299,7 @@ public class CustomItemUtils {
   }
 
   public static void validateItemStackMeta(@NonNull ItemStack itemStack) {
-    if (itemStack.getItemMeta()==null) {
+    if (itemStack.getItemMeta() == null) {
       throw new CraftoryItemHasNoMetaException("Attempting to set metadata item on ItemStack with no meta data!");
     }
   }

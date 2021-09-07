@@ -42,7 +42,7 @@ public class ResourcePackBuilder {
         FileUtils.downloadResource(((CraftoryAddon) plugin).getAddonResources(), zipFile);
         FileUtils.unZip(zipFile, assetDirectory);
         FileUtils.copyResources(assetDirectory.getAbsolutePath(), new File(ResourcePack.RESOURCE_PACK_PATH).getAbsolutePath(),
-            (source, dest) -> mergeResources(source, dest));
+            ResourcePackBuilder::mergeResources);
 
         FileUtils.recursiveDirectoryDelete(ResourcePack.ASSETS_PATH);
       }
@@ -52,7 +52,7 @@ public class ResourcePackBuilder {
 
   private static void mergeResources(File source, File dest) {
     Optional<String> fileExtensionOptional = getExtension(dest.getName());
-    if (!fileExtensionOptional.isPresent()) {
+    if (fileExtensionOptional.isEmpty()) {
       Log.warn("Unknown file in resource pack", dest.getName());
       return;
     }
@@ -90,8 +90,7 @@ public class ResourcePackBuilder {
       // if field exists and is an embedded object
       if (jsonNode != null && jsonNode.isObject()) {
         merge(jsonNode, updateNode.get(fieldName));
-      }
-      else {
+      } else {
         if (mainNode instanceof ObjectNode) {
           // Overwrite field
           JsonNode value = updateNode.get(fieldName);

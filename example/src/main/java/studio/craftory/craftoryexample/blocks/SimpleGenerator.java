@@ -4,10 +4,10 @@ import lombok.NonNull;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerInteractEvent;
 import studio.craftory.core.annotations.Tickable;
-import studio.craftory.core.blocks.templates.ComplexCustomBlock;
 import studio.craftory.core.blocks.components.energy.EnergyOutput;
 import studio.craftory.core.blocks.components.energy.EnergyOutput.EnergyOutputData;
 import studio.craftory.core.blocks.components.energy.EnergyStorage.EnergyStorageData;
+import studio.craftory.core.blocks.templates.ComplexCustomBlock;
 import studio.craftory.core.containers.CraftoryDirection;
 
 @EnergyOutputData(maxExtract = 100)
@@ -18,10 +18,12 @@ public class SimpleGenerator extends ComplexCustomBlock implements EnergyOutput 
     super(location, facingDirection);
   }
 
+
   @Tickable(ticks = 2)
   public void generateEnergy() {
     increaseStoredEnergy(100);
   }
+
 
   @Override
   public void onPlayerClick(PlayerInteractEvent playerInteractEvent) {

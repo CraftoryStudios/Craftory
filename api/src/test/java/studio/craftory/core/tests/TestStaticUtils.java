@@ -72,83 +72,86 @@ public class TestStaticUtils {
   @Test
   @DisplayName("Parse Utils tests - Int")
   public void parseUtilsTestInt() {
-    Assertions.assertEquals(1, ParseUtils.parseOrDefault("abcd",1));
-    Assertions.assertEquals(1, ParseUtils.parseOrDefault("11abcd",1));
-    Assertions.assertEquals(2, ParseUtils.parseOrDefault("1.0",2));
-    Assertions.assertEquals(1, ParseUtils.parseOrDefault("",1));
-    Assertions.assertEquals(1, ParseUtils.parseOrDefault(" ",1));
-    Assertions.assertEquals(1, ParseUtils.parseOrDefault(null,1));
-    Assertions.assertEquals(1, ParseUtils.parseOrDefault("34-5",1));
-    Assertions.assertEquals(1, ParseUtils.parseOrDefault("2147483648",1));
-    Assertions.assertEquals(1, ParseUtils.parseOrDefault("-21474836483",1));
+    Assertions.assertEquals(1, ParseUtils.parseOrDefault("abcd", 1));
+    Assertions.assertEquals(1, ParseUtils.parseOrDefault("11abcd", 1));
+    Assertions.assertEquals(2, ParseUtils.parseOrDefault("1.0", 2));
+    Assertions.assertEquals(1, ParseUtils.parseOrDefault("", 1));
+    Assertions.assertEquals(1, ParseUtils.parseOrDefault(" ", 1));
+    Assertions.assertEquals(1, ParseUtils.parseOrDefault(null, 1));
+    Assertions.assertEquals(1, ParseUtils.parseOrDefault("34-5", 1));
+    Assertions.assertEquals(1, ParseUtils.parseOrDefault("2147483648", 1));
+    Assertions.assertEquals(1, ParseUtils.parseOrDefault("-21474836483", 1));
 
-    Assertions.assertEquals(1, ParseUtils.parseOrDefault("1",2));
-    Assertions.assertEquals(7, ParseUtils.parseOrDefault("007",2));
-    Assertions.assertEquals(-4321, ParseUtils.parseOrDefault("-4321",2));
-    Assertions.assertEquals(123456789, ParseUtils.parseOrDefault("123456789",2));
-    Assertions.assertEquals(Integer.MAX_VALUE, ParseUtils.parseOrDefault("2147483647",1));
-    Assertions.assertEquals(Integer.MIN_VALUE, ParseUtils.parseOrDefault("-2147483648",1));
+    Assertions.assertEquals(1, ParseUtils.parseOrDefault("1", 2));
+    Assertions.assertEquals(7, ParseUtils.parseOrDefault("007", 2));
+    Assertions.assertEquals(-4321, ParseUtils.parseOrDefault("-4321", 2));
+    Assertions.assertEquals(123456789, ParseUtils.parseOrDefault("123456789", 2));
+    Assertions.assertEquals(Integer.MAX_VALUE, ParseUtils.parseOrDefault("2147483647", 1));
+    Assertions.assertEquals(Integer.MIN_VALUE, ParseUtils.parseOrDefault("-2147483648", 1));
   }
 
   @Test
   @DisplayName("Parse Utils tests - Long")
   public void parseUtilsTestLong() {
-    Assertions.assertEquals(1L, ParseUtils.parseOrDefault("abcd",1L));
-    Assertions.assertEquals(1L, ParseUtils.parseOrDefault("11abcd",1L));
-    Assertions.assertEquals(2L, ParseUtils.parseOrDefault("1.0",2L));
-    Assertions.assertEquals(1L, ParseUtils.parseOrDefault("",1L));
-    Assertions.assertEquals(1L, ParseUtils.parseOrDefault(" ",1L));
-    Assertions.assertEquals(1L, ParseUtils.parseOrDefault(null,1L));
-    Assertions.assertEquals(1L, ParseUtils.parseOrDefault("34-5",1L));
-    Assertions.assertEquals(1L, ParseUtils.parseOrDefault("9223372036854775808",1L));
-    Assertions.assertEquals(1L, ParseUtils.parseOrDefault("-92233720368547758038",1L));
+    Assertions.assertEquals(1L, ParseUtils.parseOrDefault("abcd", 1L));
+    Assertions.assertEquals(1L, ParseUtils.parseOrDefault("11abcd", 1L));
+    Assertions.assertEquals(2L, ParseUtils.parseOrDefault("1.0", 2L));
+    Assertions.assertEquals(1L, ParseUtils.parseOrDefault("", 1L));
+    Assertions.assertEquals(1L, ParseUtils.parseOrDefault(" ", 1L));
+    Assertions.assertEquals(1L, ParseUtils.parseOrDefault(null, 1L));
+    Assertions.assertEquals(1L, ParseUtils.parseOrDefault("34-5", 1L));
+    Assertions.assertEquals(1L, ParseUtils.parseOrDefault("9223372036854775808", 1L));
+    Assertions.assertEquals(1L, ParseUtils.parseOrDefault("-92233720368547758038", 1L));
 
-    Assertions.assertEquals(1L, ParseUtils.parseOrDefault("1",2L));
-    Assertions.assertEquals(7L, ParseUtils.parseOrDefault("007",2L));
-    Assertions.assertEquals(-4321L, ParseUtils.parseOrDefault("-4321",2L));
-    Assertions.assertEquals(123456789L, ParseUtils.parseOrDefault("123456789",2L));
-    Assertions.assertEquals(Long.MAX_VALUE, ParseUtils.parseOrDefault("9223372036854775807",1L));
-    Assertions.assertEquals(Long.MIN_VALUE, ParseUtils.parseOrDefault("-9223372036854775808",1L));
+    Assertions.assertEquals(1L, ParseUtils.parseOrDefault("1", 2L));
+    Assertions.assertEquals(7L, ParseUtils.parseOrDefault("007", 2L));
+    Assertions.assertEquals(-4321L, ParseUtils.parseOrDefault("-4321", 2L));
+    Assertions.assertEquals(123456789L, ParseUtils.parseOrDefault("123456789", 2L));
+    Assertions.assertEquals(Long.MAX_VALUE, ParseUtils.parseOrDefault("9223372036854775807", 1L));
+    Assertions.assertEquals(Long.MIN_VALUE, ParseUtils.parseOrDefault("-9223372036854775808", 1L));
   }
 
   @Test
   @DisplayName("Parse Utils tests - Float")
   public void parseUtilsTestFloat() {
-    Assertions.assertEquals(1f, ParseUtils.parseOrDefault("abcd",1f));
-    Assertions.assertEquals(1f, ParseUtils.parseOrDefault("11abcd",1f));
-    Assertions.assertEquals(1f, ParseUtils.parseOrDefault("",1f));
-    Assertions.assertEquals(1f, ParseUtils.parseOrDefault(" ",1f));
-    Assertions.assertEquals(1f, ParseUtils.parseOrDefault(null,1f));
-    Assertions.assertEquals(1f, ParseUtils.parseOrDefault("34-5",1f));
+    Assertions.assertEquals(1f, ParseUtils.parseOrDefault("abcd", 1f));
+    Assertions.assertEquals(1f, ParseUtils.parseOrDefault("11abcd", 1f));
+    Assertions.assertEquals(1f, ParseUtils.parseOrDefault("", 1f));
+    Assertions.assertEquals(1f, ParseUtils.parseOrDefault(" ", 1f));
+    Assertions.assertEquals(1f, ParseUtils.parseOrDefault(null, 1f));
+    Assertions.assertEquals(1f, ParseUtils.parseOrDefault("34-5", 1f));
 
-    Assertions.assertEquals(1.0f, ParseUtils.parseOrDefault("1.0",2f));
-    Assertions.assertEquals(1f, ParseUtils.parseOrDefault("1",2f));
-    Assertions.assertEquals(7f, ParseUtils.parseOrDefault("007",2f));
-    Assertions.assertEquals(-4321f, ParseUtils.parseOrDefault("-4321",2f));
-    Assertions.assertEquals(123456789f, ParseUtils.parseOrDefault("123456789",2f));
-    Assertions.assertEquals(Float.MAX_VALUE, ParseUtils.parseOrDefault("340282346638528860000000000000000000000.000000",1f));
-    Assertions.assertEquals(Float.POSITIVE_INFINITY, ParseUtils.parseOrDefault("34028234663852886143242340000000000000000000.12",1f));
-    Assertions.assertEquals(Float.NEGATIVE_INFINITY, ParseUtils.parseOrDefault("-9223372036854775803832432432423432432432.4",1f));
-    Assertions.assertEquals(-Float.MIN_VALUE, ParseUtils.parseOrDefault("-0.0000000000000000000000000000000000000000000014012985",1f));
-    Assertions.assertEquals(Float.MIN_VALUE, ParseUtils.parseOrDefault("0.0000000000000000000000000000000000000000000014",1f));
+    Assertions.assertEquals(1.0f, ParseUtils.parseOrDefault("1.0", 2f));
+    Assertions.assertEquals(1f, ParseUtils.parseOrDefault("1", 2f));
+    Assertions.assertEquals(7f, ParseUtils.parseOrDefault("007", 2f));
+    Assertions.assertEquals(-4321f, ParseUtils.parseOrDefault("-4321", 2f));
+    Assertions.assertEquals(123456789f, ParseUtils.parseOrDefault("123456789", 2f));
+    Assertions.assertEquals(Float.MAX_VALUE, ParseUtils.parseOrDefault("340282346638528860000000000000000000000.000000", 1f));
+    Assertions.assertEquals(Float.POSITIVE_INFINITY, ParseUtils.parseOrDefault("34028234663852886143242340000000000000000000.12", 1f));
+    Assertions.assertEquals(Float.NEGATIVE_INFINITY, ParseUtils.parseOrDefault("-9223372036854775803832432432423432432432.4", 1f));
+    Assertions.assertEquals(-Float.MIN_VALUE, ParseUtils.parseOrDefault("-0.0000000000000000000000000000000000000000000014012985", 1f));
+    Assertions.assertEquals(Float.MIN_VALUE, ParseUtils.parseOrDefault("0.0000000000000000000000000000000000000000000014", 1f));
   }
 
   @Test
   @DisplayName("Parse Utils tests - Double")
   public void parseUtilsTestDouble() {
-    Assertions.assertEquals(1d, ParseUtils.parseOrDefault("abcd",1d));
-    Assertions.assertEquals(1d, ParseUtils.parseOrDefault("11abcd",1d));
-    Assertions.assertEquals(1d, ParseUtils.parseOrDefault("",1d));
-    Assertions.assertEquals(1d, ParseUtils.parseOrDefault(" ",1d));
-    Assertions.assertEquals(1d, ParseUtils.parseOrDefault(null,1d));
-    Assertions.assertEquals(1d, ParseUtils.parseOrDefault("34-5",1d));
+    Assertions.assertEquals(1d, ParseUtils.parseOrDefault("abcd", 1d));
+    Assertions.assertEquals(1d, ParseUtils.parseOrDefault("11abcd", 1d));
+    Assertions.assertEquals(1d, ParseUtils.parseOrDefault("", 1d));
+    Assertions.assertEquals(1d, ParseUtils.parseOrDefault(" ", 1d));
+    Assertions.assertEquals(1d, ParseUtils.parseOrDefault(null, 1d));
+    Assertions.assertEquals(1d, ParseUtils.parseOrDefault("34-5", 1d));
 
-    Assertions.assertEquals(1.0d, ParseUtils.parseOrDefault("1.0",2d));
-    Assertions.assertEquals(1d, ParseUtils.parseOrDefault("1",2d));
-    Assertions.assertEquals(7d, ParseUtils.parseOrDefault("007",2d));
-    Assertions.assertEquals(-4321d, ParseUtils.parseOrDefault("-4321",2d));
-    Assertions.assertEquals(123456789d, ParseUtils.parseOrDefault("123456789",2d));
-    Assertions.assertEquals(Double.POSITIVE_INFINITY, ParseUtils.parseOrDefault("1797693134862315700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",1d));
-    Assertions.assertEquals(123456789123456789123456789123456789123456789123456789d, ParseUtils.parseOrDefault("123456789123456789123456789123456789123456789123456789",2d));
+    Assertions.assertEquals(1.0d, ParseUtils.parseOrDefault("1.0", 2d));
+    Assertions.assertEquals(1d, ParseUtils.parseOrDefault("1", 2d));
+    Assertions.assertEquals(7d, ParseUtils.parseOrDefault("007", 2d));
+    Assertions.assertEquals(-4321d, ParseUtils.parseOrDefault("-4321", 2d));
+    Assertions.assertEquals(123456789d, ParseUtils.parseOrDefault("123456789", 2d));
+    Assertions.assertEquals(Double.POSITIVE_INFINITY, ParseUtils.parseOrDefault(
+        "1797693134862315700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        1d));
+    Assertions.assertEquals(123456789123456789123456789123456789123456789123456789d,
+        ParseUtils.parseOrDefault("123456789123456789123456789123456789123456789123456789", 2d));
   }
 }

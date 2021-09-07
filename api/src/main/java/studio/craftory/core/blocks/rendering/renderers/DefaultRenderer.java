@@ -19,6 +19,21 @@ import studio.craftory.core.utils.Log;
 
 public class DefaultRenderer implements CraftoryRenderer {
 
+  protected static MultipleFacing getMutlifacingData(@NonNull String stateData, Block block) {
+    MultipleFacing blockData = (MultipleFacing) block.getBlockData();
+
+    String[] states = stateData.split("");
+
+    blockData.setFace(BlockFace.DOWN, states[0].equals("T"));
+    blockData.setFace(BlockFace.EAST, states[1].equals("T"));
+    blockData.setFace(BlockFace.NORTH, states[2].equals("T"));
+    blockData.setFace(BlockFace.SOUTH, states[3].equals("T"));
+    blockData.setFace(BlockFace.UP, states[4].equals("T"));
+    blockData.setFace(BlockFace.WEST, states[5].equals("T"));
+
+    return blockData;
+  }
+
   @Override
   public void render(@NonNull Block block, @NonNull CraftoryDirection direction, @NonNull RenderData renderData) {
     int directionKey = direction.label;
@@ -37,7 +52,7 @@ public class DefaultRenderer implements CraftoryRenderer {
       data = renderData.getData().get(0);
     }
 
-    String blockType = data.substring(0,1);
+    String blockType = data.substring(0, 1);
     String stateData = data.substring(1);
 
     switch (blockType) {
@@ -69,10 +84,10 @@ public class DefaultRenderer implements CraftoryRenderer {
     if (assetsData.length == 1 || assetsData.length == 6) {
       ArrayNode renderFileData = mapper.createArrayNode();
       renderFileData.add(this.getClass().getSimpleName());
-      for (int i = 0; i < assetsData.length; i++) {
+      for (String assetsDatum : assetsData) {
         String data = blockAssetGenerator.generateBlockState();
         renderFileData.add(data);
-        blockAssetGenerator.addBlockStateToPack(data, assetsData[i], CraftoryDirection.NORTH);
+        blockAssetGenerator.addBlockStateToPack(data, assetsDatum, CraftoryDirection.NORTH);
       }
       blockAssetGenerator.addToRenderFile(blockKey, renderFileData);
     } else {
@@ -101,9 +116,9 @@ public class DefaultRenderer implements CraftoryRenderer {
   }
 
   protected void renderNoteBlock(@NonNull String stateData, Block block) {
-    String instrument = stateData.substring(0,1);
-    int note = Integer.parseInt(stateData.substring(1,3));
-    String powered = stateData.substring(3,4);
+    String instrument = stateData.substring(0, 1);
+    int note = Integer.parseInt(stateData.substring(1, 3));
+    String powered = stateData.substring(3, 4);
 
     setType(block, Material.NOTE_BLOCK);
     setData(block, getNoteBlockData(block, instrument, note, powered));
@@ -134,7 +149,7 @@ public class DefaultRenderer implements CraftoryRenderer {
         return Instrument.BASS_DRUM;
       case "c":
         return Instrument.BASS_GUITAR;
-      case "d" :
+      case "d":
         return Instrument.BELL;
       case "e":
         return Instrument.BIT;
@@ -161,21 +176,6 @@ public class DefaultRenderer implements CraftoryRenderer {
       default:
         return Instrument.BANJO;
     }
-  }
-
-  protected static MultipleFacing getMutlifacingData(@NonNull String stateData, Block block) {
-    MultipleFacing blockData = (MultipleFacing) block.getBlockData();
-
-    String[] states = stateData.split("");
-
-    blockData.setFace(BlockFace.DOWN, states[0].equals("T"));
-    blockData.setFace(BlockFace.EAST, states[1].equals("T"));
-    blockData.setFace(BlockFace.NORTH, states[2].equals("T"));
-    blockData.setFace(BlockFace.SOUTH, states[3].equals("T"));
-    blockData.setFace(BlockFace.UP, states[4].equals("T"));
-    blockData.setFace(BlockFace.WEST, states[5].equals("T"));
-
-    return blockData;
   }
 
 }

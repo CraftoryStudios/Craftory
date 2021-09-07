@@ -9,8 +9,8 @@ import studio.craftory.core.containers.persitanceholders.VolatileDataHolder;
 
 public abstract class ComplexCustomBlock extends BaseCustomBlock implements PersistentDataHolder, VolatileDataHolder {
 
-  private DataHolder persistentData = new DataHolder();
-  private DataHolder volatileData = new DataHolder();
+  private final DataHolder persistentData = new DataHolder();
+  private final DataHolder volatileData = new DataHolder();
 
   protected ComplexCustomBlock(@NonNull Location location,
       @NonNull CraftoryDirection facingDirection) {

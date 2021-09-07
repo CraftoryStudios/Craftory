@@ -1,9 +1,9 @@
 package studio.craftory.core;
 
-import kr.entree.spigradle.annotations.PluginMain;
 import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
 import java.io.File;
+import kr.entree.spigradle.annotations.PluginMain;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -23,10 +23,10 @@ import studio.craftory.core.executors.AsyncExecutionManager;
 import studio.craftory.core.executors.SyncExecutionManager;
 import studio.craftory.core.items.CustomItemManager;
 import studio.craftory.core.items.ItemEventManager;
+import studio.craftory.core.items.recipes.RecipeManager;
 import studio.craftory.core.listeners.ChunkListener;
 import studio.craftory.core.listeners.CustomBlockListener;
 import studio.craftory.core.listeners.WorldListener;
-import studio.craftory.core.items.recipes.RecipeManager;
 import studio.craftory.core.resourcepack.AssetLinker;
 import studio.craftory.core.terrian.retro.RetroGeneration;
 import studio.craftory.core.utils.Log;
@@ -36,27 +36,36 @@ public final class Craftory extends JavaPlugin {
 
   @Getter
   private static Craftory instance;
-
+  private final FileConfiguration pluginConfiguration = getConfig();
   //Internal
   private Injector injector;
   private AsyncExecutionManager asyncExecutionManager;
   private SyncExecutionManager syncExecutionManager;
   private CustomBlockManager customBlockManager;
   private BlockRenderManager blockRenderManager;
-  private FileConfiguration pluginConfiguration = getConfig();
-
   //External
   private CustomItemManager customItemManager;
   private RecipeManager recipeManager;
   private CustomBlockAPI customBlockAPI;
   private RetroGeneration retroGeneration;
 
+  public Craftory() {
+    super();
+  }
+
+  public Craftory(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+    super(loader, description, dataFolder, file);
+  }
+
   public static CustomItemManager getCustomItemManager() {
     return instance.customItemManager;
   }
-  public static RecipeManager getRecipeManager() { return instance.recipeManager; }
-  public static CustomBlockAPI getCustomBlockAPI() {return instance.customBlockAPI; }
-  public static RetroGeneration getRetoGeneration() {return instance.retroGeneration; }
+
+  public static RecipeManager getRecipeManager() {return instance.recipeManager;}
+
+  public static CustomBlockAPI getCustomBlockAPI() {return instance.customBlockAPI;}
+
+  public static RetroGeneration getRetoGeneration() {return instance.retroGeneration;}
 
   @Override
   public void onLoad() {
@@ -107,14 +116,14 @@ public final class Craftory extends JavaPlugin {
     pluginManager.registerEvents(customItemManager, instance);
     //Executor
     asyncExecutionManager.runTaskTimer(this, 20L, 1L);
-    syncExecutionManager.runTaskTimer(this, 20L,1L);
+    syncExecutionManager.runTaskTimer(this, 20L, 1L);
     getServer().getPluginManager().registerEvents(new ItemEventManager(), this);
 
     instance.getServer().getScheduler().runTaskLater(this, this::afterEnable, 1);
 
     //Commands
     PluginCommand spawnCommand = this.getCommand("spawnItem");
-    if(spawnCommand!=null) {
+    if (spawnCommand != null) {
       spawnCommand.setExecutor(new SpawnItemCommand());
     }
 
@@ -143,13 +152,5 @@ public final class Craftory extends JavaPlugin {
     retroGeneration.saveGeneratedChunks();
     customBlockManager.getDataStorageManager().writeAll();
     customBlockManager.getDataStorageManager().saveAll();
-  }
-
-  public Craftory() {
-    super();
-  }
-
-  public Craftory(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
-    super(loader, description, dataFolder, file);
   }
 }

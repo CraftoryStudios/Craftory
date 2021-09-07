@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GenerationData {
+
   private int amountLeft;
   private String data;
   private String blockName;

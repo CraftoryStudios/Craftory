@@ -23,41 +23,41 @@ import studio.craftory.core.executors.SyncExecutionManager;
 import studio.craftory.core.items.CustomItem;
 import studio.craftory.core.utils.Log;
 
-/** Class based on LogisticsCraft's Logistics-API (MIT) and the LogisticsTypeRegister class **/
+/**
+ * Class based on LogisticsCraft's Logistics-API (MIT) and the LogisticsTypeRegister class
+ **/
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class CustomBlockRegistry {
 
+
+  private final Map<CraftoryBlockKey, Constructor<? extends BaseCustomBlock>> blockTypes = new HashMap<>();
+  private final Map<Class<? extends BaseCustomBlock>, CraftoryBlockKey> blockKeys = new HashMap<>();
+  private final Map<String, CraftoryDataKey> craftoryDataKeyMap = new HashMap<>();
+  private final Map<String, CraftoryBlockKey> craftoryBlockKeyMap = new HashMap<>();
+  //TODO Generate id's for blocks
   @Inject
   private AsyncExecutionManager asyncExecutionManager;
   @Inject
   private SyncExecutionManager syncExecutionManager;
-
-  private final Map<CraftoryBlockKey, Constructor<? extends BaseCustomBlock>> blockTypes = new HashMap<>();
-  private final Map<Class<? extends BaseCustomBlock>, CraftoryBlockKey> blockKeys = new HashMap<>();
-  //TODO Generate id's for blocks
-
-
-  private final Map<String, CraftoryDataKey> craftoryDataKeyMap = new HashMap<>();
-  private final Map<String, CraftoryBlockKey> craftoryBlockKeyMap = new HashMap<>();
 
   @Synchronized
   public CraftoryBlockKey registerCustomBlockClass(@NonNull Plugin plugin, @NonNull Class<?> block, @NonNull String model) {
     CraftoryBlockKey craftoryBlockKey = new CraftoryBlockKey(plugin, block);
     if (!blockTypes.containsKey(craftoryBlockKey)) {
 
-        Optional<Constructor<?>> constructor = getConstructor(block);
-        if (constructor.isPresent()) {
+      Optional<Constructor<?>> constructor = getConstructor(block);
+      if (constructor.isPresent()) {
 
-          addCustomBlockKeys((Class<? extends BaseCustomBlock>) block, (Constructor<? extends BaseCustomBlock>) constructor.get(), craftoryBlockKey);
-          registerCustomBlockTickables((Class<? extends BaseCustomBlock>) block);
+        addCustomBlockKeys((Class<? extends BaseCustomBlock>) block, (Constructor<? extends BaseCustomBlock>) constructor.get(), craftoryBlockKey);
+        registerCustomBlockTickables((Class<? extends BaseCustomBlock>) block);
 
-          CustomItem.builder().name(craftoryBlockKey.getName()).displayName(
-              craftoryBlockKey.getName()).material(Material.STONE).attribute(BLOCK_ITEM_DATA_KEY, craftoryBlockKey.toString()).material(
-              Material.STONE).modelPath(model).build().register(plugin);
-          Log.debug("CustomBlock Register: " + block.getName());
-        } else {
-          Log.warn("Couldn't get constructor for custom block: " + craftoryBlockKey.getName());
-        }
+        CustomItem.builder().name(craftoryBlockKey.getName()).displayName(
+            craftoryBlockKey.getName()).material(Material.STONE).attribute(BLOCK_ITEM_DATA_KEY, craftoryBlockKey.toString()).material(
+            Material.STONE).modelPath(model).build().register(plugin);
+        Log.debug("CustomBlock Register: " + block.getName());
+      } else {
+        Log.warn("Couldn't get constructor for custom block: " + craftoryBlockKey.getName());
+      }
 
     } else {
       Log.warn("Trying to re-register known key of Custom Block: " + craftoryBlockKey.getName());
@@ -65,12 +65,13 @@ public class CustomBlockRegistry {
     return craftoryBlockKey;
   }
 
+
   @Synchronized
   public boolean isBlockClassRegistered(@NonNull BaseCustomBlock block) {
     return blockKeys.containsKey(block.getClass());
   }
 
-  public Optional<BaseCustomBlock> getNewCustomBlockInstance(@NonNull CraftoryBlockKey key,  @NonNull Location location,
+  public Optional<BaseCustomBlock> getNewCustomBlockInstance(@NonNull CraftoryBlockKey key, @NonNull Location location,
       @NonNull CraftoryDirection direction) {
     Optional<Constructor<? extends BaseCustomBlock>> constructor = Optional.ofNullable(blockTypes.get(key));
     Location blockLocation = location.getBlock().getLocation();
@@ -79,7 +80,7 @@ public class CustomBlockRegistry {
       try {
         return Optional.of(constructor.get().newInstance(blockLocation, direction));
       } catch (Exception e) {
-        Log.error("Couldn't create custom block of type: "+key.getName() + " at location: "+location);
+        Log.error("Couldn't create custom block of type: " + key.getName() + " at location: " + location);
         return Optional.empty();
       }
     }
@@ -102,7 +103,7 @@ public class CustomBlockRegistry {
   private Optional<Constructor<?>> getConstructor(@NonNull Class<?> clazz) {
     try {
       return Optional.of(clazz.getDeclaredConstructor(Location.class, CraftoryDirection.class));
-    } catch(NoSuchMethodException e) {
+    } catch (NoSuchMethodException e) {
       return Optional.empty();
     }
   }

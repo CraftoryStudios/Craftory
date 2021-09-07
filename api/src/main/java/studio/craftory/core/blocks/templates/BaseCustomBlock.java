@@ -22,6 +22,7 @@ public abstract class BaseCustomBlock {
     this.facingDirection = facingDirection;
   }
 
+
   public void renderCustomBlock() {
 
   }

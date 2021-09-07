@@ -10,6 +10,7 @@ import studio.craftory.core.containers.safecontainers.SafePlugin;
 
 @Value
 public class CraftoryDataKey implements Serializable {
+
   String namespace;
   String name;
   Class<?> dataClass;
@@ -30,20 +31,21 @@ public class CraftoryDataKey implements Serializable {
 
   public CraftoryDataKey(final String key, @NonNull final Class<?> dataClass) {
     this.dataClass = dataClass;
-    String[] keySections = key.split(":",2);
+    String[] keySections = key.split(":", 2);
     if (keySections.length == 2) {
       this.namespace = keySections[0];
       this.name = keySections[1];
     } else {
       this.namespace = "Unknown";
-      this.name = key.replace(":","");
+      this.name = key.replace(":", "");
     }
     register();
   }
 
   private void register() {
-    Craftory.getInstance().getCustomBlockAPI().registerDataKey(this);
+    Craftory.getCustomBlockAPI().registerDataKey(this);
   }
+
 
   public Optional<Plugin> getPlugin() {
     return new SafePlugin(this.namespace).getPlugin();

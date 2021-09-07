@@ -15,16 +15,15 @@ import org.bukkit.potion.PotionEffectType;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.CraftoryAddon;
 import studio.craftory.core.blocks.rendering.renderers.DefaultRotationalRenderer;
-import studio.craftory.core.containers.IntRange;
 import studio.craftory.core.containers.keys.ItemDataKey;
 import studio.craftory.core.items.CustomItem;
 import studio.craftory.core.items.recipes.ShapedCraftingRecipe;
 import studio.craftory.core.items.recipes.ShapelessCraftingRecipe;
-import studio.craftory.core.terrian.retro.population.ore.VanillaOre;
 import studio.craftory.core.utils.Log;
 import studio.craftory.craftoryexample.blocks.CopperOre;
 import studio.craftory.craftoryexample.blocks.SimpleGenerator;
 import studio.craftory.craftoryexample.items.Wrench;
+
 
 @PluginMain
 public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryAddon {
@@ -47,46 +46,47 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
 
     ItemDataKey magicalPower = new ItemDataKey(new NamespacedKey(this, "magical-power"), PersistentDataType.INTEGER);
     CustomItem wrench = CustomItem.builder()
-        .name("wrench").unbreakable(true)
-        .modelPath("craftoryexample:items/wrench")
-        .attackDamage(1).handler(PlayerInteractEvent.class, Wrench::onClick)
-        .displayName("Wrench").material(Material.STICK)
-        .displayNameColour(ChatColor.AQUA).holdEffect(
-            PotionEffectType.SPEED.createEffect(Integer.MAX_VALUE,1))
-        .attribute(magicalPower, 100).build();
+                                  .name("wrench").unbreakable(true)
+                                  .modelPath("craftoryexample:items/wrench")
+                                  .attackDamage(1).handler(PlayerInteractEvent.class, Wrench::onClick)
+                                  .displayName("Wrench").material(Material.STICK)
+                                  .displayNameColour(ChatColor.AQUA).holdEffect(
+            PotionEffectType.SPEED.createEffect(Integer.MAX_VALUE, 1))
+                                  .attribute(magicalPower, 100).build();
     wrench.register(this);
 
     CustomItem.builder().name("superstar").displayName("Super Star").material(Material.NETHER_STAR)
-        .modelPath("craftoryexample:items/superstar").build().register(this);
+              .modelPath("craftoryexample:items/superstar").build().register(this);
 
   }
+
 
   @Override
   public void craftoryOnEnable() {
     Optional<ItemStack> itemStackOptional = Craftory.getCustomItemManager().getCustomItem("craftoryexample:wrench");
-    ItemStack res = null;
+    ItemStack res;
     if (itemStackOptional.isPresent()) {
       res = itemStackOptional.get();
     } else {
       throw new NullPointerException("ItemStack can't be null");
     }
     res.setAmount(6);
-    ShapedCraftingRecipe.builder().name("wrenchdoubler").recipe(new String[]{"XWX", "XWX", "XWX"}).commonItemIngredient('W',"craftoryexample:wrench").result(res).build().register(this);
+    ShapedCraftingRecipe.builder().name("wrenchdoubler").recipe(new String[]{"XWX", "XWX", "XWX"}).commonItemIngredient('W', "craftoryexample:wrench")
+                        .result(res).build().register(this);
     res.setAmount(1);
-    ShapedCraftingRecipe.builder().name("wrench").recipe(new String[]{"SXS","XSX","XSX"}).vanillaIngredient('S',Material.STICK).result(res).build().register(this);
+    ShapedCraftingRecipe.builder().name("wrench").recipe(new String[]{"SXS", "XSX", "XSX"}).vanillaIngredient('S', Material.STICK).result(res).build()
+                        .register(this);
 
     ItemStack diamonds = new ItemStack(Material.DIAMOND_BLOCK);
     diamonds.setAmount(64);
     ShapelessCraftingRecipe
-        .builder().name("testytesttest").vanillaIngredient(Material.NETHERITE_BLOCK,3).result(diamonds).build().register(this);
+        .builder().name("testytesttest").vanillaIngredient(Material.NETHERITE_BLOCK, 3).result(diamonds).build().register(this);
     ItemStack emeralds = new ItemStack(Material.EMERALD_BLOCK);
     emeralds.setAmount(64);
-    ShapelessCraftingRecipe.builder().name("superVersion").commonItemIngredient("craftoryexample:superstar", 3).result(emeralds).build().register(this);
-
-//    Craftory.getRetoGeneration().registerOre(new VanillaOre(CopperOre.class,
-//         new IntRange(20,33), new IntRange(5, 60),
-//        new IntRange(3,10), Material.STONE));
+    ShapelessCraftingRecipe.builder().name("superVersion").commonItemIngredient("craftoryexample:superstar", 3).result(emeralds).build()
+                           .register(this);
   }
+
 
   @Override
   public URL getAddonResources() {

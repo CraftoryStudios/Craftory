@@ -21,13 +21,13 @@ public class CraftoryKey implements Serializable {
   }
 
   public CraftoryKey(@NonNull final String key) {
-    String[] keySections = key.split(":",2);
+    String[] keySections = key.split(":", 2);
     if (keySections.length == 2) {
       this.namespace = keySections[0];
       this.name = keySections[1];
     } else {
       this.namespace = "Unknown";
-      this.name = key.replace(":","");
+      this.name = key.replace(":", "");
     }
   }
 
@@ -36,6 +36,6 @@ public class CraftoryKey implements Serializable {
   }
 
   @Override
-  public String toString() { return namespace + ":" + name; }
+  public String toString() {return namespace + ":" + name;}
 
 }

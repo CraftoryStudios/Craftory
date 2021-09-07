@@ -1,5 +1,5 @@
 name: Build
-on: [push]
+on: [ push ]
 jobs:
   build:
 
@@ -82,7 +82,7 @@ jobs:
           path: "**/build/reports"
 
   release:
-    needs: [build, test]
+    needs: [ build, test ]
     if: github.ref == 'refs/heads/master'
 
     runs-on: ubuntu-18.04

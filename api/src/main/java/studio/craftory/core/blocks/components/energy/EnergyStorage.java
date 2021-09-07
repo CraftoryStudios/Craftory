@@ -17,21 +17,14 @@ public interface EnergyStorage extends PersistentDataHolder, VolatileDataHolder 
   //Data Storage Keys
   CraftoryDataKey STORED_ENERGY_KEY = new CraftoryDataKey("CraftoryCore", "storedEnergy", Long.class);
 
-  //Annotations
-  @Target(ElementType.TYPE)
-  @Retention(RetentionPolicy.RUNTIME)
-  @interface EnergyStorageData {
-    int capacity();
-  }
-
-  //Getters & Setters
-
   /**
    * @return Max amount of energy object can store
    */
   default long getMaxEnergyStored() {
     return Reflections.getClassAnnotation(this, EnergyStorageData.class).capacity();
   }
+
+  //Getters & Setters
 
   /**
    * @return Current amount of energy stored in object or zero
@@ -53,12 +46,13 @@ public interface EnergyStorage extends PersistentDataHolder, VolatileDataHolder 
     synchronized (this) {
       final long newEnergy;
 
-      if (energy > getMaxEnergyStored())
+      if (energy > getMaxEnergyStored()) {
         newEnergy = getMaxEnergyStored();
-      else if (energy < 0)
+      } else if (energy < 0) {
         newEnergy = 0;
-      else
+      } else {
         newEnergy = energy;
+      }
 
       if (newEnergy == 0) {
         getPersistentData().remove(STORED_ENERGY_KEY);
@@ -75,6 +69,14 @@ public interface EnergyStorage extends PersistentDataHolder, VolatileDataHolder 
 
   default void decreaseStoredEnergy(final long energy) {
     setStoredEnergy(getEnergyStored() - energy);
+  }
+
+  //Annotations
+  @Target(ElementType.TYPE)
+  @Retention(RetentionPolicy.RUNTIME)
+  @interface EnergyStorageData {
+
+    int capacity();
   }
 
 }

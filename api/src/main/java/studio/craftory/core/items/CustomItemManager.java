@@ -26,11 +26,27 @@ public class CustomItemManager implements Listener {
   private static final Map<String, CustomItem> unqiueItemCache = new HashMap<>();
   private static final Set<String> duplicateItemNames = new HashSet<>();
   private Map<String, Integer> customItemRenderIdCache = new HashMap<>();
+
   @Inject
   private AssetLinker assetLinker;
 
   protected CustomItemManager() {
 
+  }
+
+  public static boolean isDuplicateItemName(@NonNull String name) {
+    return duplicateItemNames.contains(name);
+  }
+
+  public static boolean isUniqueItemName(@NonNull String name) {
+    return unqiueItemCache.containsKey(name);
+  }
+
+  public static Optional<ItemStack> getUniqueItem(@NonNull String name) {
+    if (unqiueItemCache.containsKey(name)) {
+      return Optional.of(unqiueItemCache.get(name).getItem());
+    }
+    return Optional.empty();
   }
 
   /* Registering */
@@ -47,7 +63,7 @@ public class CustomItemManager implements Listener {
     }
 
     String commonName = item.getName();
-    if(!unqiueItemCache.containsKey(commonName) && !duplicateItemNames.contains(commonName)) {
+    if (!unqiueItemCache.containsKey(commonName) && !duplicateItemNames.contains(commonName)) {
       unqiueItemCache.put(commonName, item);
     } else {
       unqiueItemCache.remove(commonName);
@@ -63,9 +79,9 @@ public class CustomItemManager implements Listener {
   private void assignRenderIds() {
     File renderIdFile = new File(ResourcePack.ITEM_RENDER_DATA);
     ObjectMapper mapper = new ObjectMapper();
-    if(renderIdFile.exists()) {
+    if (renderIdFile.exists()) {
       try {
-        customItemRenderIdCache = mapper.readValue(renderIdFile, new TypeReference<Map<String, Integer>>() {});
+        customItemRenderIdCache = mapper.readValue(renderIdFile, new TypeReference<>() {});
         Log.debug("Loaded item render data: " + customItemRenderIdCache.toString());
       } catch (IOException e) {
         Log.error("Couldn't read item render data");
@@ -74,28 +90,14 @@ public class CustomItemManager implements Listener {
       Log.warn("No item render data found");
     }
 
-    for(CustomItem item: customItemCache.values()) {
+    for (CustomItem item : customItemCache.values()) {
       String itemName = item.getUniqueName();
-      if(!customItemRenderIdCache.containsKey(itemName)) {
-        throw new IllegalArgumentException("Custom item not present in the render data, all items must have an ID for render texture! ItemName: " + itemName);
+      if (!customItemRenderIdCache.containsKey(itemName)) {
+        throw new IllegalArgumentException(
+            "Custom item not present in the render data, all items must have an ID for render texture! ItemName: " + itemName);
       }
       item.createItem(customItemRenderIdCache.get(itemName));
     }
-  }
-
-  public static boolean isDuplicateItemName(@NonNull String name) {
-    return duplicateItemNames.contains(name);
-  }
-
-  public static boolean isUniqueItemName(@NonNull String name) {
-    return unqiueItemCache.containsKey(name);
-  }
-
-  public static Optional<ItemStack> getUniqueItem(@NonNull String name) {
-    if (unqiueItemCache.containsKey(name)) {
-      return Optional.of(unqiueItemCache.get(name).getItem());
-    }
-    return Optional.empty();
   }
 
   public Optional<ItemStack> getCustomItem(@NonNull String name) {

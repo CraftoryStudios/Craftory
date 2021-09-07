@@ -11,7 +11,9 @@ public interface ICraftingRecipe {
 
   void handlePrepareItemCraft(PrepareItemCraftEvent e);
 
+
   NamespacedKey getNamespacedKey();
+
 
   void register(Plugin plugin);
 

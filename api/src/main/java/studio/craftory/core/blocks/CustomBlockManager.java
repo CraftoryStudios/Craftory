@@ -2,7 +2,6 @@ package studio.craftory.core.blocks;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -32,10 +31,10 @@ public class CustomBlockManager {
   private final DataStorageManager dataStorageManager;
 
   @Getter
-  private final Map<Chunk,Map<Location, BaseCustomBlock>> customBlocks;
+  private final Map<Chunk, Map<Location, BaseCustomBlock>> customBlocks;
 
   @Inject
-  public CustomBlockManager (CustomBlockRegistry blockRegister, AsyncExecutionManager asyncExecutionManager,
+  public CustomBlockManager(CustomBlockRegistry blockRegister, AsyncExecutionManager asyncExecutionManager,
       SyncExecutionManager syncExecutionManager, BlockRenderManager blockRenderManager) {
     this.blockRegister = blockRegister;
     this.syncExecutionManager = syncExecutionManager;
@@ -55,16 +54,16 @@ public class CustomBlockManager {
     Location location = customBlock.getLocation();
 
     if (customBlocks.computeIfAbsent(location.getChunk(), k -> new ConcurrentHashMap<>())
-                      .putIfAbsent(location, customBlock) == null) {
+                    .putIfAbsent(location, customBlock) == null) {
 
       if (location.getChunk().isLoaded()) {
         addToExecutorSchedule(customBlock);
       }
 
-      Log.debug("Block loaded: " + location.toString());
+      Log.debug("Block loaded: " + location);
       return true;
     } else {
-      Log.warn("Trying to load a customBlock at occupied location: " + location.toString());
+      Log.warn("Trying to load a customBlock at occupied location: " + location);
     }
     return false;
   }
@@ -73,13 +72,16 @@ public class CustomBlockManager {
    * Unloads a chunk of custom blocks
    *
    * @param chunk the block location
-   * @param save     if the block should be saved
+   * @param save if the block should be saved
+   *
    * @throws IllegalArgumentException if the given location isn't loaded
    */
   @Synchronized
   public void unloadCustomChunk(@NonNull final Chunk chunk, boolean save) {
     Map<Location, BaseCustomBlock> customBlockMap = getLoadedCustomBlocksInChunk(chunk);
-    if (customBlockMap.isEmpty()) return;
+    if (customBlockMap.isEmpty()) {
+      return;
+    }
 
     if (save) {
       Collection<BaseCustomBlock> blocks = customBlockMap.values();
@@ -96,9 +98,11 @@ public class CustomBlockManager {
    * Unloads a CustomBlock from memory
    *
    * @param location the block location
-   * @param save     if the block should be saved
+   * @param save if the block should be saved
+   *
    * @throws IllegalArgumentException if the given location isn't loaded
    */
+
   @Synchronized
   public void unloadCustomBlock(@NonNull final Location location, boolean save) {
 
@@ -110,7 +114,8 @@ public class CustomBlockManager {
    * Unloads a CustomBlock from memory
    *
    * @param customBlock the block
-   * @param save     if the block should be saved
+   * @param save if the block should be saved
+   *
    * @throws IllegalArgumentException if the given blocks location isn't loaded
    */
   @Synchronized
@@ -132,11 +137,11 @@ public class CustomBlockManager {
   }
 
 
-
   /**
    * Get the CustomBlock at the given loaded location
    *
    * @param location the location
+   *
    * @return the CustomBlock to retrieve
    * @throws IllegalArgumentException if the given location isn't loaded
    */
@@ -172,6 +177,7 @@ public class CustomBlockManager {
    * Get the CustomBlock in the given loaded chunk
    *
    * @param chunk the chunk
+   *
    * @return the CustomBlocks in chunk
    * @throws IllegalArgumentException if the given chunk isn't loaded
    */
@@ -188,19 +194,19 @@ public class CustomBlockManager {
   }
 
   /**
-   * Place a custom block at a given location and then load into memory
-   * and also into the executor
+   * Place a custom block at a given location and then load into memory and also into the executor
    *
    * @param craftoryBlockKey key representing the type of custom block to place
    * @param location in the world to place the block
    * @param direction the block is facing
+   *
    * @return instance of the newly created Custom Block or Optional.empty if failed
    */
   public Optional<BaseCustomBlock> placeCustomBlock(@NonNull CraftoryBlockKey craftoryBlockKey, @NonNull Location location,
-  @NonNull CraftoryDirection direction) {
+      @NonNull CraftoryDirection direction) {
     Optional<BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(craftoryBlockKey, location, direction);
 
-    if (!customBlock.isPresent()) {
+    if (customBlock.isEmpty()) {
       Log.warn("Unable to place CustomBlock: " + craftoryBlockKey.getName() + " at location: " + location);
       return Optional.empty();
     }
@@ -216,13 +222,11 @@ public class CustomBlockManager {
 
   @Synchronized
   public Set<Chunk> getCustomChunksInWorld(@NonNull World world) {
-    HashSet<Chunk> chunks = customBlocks.keySet().stream().filter(chunk -> chunk.getWorld().equals(world))
-                                          .collect(Collectors.toCollection(HashSet::new));
-    return Collections.unmodifiableSet(chunks);
+    return customBlocks.keySet().stream().filter(chunk -> chunk.getWorld().equals(world)).collect(Collectors.toUnmodifiableSet());
   }
 
   private void addToExecutorSchedule(@NonNull final BaseCustomBlock block) {
-    asyncExecutionManager.addTickableObject( block);
+    asyncExecutionManager.addTickableObject(block);
     syncExecutionManager.addTickableObject(block);
   }
 

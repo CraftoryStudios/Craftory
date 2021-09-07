@@ -3,7 +3,6 @@ package studio.craftory.core.blocks;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.IOException;
@@ -24,20 +23,21 @@ import org.bukkit.World;
 import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.blocks.templates.ComplexCustomBlock;
 import studio.craftory.core.containers.CraftoryDirection;
-import studio.craftory.core.containers.keys.CraftoryDataKey;
 import studio.craftory.core.containers.keys.CraftoryBlockKey;
+import studio.craftory.core.containers.keys.CraftoryDataKey;
 import studio.craftory.core.utils.Log;
 
 public class WorldDataStorage {
 
   private static final String CHUNKS_KEY = "chunks";
+
+  @Getter
+  private final World world;
+  private final File file;
   private final CustomBlockRegistry blockRegister;
   private final ObjectMapper mapper;
 
-  @Getter
-  private World world;
   private ObjectNode rootNode;
-  private File file;
 
   public WorldDataStorage(@NonNull final World world, CustomBlockRegistry blockRegister, ObjectMapper mapper) {
     this.world = world;
@@ -51,7 +51,7 @@ public class WorldDataStorage {
     if (!file.exists()) {
       file.getParentFile().mkdirs();
       try {
-        if(!file.createNewFile()) {
+        if (!file.createNewFile()) {
           Log.error("Couldn't create save file");
         }
       } catch (IOException e) {
@@ -73,7 +73,7 @@ public class WorldDataStorage {
     try {
       mapper.writeValue(file, rootNode);
     } catch (IOException e) {
-      Log.error("Failed to save world: "+ world.getName());
+      Log.error("Failed to save world: " + world.getName());
       Log.debug(e.toString());
     }
   }
@@ -97,7 +97,7 @@ public class WorldDataStorage {
   private void writeCustomBlock(@NonNull final ObjectNode chunkRoot, @NonNull final BaseCustomBlock customBlock) {
     //Get block type key
     Optional<CraftoryBlockKey> key = blockRegister.getBlockKey(customBlock);
-    if (!key.isPresent())  {
+    if (key.isEmpty()) {
       Log.warn("Error saving block");
       throw new IllegalStateException("Custom Block can't be saved as it isn't registered");
     }
@@ -129,7 +129,9 @@ public class WorldDataStorage {
     Location location = customBlock.getLocation();
 
     ObjectNode chunkData = (ObjectNode) rootNode.with(CHUNKS_KEY).get(getChunkKey(location.getChunk()));
-    if (chunkData == null) return;
+    if (chunkData == null) {
+      return;
+    }
     chunkData.remove(getLocationKey(location));
 
     if (chunkData.isEmpty()) {
@@ -139,12 +141,14 @@ public class WorldDataStorage {
 
   @Synchronized
   public void removeChunk(@NonNull final Chunk chunk) {
-    rootNode.with(CHUNKS_KEY).remove(getChunkKey(chunk)) ;
+    rootNode.with(CHUNKS_KEY).remove(getChunkKey(chunk));
   }
 
   public Optional<Set<BaseCustomBlock>> getSavedBlocksInChunk(@NonNull final Chunk chunk) {
     ObjectNode chunkData = (ObjectNode) rootNode.with(CHUNKS_KEY).get(getChunkKey(chunk));
-    if (chunkData == null || chunkData.isEmpty()) return Optional.empty();
+    if (chunkData == null || chunkData.isEmpty()) {
+      return Optional.empty();
+    }
 
     Set<BaseCustomBlock> customBlocks = new HashSet<>();
     Iterator<Map.Entry<String, JsonNode>> fields = chunkData.fields();
@@ -167,7 +171,9 @@ public class WorldDataStorage {
       CraftoryDirection direction = CraftoryDirection.valueOfLabel((byte) Integer.parseInt(blockData[1]));
 
       Optional<? extends BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(craftoryBlockKey, location, direction);
-      if (!customBlock.isPresent()) return Optional.empty();
+      if (customBlock.isEmpty()) {
+        return Optional.empty();
+      }
 
       //Inject Persistent Data
       if (ComplexCustomBlock.class.isAssignableFrom(customBlock.get().getClass())) {
@@ -203,7 +209,9 @@ public class WorldDataStorage {
       customBlocks.add(customBlock.get());
     }
 
-    if (customBlocks.isEmpty()) return Optional.empty();
+    if (customBlocks.isEmpty()) {
+      return Optional.empty();
+    }
 
     return Optional.of(customBlocks);
   }
