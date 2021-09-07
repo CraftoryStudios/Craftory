@@ -83,7 +83,7 @@ public class CustomBlockListener implements Listener {
       event.setCancelled(true);
     }
 
-    // Check is Custom Block Being Placedd
+    // Check is Custom Block Being Placed
     final ItemStack item = event.getItem();
     if (item == null && !item.hasItemMeta()) return;
     if (!item.getItemMeta().getPersistentDataContainer().has(Keys.BLOCK_ITEM_KEY, PersistentDataType.STRING)) return;
