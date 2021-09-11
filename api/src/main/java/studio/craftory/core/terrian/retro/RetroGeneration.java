@@ -1,6 +1,7 @@
 package studio.craftory.core.terrian.retro;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileReader;
@@ -32,7 +33,7 @@ public class RetroGeneration implements Listener {
 
   private HashSet<Ore> ores = new HashSet<>();
   private Map<World, Set<String>> visitedChunks = new HashMap<>();
-  private final Gson gson = new Gson();
+  private final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
   public RetroGeneration() {
     loadGeneratedChunks();

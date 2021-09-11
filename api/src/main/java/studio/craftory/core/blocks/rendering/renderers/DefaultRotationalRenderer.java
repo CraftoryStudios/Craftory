@@ -1,13 +1,14 @@
 package studio.craftory.core.blocks.rendering.renderers;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import studio.craftory.core.containers.CraftoryDirection;
 import studio.craftory.core.resourcepack.BlockAssetGenerator;
 import studio.craftory.core.utils.Log;
 
 public class DefaultRotationalRenderer extends DefaultRenderer {
-  private static Gson gson = new Gson();
+  private static Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
   @Override
   public void generateAssets(String blockKey, String[] assetsData, BlockAssetGenerator blockAssetGenerator) {

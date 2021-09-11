@@ -1,6 +1,7 @@
 package studio.craftory.core.blocks.rendering.renderers;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import lombok.NonNull;
 import org.bukkit.Instrument;
@@ -19,7 +20,7 @@ import studio.craftory.core.utils.Log;
 
 public class DefaultRenderer implements CraftoryRenderer {
 
-  private static Gson gson = new Gson();
+  private static Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
   @Override
   public void render(@NonNull Block block, @NonNull CraftoryDirection direction, @NonNull RenderData renderData) {

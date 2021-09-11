@@ -1,6 +1,7 @@
 package studio.craftory.core.resourcepack;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -29,7 +30,7 @@ public class BlockAssetGenerator {
   public static final String RED_MUSHROOM_BLOCK = "red_mushroom_block";
   private ArrayList<GenerationData> blocksToUse = new ArrayList<>();
   private final ArrayList<String> resourcePacks = new ArrayList<>(Arrays.asList("low", "normal", "high"));
-  Gson gson = new Gson();
+  Gson gson = new GsonBuilder().disableHtmlEscaping().create();
   JsonObject renderDataFile = new JsonObject();
   File file = new File(Craftory.getInstance().getDataFolder(), "renderData.json");
 

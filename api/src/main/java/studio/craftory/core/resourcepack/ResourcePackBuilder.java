@@ -1,6 +1,7 @@
 package studio.craftory.core.resourcepack;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -24,7 +25,7 @@ import studio.craftory.core.utils.Log;
 @UtilityClass
 public class ResourcePackBuilder {
 
-  private static Gson gson = new Gson();
+  private static Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
   public static void run() {
     File tempDirectory = new File(ResourcePack.TEMP_PATH);

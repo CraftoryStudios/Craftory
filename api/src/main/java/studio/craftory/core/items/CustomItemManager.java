@@ -1,6 +1,7 @@
 package studio.craftory.core.items;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
@@ -31,7 +32,7 @@ public class CustomItemManager implements Listener {
   @Inject
   private AssetLinker assetLinker;
 
-  private static Gson gson = new Gson();
+  private static Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
   protected CustomItemManager() {
 

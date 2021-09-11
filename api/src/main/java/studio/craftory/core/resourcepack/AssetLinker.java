@@ -1,6 +1,7 @@
 package studio.craftory.core.resourcepack;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -35,7 +36,7 @@ public class AssetLinker extends BukkitRunnable {
   private BlockAssetGenerator blockAssetGenerator = new BlockAssetGenerator();
   private Map<String, String> itemsToGenerate = new HashMap<>();
   private Map<Material, Set<String>> itemsOfType = new EnumMap<>(Material.class);
-  private Gson gson = new Gson();
+  private Gson gson = new GsonBuilder().disableHtmlEscaping().create();
   @Inject
   private BlockRenderer blockRenderer;
 

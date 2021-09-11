@@ -1,6 +1,7 @@
 package studio.craftory.core.blocks;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -31,7 +32,7 @@ import studio.craftory.core.containers.keys.CraftoryBlockKey;
 import studio.craftory.core.utils.Log;
 
 public class BlockRenderer implements Listener {
-  private Gson gson = new Gson();
+  private Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
   @Getter
   private Map<String, CraftoryRenderer> renderers = new HashMap<>();
