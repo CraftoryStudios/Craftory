@@ -30,31 +30,30 @@ import studio.craftory.core.containers.keys.ItemDataKey;
 @Builder(toBuilder = true)
 public class CustomItem {
 
-  private String plugin;
   @Getter
   private final String name;
   private final String displayName;
   @Getter
   private final Material material;
-  private ItemStack itemStack;
   private final Integer attackSpeed;
   private final Integer attackDamage;
-  private int renderID;
   @Builder.Default
   private final boolean unbreakable = true;
-
   @Getter
-  @Singular private final Set<PotionEffect> holdEffects;
-
+  @Singular
+  private final Set<PotionEffect> holdEffects;
   @Builder.Default
   private final ChatColor displayNameColour = ChatColor.WHITE;
-
   @Getter
-  @Singular private final Map<Class<?>, Consumer<Event>> handlers;
-
-  @Singular private final Map<ItemDataKey, Object> attributes;
-
-  @Getter private final String modelPath;
+  @Singular
+  private final Map<Class<?>, Consumer<Event>> handlers;
+  @Singular
+  private final Map<ItemDataKey, Object> attributes;
+  @Getter
+  private final String modelPath;
+  private String plugin;
+  private ItemStack itemStack;
+  private int renderID;
 
   public boolean hasHoldEffects() {
     return !holdEffects.isEmpty();
@@ -73,7 +72,7 @@ public class CustomItem {
   }
 
   public void createItem(int renderID) {
-    if (plugin==null || name==null || material==null || displayName==null || modelPath==null) {
+    if (plugin == null || name == null || material == null || displayName == null || modelPath == null) {
       throw new IllegalArgumentException("Attempted to register Custom item that was missing either: plugin, name, material or display-name");
     }
     this.renderID = renderID;

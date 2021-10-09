@@ -31,10 +31,11 @@ public class ItemEventManager implements Listener {
   private static final Map<String, Collection<PotionEffect>> itemOnHoldEffects = new HashMap<>();
 
   public static void registerDumbEvent(Class<?> event, Consumer<Event> method) {
-    Set<Consumer<Event>> temp = basicEvents.getOrDefault(event.getSimpleName(),new HashSet<>());
+    Set<Consumer<Event>> temp = basicEvents.getOrDefault(event.getSimpleName(), new HashSet<>());
     temp.add(method);
     basicEvents.put(event.getSimpleName(), temp);
   }
+
 
   public static boolean registerSmartEvent(Class<?> event, String triggerItemName, Consumer<Event> method) {
     if (ItemSmartEvent.isValid(event)) {
@@ -59,15 +60,15 @@ public class ItemEventManager implements Listener {
   }
 
 
-
   /**
    * Basic event handler leaves validation to the method
+   *
    * @param event The event
    */
   private void handleEvents(Event event) {
     String name = event.getEventName();
     if (basicEvents.containsKey(name)) {
-      for (Consumer<Event> method: basicEvents.get(name)) {
+      for (Consumer<Event> method : basicEvents.get(name)) {
         method.accept(event);
       }
     }
@@ -78,16 +79,16 @@ public class ItemEventManager implements Listener {
     Class<?> eventClass = event.getClass();
     if (ItemSmartEvent.isValid(eventClass)) {
       ItemSmartEvent itemSmartEvent = ItemSmartEvent.fromClass(eventClass);
-      if(smartEvents.containsKey(itemSmartEvent)) {
+      if (smartEvents.containsKey(itemSmartEvent)) {
         // Some how validate here and get a string to map to the right methods
         // e.g. Get the name of the custom item in player hand
         String triggerItemName = itemSmartEvent.getValidationString(event);
-        if(smartEvents.get(itemSmartEvent).containsKey(triggerItemName)){
-            try {
-              smartEvents.get(itemSmartEvent).get(triggerItemName).accept(event);
-            } catch (Exception e) {
-              Log.error(e.toString());
-            }
+        if (smartEvents.get(itemSmartEvent).containsKey(triggerItemName)) {
+          try {
+            smartEvents.get(itemSmartEvent).get(triggerItemName).accept(event);
+          } catch (Exception e) {
+            Log.error(e.toString());
+          }
         }
       }
     }
@@ -104,10 +105,10 @@ public class ItemEventManager implements Listener {
   public void onPlayerItemHeld(PlayerItemHeldEvent event) {
     ItemStack oldItem = event.getPlayer().getInventory().getItem(event.getPreviousSlot());
     ItemStack newItem = event.getPlayer().getInventory().getItem(event.getNewSlot());
-    if(oldItem!=null) {
+    if (oldItem != null) {
       removePotionEffects(oldItem, event.getPlayer());
     }
-    if(newItem!=null) {
+    if (newItem != null) {
       addPotionEffects(newItem, event.getPlayer());
     }
   }
@@ -116,18 +117,18 @@ public class ItemEventManager implements Listener {
   public void onInventoryInteract(InventoryClickEvent event) {
     Player player = (Player) event.getWhoClicked();
     PlayerInventory inventory = player.getInventory();
-    if(event.isShiftClick()) {
-      if(player.getInventory().getHeldItemSlot()==event.getSlot()){
-        removePotionEffects(inventory.getItemInMainHand() ,player);
+    if (event.isShiftClick()) {
+      if (player.getInventory().getHeldItemSlot() == event.getSlot()) {
+        removePotionEffects(inventory.getItemInMainHand(), player);
       }
       return;
     }
-    if(event.getHotbarButton()!=-1){
-      if(player.getInventory().getHeldItemSlot()==event.getHotbarButton()) { //Moving item in
+    if (event.getHotbarButton() != -1) {
+      if (player.getInventory().getHeldItemSlot() == event.getHotbarButton()) { //Moving item in
         removePotionEffects(player.getInventory().getItemInMainHand(), player);
       }
     } else {
-      if(player.getInventory().getHeldItemSlot()==event.getSlot()) { //Moving item in
+      if (player.getInventory().getHeldItemSlot() == event.getSlot()) { //Moving item in
         removePotionEffects(player.getInventory().getItem(event.getSlot()), player);
       }
     }
@@ -143,36 +144,44 @@ public class ItemEventManager implements Listener {
 
   @EventHandler
   public void onPlayerPickupItem(EntityPickupItemEvent event) {
-    if(!(event.getEntity() instanceof Player)) return;
+    if (!(event.getEntity() instanceof Player)) {
+      return;
+    }
     Player player = (Player) event.getEntity();
     PlayerInventory inventory = player.getInventory();
-    if(!inventory.getItemInMainHand().getType().equals(Material.AIR)) return;
+    if (!inventory.getItemInMainHand().getType().equals(Material.AIR)) {
+      return;
+    }
     boolean onlyHeldFree = true;
     for (int i = 0; i < player.getInventory().getHeldItemSlot(); i++) {
-      if(inventory.getItem(i)==null || inventory.getItem(i).getType()==Material.AIR){
+      if (inventory.getItem(i) == null || inventory.getItem(i).getType() == Material.AIR) {
         onlyHeldFree = false;
         break;
       }
     }
-    if(onlyHeldFree) {
+    if (onlyHeldFree) {
       // Replace with custom item name
       addPotionEffects(event.getItem().getItemStack(), player);
     }
   }
 
   private void addPotionEffects(ItemStack item, @NonNull Player player) {
-    if(item==null) return; // Not using NonNull
+    if (item == null) {
+      return; // Not using NonNull
+    }
     String itemName = CustomItemUtils.getItemName(item);
-    if(itemOnHoldEffects.containsKey(itemName)) {
+    if (itemOnHoldEffects.containsKey(itemName)) {
       player.addPotionEffects(itemOnHoldEffects.get(itemName));
     }
   }
 
   private void removePotionEffects(ItemStack item, @NonNull Player player) {
-    if(item==null) return; // Not using NonNull
+    if (item == null) {
+      return; // Not using NonNull
+    }
     String itemName = CustomItemUtils.getItemName(item);
-    if(itemOnHoldEffects.containsKey(itemName)) {
-      for(PotionEffect effect: itemOnHoldEffects.get(itemName)) {
+    if (itemOnHoldEffects.containsKey(itemName)) {
+      for (PotionEffect effect : itemOnHoldEffects.get(itemName)) {
         player.removePotionEffect(effect.getType());
       }
     }

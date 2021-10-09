@@ -9,7 +9,7 @@ commands:
   spawnItem:
     description: Spawns a custom or normal Item.
     permission: craftory.items.spawnItem
-    aliases: [give, i]
+    aliases: [ give, i ]
     usage: /<spawnItem> <name> <amount>
 
 permissions:

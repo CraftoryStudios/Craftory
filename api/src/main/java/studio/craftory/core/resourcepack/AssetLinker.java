@@ -32,11 +32,12 @@ import studio.craftory.core.utils.Log;
 
 public class AssetLinker extends BukkitRunnable {
 
-  private Map<Class<? extends CraftoryRenderer>, Map<String, String[]>> assetsToGenerate = new HashMap<>();
-  private BlockAssetGenerator blockAssetGenerator = new BlockAssetGenerator();
-  private Map<String, String> itemsToGenerate = new HashMap<>();
-  private Map<Material, Set<String>> itemsOfType = new EnumMap<>(Material.class);
-  private Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+  private final Map<Class<? extends CraftoryRenderer>, Map<String, String[]>> assetsToGenerate = new HashMap<>();
+  private final BlockAssetGenerator blockAssetGenerator = new BlockAssetGenerator();
+  private final Map<String, String> itemsToGenerate = new HashMap<>();
+  private final Map<Material, Set<String>> itemsOfType = new EnumMap<>(Material.class);
+  private final ObjectMapper mapper = new ObjectMapper();
+
   @Inject
   private BlockRenderer blockRenderer;
 
@@ -84,10 +85,10 @@ public class AssetLinker extends BukkitRunnable {
         buildFromExistingItemRenderData(data);
       }
     }
-    if (data == null){
+    if (data == null) {
       data = buildFreshItemRenderData();
     }
-    Log.debug("Render data: " + data.toString());
+    Log.debug("Render data: " + data);
     saveRenderData(data);
     buildItemFiles(data);
   }
@@ -103,10 +104,10 @@ public class AssetLinker extends BukkitRunnable {
     return null;
   }
 
-  private Map<String, Integer> buildFromExistingItemRenderData(Map<String, Integer> data) {
+  private void buildFromExistingItemRenderData(Map<String, Integer> data) {
     int id = ResourcePack.ITEM_ID_START_VALUE;
     Set<Integer> usedIds = new HashSet<>(data.values());
-    for (String name: itemsToGenerate.keySet()) {
+    for (String name : itemsToGenerate.keySet()) {
       if (!data.containsKey(name)) {
         while (usedIds.contains(id)) {
           id -= 1;
@@ -115,14 +116,13 @@ public class AssetLinker extends BukkitRunnable {
         id -= 1;
       }
     }
-    return data;
   }
 
   private Map<String, Integer> buildFreshItemRenderData() {
     Map<String, Integer> data = new HashMap<>();
     int id = ResourcePack.ITEM_ID_START_VALUE;
-    for (String name: itemsToGenerate.keySet()) {
-      data.put(name,id);
+    for (String name : itemsToGenerate.keySet()) {
+      data.put(name, id);
       id -= 1;
     }
     return data;
@@ -152,8 +152,8 @@ public class AssetLinker extends BukkitRunnable {
 
       files.put(material, root);
     }
-    Log.debug("Item files " + files.toString());
-    for (String quality: ResourcePack.getQUALITIES()) {
+    Log.debug("Item files " + files);
+    for (String quality : ResourcePack.getQUALITIES()) {
       saveItemFiles(files, quality);
     }
   }

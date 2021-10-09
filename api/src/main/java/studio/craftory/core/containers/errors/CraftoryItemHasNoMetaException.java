@@ -1,6 +1,6 @@
 package studio.craftory.core.containers.errors;
 
-public class CraftoryItemHasNoMetaException extends CraforyException{
+public class CraftoryItemHasNoMetaException extends CraforyException {
 
   public CraftoryItemHasNoMetaException(String message) {
     super(message);

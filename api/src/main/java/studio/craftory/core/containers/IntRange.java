@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class IntRange {
+
   private int min;
   private int max;
 

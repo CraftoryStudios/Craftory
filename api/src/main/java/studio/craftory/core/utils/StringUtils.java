@@ -27,22 +27,22 @@ public class StringUtils {
       return s + PREFIXES[startingPrefix] + unit;
     }
     if (length < 7) {
-      return DF.format(amount / 1000f) + PREFIXES[startingPrefix+1] + unit;
+      return DF.format(amount / 1000f) + PREFIXES[startingPrefix + 1] + unit;
     }
     if (length < 10) {
-      return DF.format(amount / 1000000f) + PREFIXES[startingPrefix+2] + unit;
+      return DF.format(amount / 1000000f) + PREFIXES[startingPrefix + 2] + unit;
     }
     if (length < 13) {
-      return DF.format(amount / 1000000000f) + PREFIXES[startingPrefix+3] + unit;
+      return DF.format(amount / 1000000000f) + PREFIXES[startingPrefix + 3] + unit;
     }
     if (length < 16) {
-      return DF.format(amount / 1000000000000f) + PREFIXES[startingPrefix+4] + unit;
+      return DF.format(amount / 1000000000000f) + PREFIXES[startingPrefix + 4] + unit;
     }
     if (length < 19) {
-      return DF.format(amount / 1000000000000000f) + PREFIXES[startingPrefix+5] + unit;
+      return DF.format(amount / 1000000000000000f) + PREFIXES[startingPrefix + 5] + unit;
     }
     if (amount < Long.MAX_VALUE) {
-      return DF.format(amount / 1000000000000000000f) + PREFIXES[startingPrefix+6] + unit;
+      return DF.format(amount / 1000000000000000000f) + PREFIXES[startingPrefix + 6] + unit;
     }
     return "A bukkit load";
   }

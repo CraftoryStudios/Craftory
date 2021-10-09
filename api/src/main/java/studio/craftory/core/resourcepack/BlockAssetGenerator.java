@@ -27,7 +27,9 @@ public class BlockAssetGenerator {
   public static final String MUSHROOM_STEM = "mushroom_stem";
   public static final String BROWN_MUSHROOM_BLOCK = "brown_mushroom_block";
   public static final String RED_MUSHROOM_BLOCK = "red_mushroom_block";
-  private ArrayList<GenerationData> blocksToUse = new ArrayList<>();
+  final ObjectMapper mapper = new ObjectMapper();
+  final File file = new File(Craftory.getInstance().getDataFolder(), "renderData.json");
+  private final ArrayList<GenerationData> blocksToUse = new ArrayList<>();
   private final ArrayList<String> resourcePacks = new ArrayList<>(Arrays.asList("low", "normal", "high"));
   Gson gson = new GsonBuilder().disableHtmlEscaping().create();
   JsonObject renderDataFile = new JsonObject();
@@ -113,7 +115,7 @@ public class BlockAssetGenerator {
           Log.error(e.toString());
         }
       }
-       paths.add(blockstatePath);
+      paths.add(blockstatePath);
     }
     return paths;
   }
@@ -136,13 +138,12 @@ public class BlockAssetGenerator {
           noteblockState.addProperty("model", asset);
           addDirectionData(noteblockState, direction);
 
-          StringBuilder builder = new StringBuilder();
-          builder.append("instrument=");
-          builder.append(getInstrument(state.substring(0,1)));
-          builder.append(",note=");
-          builder.append(Integer.parseInt(state.substring(1,3)));
-          builder.append(",powered=");
-          builder.append(mapBoolean(state.charAt(3)));
+          String builder = "instrument="
+              + getInstrument(state.substring(0, 1))
+              + ",note="
+              + Integer.parseInt(state.substring(1, 3))
+              + ",powered="
+              + mapBoolean(state.charAt(3));
 
           JsonObject variants = new JsonObject();
           variants.add(builder.toString(), noteblockState);
@@ -164,7 +165,7 @@ public class BlockAssetGenerator {
         return "basedrum";
       case "c":
         return "bass";
-      case "d" :
+      case "d":
         return "bell";
       case "e":
         return "bit";
@@ -254,7 +255,7 @@ public class BlockAssetGenerator {
         } catch (IOException e) {
           Log.error(e.toString());
         }
-        
+
 
       }
     }
@@ -268,11 +269,11 @@ public class BlockAssetGenerator {
   }
 
   private String generateNoteBlockState(GenerationData generationData) {
-    String result = "n"+generationData.getData();
+    String result = "n" + generationData.getData();
     char instrument = generationData.getData().charAt(0);
     instrument += 1;
-    int note = Integer.parseInt(generationData.getData().substring(1,3));
-    String powered = generationData.getData().substring(3,4);
+    int note = Integer.parseInt(generationData.getData().substring(1, 3));
+    String powered = generationData.getData().substring(3, 4);
 
     if (instrument == 'o' && note < 24) {
       instrument = 'a';
@@ -283,7 +284,7 @@ public class BlockAssetGenerator {
       powered = "F";
     }
 
-    String blockData = "" + instrument + ("00"+note).substring(String.valueOf(note).length()) + powered;
+    String blockData = "" + instrument + ("00" + note).substring(String.valueOf(note).length()) + powered;
     decreaseGenerationData(generationData, blockData);
 
     return result;

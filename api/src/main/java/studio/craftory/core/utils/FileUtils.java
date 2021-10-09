@@ -19,21 +19,22 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class FileUtils {
-  public void copyResources(String sourceDirectory, String destinationDirectory, MergeAction mergeAction) {
-    try (Stream<Path> stream = Files.walk(Paths.get(sourceDirectory))){
-      stream.forEach(source -> {
-             Path destination = Paths.get(destinationDirectory, source.toString().substring(sourceDirectory.length()));
 
-             if (Files.exists(destination) && !Files.isDirectory(destination)) {
-               mergeAction.merge(source.toFile(), destination.toFile());
-             } else {
-               try {
-                 Files.copy(source, destination);
-               } catch (IOException e) {
-                 Log.warn("Unable to copy file ", source.toString(), " to location ", destination.toString());
-               }
-             }
-           });
+  public void copyResources(String sourceDirectory, String destinationDirectory, MergeAction mergeAction) {
+    try (Stream<Path> stream = Files.walk(Paths.get(sourceDirectory))) {
+      stream.forEach(source -> {
+        Path destination = Paths.get(destinationDirectory, source.toString().substring(sourceDirectory.length()));
+
+        if (Files.exists(destination) && !Files.isDirectory(destination)) {
+          mergeAction.merge(source.toFile(), destination.toFile());
+        } else {
+          try {
+            Files.copy(source, destination);
+          } catch (IOException e) {
+            Log.warn("Unable to copy file ", source.toString(), " to location ", destination.toString());
+          }
+        }
+      });
     } catch (IOException e) {
       Log.error(e.toString());
     }
@@ -51,7 +52,7 @@ public class FileUtils {
 
   public void unZip(File input, File outputDirectory) {
     byte[] buffer = new byte[1024];
-    try (ZipInputStream zis = new ZipInputStream(new FileInputStream(input))){
+    try (ZipInputStream zis = new ZipInputStream(new FileInputStream(input))) {
       ZipEntry zipEntry = zis.getNextEntry();
 
       while (zipEntry != null) {
@@ -97,16 +98,17 @@ public class FileUtils {
   }
 
   public void recursiveDirectoryDelete(String directory) {
-    try (Stream<Path> stream = Files.walk(Paths.get(directory))){
+    try (Stream<Path> stream = Files.walk(Paths.get(directory))) {
       stream.sorted(Comparator.reverseOrder())
-           .map(Path::toFile)
-           .forEach(File::delete);
+            .map(Path::toFile)
+            .forEach(File::delete);
     } catch (IOException e) {
       Log.warn("Couldn't delete directory: " + directory);
     }
   }
 
   public interface MergeAction {
+
     void merge(File source, File dest);
   }
 }

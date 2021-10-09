@@ -10,12 +10,11 @@ import studio.craftory.core.Craftory;
 
 public class TestPluginClass {
 
-  private static Craftory plugin;
 
   @BeforeAll
   public static void load() {
     MockBukkit.mock();
-    plugin = MockBukkit.load(Craftory.class);
+    Craftory plugin = MockBukkit.load(Craftory.class);
   }
 
   @AfterAll

@@ -11,6 +11,7 @@ import org.bukkit.plugin.Plugin;
 @Value
 @AllArgsConstructor
 public class SafePlugin implements Serializable {
+
   @NonNull String name;
 
   public SafePlugin(@NonNull final Plugin plugin) {

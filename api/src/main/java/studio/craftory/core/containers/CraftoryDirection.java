@@ -15,7 +15,7 @@ public enum CraftoryDirection {
   private static final Map<Byte, CraftoryDirection> BY_LABEL = new HashMap<>();
 
   static {
-    for (CraftoryDirection e: values()) {
+    for (CraftoryDirection e : values()) {
       BY_LABEL.put(e.label, e);
     }
   }
@@ -30,6 +30,6 @@ public enum CraftoryDirection {
 
   @Override
   public String toString() {
-    return this.label+"";
+    return this.label + "";
   }
 }

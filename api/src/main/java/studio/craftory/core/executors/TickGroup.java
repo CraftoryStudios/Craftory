@@ -6,10 +6,11 @@ import lombok.Getter;
 import studio.craftory.core.blocks.CustomBlock;
 
 public class TickGroup {
-  int tick;
+
+  final int tick;
 
   @Getter
-  private Set<CustomBlock> tickables;
+  private final Set<BaseCustomBlock> tickables;
 
   public TickGroup(int tick) {
     this.tickables = new HashSet<>();

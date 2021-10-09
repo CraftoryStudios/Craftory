@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class Vector3 {
+
   private int x;
   private int y;
   private int z;

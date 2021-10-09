@@ -22,7 +22,6 @@ public class ExecutorUtils {
 
     HashMap<Integer, ArrayList<Method>> tickMethods = new HashMap<>();
 
-
     Reflections.getMethodsRecursively(clazz, Object.class).forEach(method -> {
       Tickable tickable = method.getAnnotation(Tickable.class);
 

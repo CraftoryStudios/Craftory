@@ -24,9 +24,11 @@ public class CraftoryFluid {
     this.gaseous = gaseous;
   }
 
+
   public Optional<Plugin> getRegisteringPlugin() {
-   return this.id.getPlugin();
+    return this.id.getPlugin();
   }
+
 
   public String getInternalName() {
     return this.id.getName();
@@ -34,8 +36,9 @@ public class CraftoryFluid {
 
   @Override
   public boolean equals(Object object) {
-    if (!(object instanceof CraftoryFluid))
+    if (!(object instanceof CraftoryFluid)) {
       return false;
+    }
     CraftoryFluid fluid = (CraftoryFluid) object;
     return getId().equals(fluid.getId());
   }

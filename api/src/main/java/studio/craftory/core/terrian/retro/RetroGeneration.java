@@ -28,6 +28,10 @@ import studio.craftory.core.utils.Log;
 
 public class RetroGeneration implements Listener {
 
+
+  private final HashSet<Ore> ores = new HashSet<>();
+  private final Map<World, Set<String>> visitedChunks = new HashMap<>();
+  private final ObjectMapper objectMapper = new ObjectMapper();
   @Inject
   public CustomBlockAPI customBlockAPI;
 
@@ -42,7 +46,9 @@ public class RetroGeneration implements Listener {
   @EventHandler
   public void onChunkLoad(ChunkLoadEvent chunkLoadEvent) {
     if (visitedChunks.containsKey(chunkLoadEvent.getWorld()) &&
-        visitedChunks.get(chunkLoadEvent.getWorld()).contains(TerrianUtils.getChunkUUID(chunkLoadEvent.getChunk()))) return;
+        visitedChunks.get(chunkLoadEvent.getWorld()).contains(TerrianUtils.getChunkUUID(chunkLoadEvent.getChunk()))) {
+      return;
+    }
 
     populateOre(chunkLoadEvent.getChunk());
     visitedChunks.computeIfAbsent(chunkLoadEvent.getWorld(), a -> new HashSet<>()).add(TerrianUtils.getChunkUUID(chunkLoadEvent.getChunk()));
@@ -51,8 +57,9 @@ public class RetroGeneration implements Listener {
   public void saveGeneratedChunks() {
     for (Entry<World, Set<String>> visitedChunksInWorld : visitedChunks.entrySet()) {
       File file =
-          new File(Craftory.getInstance().getServer().getWorldContainer().getAbsolutePath() + File.separator + visitedChunksInWorld.getKey().getName() +
-              "/Craftory");
+          new File(
+              Craftory.getInstance().getServer().getWorldContainer().getAbsolutePath() + File.separator + visitedChunksInWorld.getKey().getName() +
+                  "/Craftory");
       file.mkdirs();
       file = new File(file, "chunkGenerations.json");
       try (FileWriter fw = new FileWriter(file)){
@@ -69,7 +76,7 @@ public class RetroGeneration implements Listener {
   public void loadGeneratedChunks() {
     for (World world : Craftory.getInstance().getServer().getWorlds()) {
       File file =
-          new File(Craftory.getInstance().getServer().getWorldContainer().getAbsolutePath() + File.separator +world.getName() +
+          new File(Craftory.getInstance().getServer().getWorldContainer().getAbsolutePath() + File.separator + world.getName() +
               "/Craftory", "chunkGenerations.json");
       if (file.exists()) {
         try {
@@ -92,7 +99,7 @@ public class RetroGeneration implements Listener {
         Random random = new Random(TerrianUtils.getChunkPopulationSeed(chunk.getX() + cx, chunk.getZ() + cz, chunk.getWorld().getSeed()));
         for (Ore ore : ores) {
           int amountOfOre = ore.getAmount().getRandomInRange(random);
-          for(int i = 0; i < amountOfOre; i++) {
+          for (int i = 0; i < amountOfOre; i++) {
             Vector3 location = new Vector3(random.nextInt(16) + 16 * cx, ore.getHeight().getRandomInRange(random), random.nextInt(16) + 16 * cz);
             ore.generate(location, chunk, random);
           }
