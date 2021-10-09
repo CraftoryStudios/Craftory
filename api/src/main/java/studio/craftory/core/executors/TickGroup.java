@@ -10,7 +10,7 @@ public class TickGroup {
   final int tick;
 
   @Getter
-  private final Set<BaseCustomBlock> tickables;
+  private final Set<CustomBlock> tickables;
 
   public TickGroup(int tick) {
     this.tickables = new HashSet<>();

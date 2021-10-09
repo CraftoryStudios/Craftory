@@ -25,7 +25,7 @@ import studio.craftory.core.items.CustomItemUtils;
 import studio.craftory.core.utils.Constants.Keys;
 import studio.craftory.core.utils.Log;
 
-public class BlockInteractionsListener implements Listener {
+public class BlockInteractionListener implements Listener {
 
   @Inject
   private CustomBlockManager customBlockManager;

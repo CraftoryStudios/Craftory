@@ -27,13 +27,11 @@ public class BlockAssetGenerator {
   public static final String MUSHROOM_STEM = "mushroom_stem";
   public static final String BROWN_MUSHROOM_BLOCK = "brown_mushroom_block";
   public static final String RED_MUSHROOM_BLOCK = "red_mushroom_block";
-  final ObjectMapper mapper = new ObjectMapper();
   final File file = new File(Craftory.getInstance().getDataFolder(), "renderData.json");
   private final ArrayList<GenerationData> blocksToUse = new ArrayList<>();
   private final ArrayList<String> resourcePacks = new ArrayList<>(Arrays.asList("low", "normal", "high"));
   Gson gson = new GsonBuilder().disableHtmlEscaping().create();
   JsonObject renderDataFile = new JsonObject();
-  File file = new File(Craftory.getInstance().getDataFolder(), "renderData.json");
 
   public BlockAssetGenerator() {
     try {

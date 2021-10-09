@@ -29,14 +29,11 @@ import studio.craftory.core.utils.Log;
 public class RetroGeneration implements Listener {
 
 
-  private final HashSet<Ore> ores = new HashSet<>();
-  private final Map<World, Set<String>> visitedChunks = new HashMap<>();
-  private final ObjectMapper objectMapper = new ObjectMapper();
   @Inject
   public CustomBlockAPI customBlockAPI;
 
-  private HashSet<Ore> ores = new HashSet<>();
-  private Map<World, Set<String>> visitedChunks = new HashMap<>();
+  private final Set<Ore> ores = new HashSet<>();
+  private final Map<World, Set<String>> visitedChunks = new HashMap<>();
   private final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
   public RetroGeneration() {

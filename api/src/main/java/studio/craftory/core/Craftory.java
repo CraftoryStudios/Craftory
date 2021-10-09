@@ -24,10 +24,8 @@ import studio.craftory.core.executors.SyncExecutionManager;
 import studio.craftory.core.items.CustomItemManager;
 import studio.craftory.core.items.ItemEventManager;
 import studio.craftory.core.blocks.listeners.ChunkListener;
-import studio.craftory.core.blocks.listeners.BlockInteractionsListener;
+import studio.craftory.core.blocks.listeners.BlockInteractionListener;
 import studio.craftory.core.items.recipes.RecipeManager;
-import studio.craftory.core.listeners.CustomBlockListener;
-import studio.craftory.core.listeners.WorldListener;
 import studio.craftory.core.resourcepack.AssetLinker;
 import studio.craftory.core.terrian.retro.RetroGeneration;
 import studio.craftory.core.utils.Log;
@@ -44,10 +42,7 @@ public final class Craftory extends JavaPlugin {
   private SyncExecutionManager syncExecutionManager;
   private CustomBlockManager customBlockManager;
   private BlockRenderer blockRenderer;
-  private FileConfiguration pluginConfiguration = getConfig();
   private BlockRegistry registry;
-
-  private BlockRenderManager blockRenderManager;
   //External
   private CustomItemManager customItemManager;
   private RecipeManager recipeManager;
@@ -65,8 +60,9 @@ public final class Craftory extends JavaPlugin {
   public static CustomItemManager getCustomItemManager() {
     return instance.customItemManager;
   }
-
   public static BlockRegistry blockRegistry() { return instance.registry; }
+  public static RecipeManager recipeManager() { return instance.recipeManager; }
+  public static CustomBlockAPI customBlockAPI() { return instance.customBlockAPI; }
 
   @Override
   public void onLoad() {
@@ -106,7 +102,7 @@ public final class Craftory extends JavaPlugin {
     //Register Events
     PluginManager pluginManager = getServer().getPluginManager();
     pluginManager.registerEvents(blockRenderer, instance);
-    pluginManager.registerEvents(injector.getSingleton(BlockInteractionsListener.class), instance);
+    pluginManager.registerEvents(injector.getSingleton(BlockInteractionListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ChunkListener.class), instance);
     pluginManager.registerEvents(injector.getSingleton(ItemEventManager.class), instance);
     pluginManager.registerEvents(recipeManager, instance);

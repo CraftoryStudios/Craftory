@@ -36,7 +36,7 @@ public class AssetLinker extends BukkitRunnable {
   private final BlockAssetGenerator blockAssetGenerator = new BlockAssetGenerator();
   private final Map<String, String> itemsToGenerate = new HashMap<>();
   private final Map<Material, Set<String>> itemsOfType = new EnumMap<>(Material.class);
-  private final ObjectMapper mapper = new ObjectMapper();
+  private final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
   @Inject
   private BlockRenderer blockRenderer;

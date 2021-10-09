@@ -164,4 +164,19 @@ public class DefaultRenderer implements CraftoryRenderer {
     }
   }
 
+  protected static MultipleFacing getMutlifacingData(@NonNull String stateData, Block block) {
+    MultipleFacing blockData = (MultipleFacing) block.getBlockData();
+
+    String[] states = stateData.split("");
+
+    blockData.setFace(BlockFace.DOWN, states[0].equals("T"));
+    blockData.setFace(BlockFace.EAST, states[1].equals("T"));
+    blockData.setFace(BlockFace.NORTH, states[2].equals("T"));
+    blockData.setFace(BlockFace.SOUTH, states[3].equals("T"));
+    blockData.setFace(BlockFace.UP, states[4].equals("T"));
+    blockData.setFace(BlockFace.WEST, states[5].equals("T"));
+
+    return blockData;
+  }
+
 }

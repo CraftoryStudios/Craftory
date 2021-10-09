@@ -9,7 +9,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import lombok.NonNull;
@@ -18,10 +20,10 @@ import studio.craftory.core.blocks.CustomBlock;
 
 public class SyncExecutionManager extends BukkitRunnable {
 
-  private final HashSet<TickGroup> tickGroups;
-  private final HashMap<Integer, TickGroup> tickGroupsMap;
-  private final HashMap<Class<? extends BaseCustomBlock>, HashMap<Integer, ArrayList<Method>>> tickableMethods;
-  private final Map<Integer, HashSet<BaseCustomBlock>> removeBacklog;
+  private final Set<TickGroup> tickGroups;
+  private final Map<Integer, TickGroup> tickGroupsMap;
+  private final Map<Class<? extends CustomBlock>, Map<Integer, List<Method>>> tickableMethods;
+  private final Map<Integer, Set<CustomBlock>> removeBacklog;
   private final int maxTick;
 
   private int tick;
@@ -68,8 +70,8 @@ public class SyncExecutionManager extends BukkitRunnable {
   }
 
   private void cleanUpTickableObjects() {
-    for (Iterator<Map.Entry<Integer, HashSet<CustomBlock>>> it = removeBacklog.entrySet().iterator(); it.hasNext();) {
-      Map.Entry<Integer, HashSet<CustomBlock>> entry = it.next();
+    for (Iterator<Entry<Integer, Set<CustomBlock>>> it = removeBacklog.entrySet().iterator(); it.hasNext();) {
+      Entry<Integer, Set<CustomBlock>> entry = it.next();
         TickGroup tickGroup = tickGroupsMap.get(entry.getKey());
 
         for (Iterator<CustomBlock> iterator = entry.getValue().iterator(); iterator.hasNext();) {

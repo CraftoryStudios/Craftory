@@ -8,7 +8,6 @@ import studio.craftory.core.blocks.CustomBlock;
 import studio.craftory.core.blocks.components.energy.EnergyOutput;
 import studio.craftory.core.blocks.components.energy.EnergyOutput.EnergyOutputData;
 import studio.craftory.core.blocks.components.energy.EnergyStorage.EnergyStorageData;
-import studio.craftory.core.blocks.templates.ComplexCustomBlock;
 import studio.craftory.core.containers.CraftoryDirection;
 
 @EnergyOutputData(maxExtract = 100)
