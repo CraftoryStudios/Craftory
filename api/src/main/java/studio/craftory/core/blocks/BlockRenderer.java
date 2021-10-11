@@ -35,8 +35,8 @@ public class BlockRenderer implements Listener {
   private Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
   @Getter
-  private Map<String, CraftoryRenderer> renderers = new HashMap<>();
-  private Map<String, RenderData> blockToRenderDataMap = new HashMap<>();
+  private final Map<String, CraftoryRenderer> renderers = new HashMap<>();
+  private final Map<String, RenderData> blockToRenderDataMap = new HashMap<>();
 
   public BlockRenderer() {
     registerDefaultRenders();

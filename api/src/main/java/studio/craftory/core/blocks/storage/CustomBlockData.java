@@ -13,17 +13,8 @@ import org.bukkit.plugin.Plugin;
 import studio.craftory.core.Craftory;
 
 /*
- * Made by mfnalex / JEFF Media GbR
- *
- * If you find this helpful or if you're using this project inside your paid plugins,
- * consider leaving a donation :)
- *
- * https://paypal.me/mfnalex
- *
- * If you need help or have any suggestions, just create an issue or join my discord
- * and head to the channel #programming-help
- *
- * https://discord.jeff-media.de
+ * Made by mfnalex / JEFF Media GbR (Donation link https://paypal.me/mfnalex)
+ * Altered and adapted by Brett Saunders
  */
 public class CustomBlockData implements PersistentDataContainer {
   private static final NamespacedKey customBlockKey = new NamespacedKey(Craftory.getInstance(), "customblocks");
@@ -106,10 +97,10 @@ public class CustomBlockData implements PersistentDataContainer {
     if (container.isEmpty()) {
       chunk.getPersistentDataContainer().get(customBlockKey, PersistentDataType.TAG_CONTAINER).remove(key);
     } else {
-      PersistentDataContainer test = chunk.getPersistentDataContainer();
-      PersistentDataContainer test2 = test.get(customBlockKey, PersistentDataType.TAG_CONTAINER);
-      test2.set(key, PersistentDataType.TAG_CONTAINER, container);
-      test.set(customBlockKey, PersistentDataType.TAG_CONTAINER, test2);
+      PersistentDataContainer chunkContainer = chunk.getPersistentDataContainer();
+      PersistentDataContainer blockContainer = chunkContainer.get(customBlockKey, PersistentDataType.TAG_CONTAINER);
+      blockContainer.set(key, PersistentDataType.TAG_CONTAINER, container);
+      chunkContainer.set(customBlockKey, PersistentDataType.TAG_CONTAINER, blockContainer);
     }
   }
 
