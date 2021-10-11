@@ -18,5 +18,4 @@ permissions:
     default: op
 
 libraries:
-  - 'com.fasterxml.jackson.core:jackson-databind:2.12.0'
   - 'ch.jalu:injector:1.0'

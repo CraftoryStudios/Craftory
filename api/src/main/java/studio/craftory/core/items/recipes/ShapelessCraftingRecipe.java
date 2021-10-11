@@ -92,7 +92,7 @@ public class ShapelessCraftingRecipe implements ICraftingRecipe {
 
     // Register the recipe
     Bukkit.addRecipe(bukkitRecipe);
-    Craftory.getRecipeManager().registerRecipe(this);
+    Craftory.recipeManager().registerRecipe(this);
 
     // Make common ingredients only contain the common part of the item name
     Map<String, Integer> formattedCommonIngredients = new HashMap<>();

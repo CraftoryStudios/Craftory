@@ -1,10 +1,14 @@
 package studio.craftory.core.resourcepack;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import lombok.NonNull;
+import org.bukkit.persistence.PersistentDataType;
 import studio.craftory.core.Craftory;
 import studio.craftory.core.containers.CraftoryDirection;
 import studio.craftory.core.utils.Log;
@@ -22,15 +27,15 @@ public class BlockAssetGenerator {
   public static final String MUSHROOM_STEM = "mushroom_stem";
   public static final String BROWN_MUSHROOM_BLOCK = "brown_mushroom_block";
   public static final String RED_MUSHROOM_BLOCK = "red_mushroom_block";
-  final ObjectMapper mapper = new ObjectMapper();
   final File file = new File(Craftory.getInstance().getDataFolder(), "renderData.json");
   private final ArrayList<GenerationData> blocksToUse = new ArrayList<>();
   private final ArrayList<String> resourcePacks = new ArrayList<>(Arrays.asList("low", "normal", "high"));
-  ObjectNode renderDataFile = mapper.createObjectNode();
+  Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+  JsonObject renderDataFile = new JsonObject();
 
   public BlockAssetGenerator() {
     try {
-      renderDataFile = (ObjectNode) mapper.readTree(file);
+      renderDataFile = new JsonParser().parse(new FileReader(file)).getAsJsonObject();
     } catch (IOException e) {
       Log.debug("Couldn't read render data while generating assets");
     }
@@ -42,15 +47,15 @@ public class BlockAssetGenerator {
   }
 
   public void writeRenderDataFile() {
-    try {
-      mapper.writeValue(file, renderDataFile);
+    try (FileWriter fw = new FileWriter(file)){
+      gson.toJson(renderDataFile, fw);
     } catch (IOException e) {
       Log.warn("Couldn't write render data");
     }
   }
 
-  public void addToRenderFile(String blockKey, ArrayNode renderFileData) {
-    renderDataFile.set(blockKey, renderFileData);
+  public void addToRenderFile(String blockKey, JsonArray renderFileData) {
+    renderDataFile.add(blockKey, renderFileData);
   }
 
   public String generateBlockState() {
@@ -116,14 +121,19 @@ public class BlockAssetGenerator {
   private void addNoteblockToPack(String state, String asset, ArrayList<Path> paths, CraftoryDirection direction) {
     for (Path path : paths) {
       if (Files.exists(path) && Files.isRegularFile(path)) {
-        try {
-          JsonNode node = mapper.readTree(path.toFile());
-          if (!node.isObject()) {
-            node = mapper.createObjectNode();
+        JsonElement node = null;
+        try (FileReader fr = new FileReader(path.toFile())) {
+          node = new JsonParser().parse(fr);
+        } catch (Exception e) {
+          Log.error(e.toString());
+        }
+          if (node == null || !node.isJsonObject()) {
+            node = new JsonObject();
           }
+          JsonObject nodeObject = node.getAsJsonObject();
 
-          ObjectNode noteblockState = mapper.createObjectNode();
-          noteblockState.put("model", asset);
+          JsonObject noteblockState = new JsonObject();
+          noteblockState.addProperty("model", asset);
           addDirectionData(noteblockState, direction);
 
           String builder = "instrument="
@@ -133,9 +143,11 @@ public class BlockAssetGenerator {
               + ",powered="
               + mapBoolean(state.charAt(3));
 
-          ((ObjectNode) node.with("variants")).set(builder, noteblockState);
-
-          mapper.writeValue(path.toFile(), node);
+          JsonObject variants = new JsonObject();
+          variants.add(builder.toString(), noteblockState);
+          nodeObject.add("variants", variants);
+        try (FileWriter fw = new FileWriter(path.toFile())){
+          gson.toJson(node, fw);
         } catch (IOException e) {
           Log.error(e.toString());
         }
@@ -180,23 +192,23 @@ public class BlockAssetGenerator {
     }
   }
 
-  private void addDirectionData(ObjectNode node, CraftoryDirection direction) {
+  private void addDirectionData(JsonObject node, CraftoryDirection direction) {
     if (direction != CraftoryDirection.WEST) {
       switch (direction) {
         case NORTH:
-          node.put("y", 90);
+          node.addProperty("y", 90);
           break;
         case SOUTH:
-          node.put("y", 270);
+          node.addProperty("y", 270);
           break;
         case EAST:
-          node.put("y", 180);
+          node.addProperty("y", 180);
           break;
         case UP:
-          node.put("x", 90);
+          node.addProperty("x", 90);
           break;
         case DOWN:
-          node.put("x", 270);
+          node.addProperty("x", 270);
           break;
         default:
           break;
@@ -207,23 +219,37 @@ public class BlockAssetGenerator {
   private void addMushroomToPack(String state, String asset, ArrayList<Path> paths, CraftoryDirection direction) {
     for (Path path : paths) {
       if (Files.exists(path) && Files.isRegularFile(path)) {
-        try {
-          JsonNode node = mapper.readTree(path.toFile());
+        JsonObject node = null;
+        try (FileReader fr = new FileReader(path.toFile())) {
+          node = new JsonParser().parse(fr).getAsJsonObject();
+        } catch(Exception e) {
+          Log.error(e.toString());
+        }
+        if (node == null || !node.isJsonObject()) {
+          node = new JsonObject();
+        }
 
-          ObjectNode mushroomState = mapper.createObjectNode();
-          mushroomState.with("when").put("east", mapBoolean(state.charAt(0)));
-          mushroomState.with("when").put("down", mapBoolean(state.charAt(1)));
-          mushroomState.with("when").put("north", mapBoolean(state.charAt(2)));
-          mushroomState.with("when").put("south", mapBoolean(state.charAt(3)));
-          mushroomState.with("when").put("up", mapBoolean(state.charAt(4)));
-          mushroomState.with("when").put("west", mapBoolean(state.charAt(5)));
-          mushroomState.with("apply").put("model", asset);
-          addDirectionData(mushroomState.with("apply"), direction);
+          JsonObject mushroomState = new JsonObject();
+          JsonObject when = new JsonObject();
+          when.addProperty("east", mapBoolean(state.charAt(0)));
+          when.addProperty("down", mapBoolean(state.charAt(1)));
+          when.addProperty("north", mapBoolean(state.charAt(2)));
+          when.addProperty("south", mapBoolean(state.charAt(3)));
+          when.addProperty("up", mapBoolean(state.charAt(4)));
+          when.addProperty("west", mapBoolean(state.charAt(5)));
+          mushroomState.add("when", when);
 
-          ArrayNode multipartNode = node.withArray("multipart");
+          JsonObject apply = new JsonObject();
+          apply.addProperty("model", asset);
+          mushroomState.add("apply", apply);
+          addDirectionData(apply, direction);
+
+          JsonArray multipartNode = new JsonArray();
           multipartNode.add(mushroomState);
+          node.add("multipart", multipartNode);
 
-          mapper.writeValue(path.toFile(), node);
+        try (FileWriter fw = new FileWriter(path.toFile())){
+          gson.toJson(node, fw);
         } catch (IOException e) {
           Log.error(e.toString());
         }

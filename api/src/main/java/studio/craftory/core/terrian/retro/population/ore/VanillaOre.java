@@ -4,7 +4,7 @@ import java.util.Random;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import studio.craftory.core.blocks.templates.BaseCustomBlock;
+import studio.craftory.core.blocks.CustomBlock;
 import studio.craftory.core.containers.IntRange;
 import studio.craftory.core.containers.Vector3;
 
@@ -12,7 +12,7 @@ public class VanillaOre extends Ore {
 
   private final IntRange oreSizeRange;
 
-  public VanillaOre(Class<? extends BaseCustomBlock> material, IntRange amount,
+  public VanillaOre(Class<? extends CustomBlock> material,  IntRange amount,
       IntRange height, IntRange oreSizeRange, Material... replaceable) {
     super(material, amount, height, replaceable);
     this.oreSizeRange = oreSizeRange;

@@ -1,6 +1,5 @@
 package studio.craftory.core.blocks;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -14,7 +13,6 @@ import lombok.Synchronized;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
-import studio.craftory.core.blocks.templates.BaseCustomBlock;
 import studio.craftory.core.containers.CraftoryDirection;
 import studio.craftory.core.containers.keys.CraftoryBlockKey;
 import studio.craftory.core.executors.AsyncExecutionManager;
@@ -23,25 +21,22 @@ import studio.craftory.core.utils.Log;
 
 public class CustomBlockManager {
 
-  private final CustomBlockRegistry blockRegister;
+  private final BlockRegistry blockRegister;
   private final AsyncExecutionManager asyncExecutionManager;
   private final SyncExecutionManager syncExecutionManager;
-  private final BlockRenderManager blockRenderManager;
-  @Getter
-  private final DataStorageManager dataStorageManager;
+  private final BlockRenderer blockRenderer;
 
   @Getter
-  private final Map<Chunk, Map<Location, BaseCustomBlock>> customBlocks;
+  private final Map<Chunk,Map<Location, CustomBlock>> customBlocks;
 
   @Inject
-  public CustomBlockManager(CustomBlockRegistry blockRegister, AsyncExecutionManager asyncExecutionManager,
-      SyncExecutionManager syncExecutionManager, BlockRenderManager blockRenderManager) {
+  public CustomBlockManager (BlockRegistry blockRegister, AsyncExecutionManager asyncExecutionManager,
+      SyncExecutionManager syncExecutionManager, BlockRenderer blockRenderer) {
     this.blockRegister = blockRegister;
     this.syncExecutionManager = syncExecutionManager;
     this.asyncExecutionManager = asyncExecutionManager;
-    this.blockRenderManager = blockRenderManager;
+    this.blockRenderer = blockRenderer;
 
-    this.dataStorageManager = new DataStorageManager(this, blockRegister);
     this.customBlocks = new ConcurrentHashMap<>();
   }
 
@@ -50,7 +45,7 @@ public class CustomBlockManager {
    *
    * @param customBlock which should be loaded into memory
    */
-  public boolean loadCustomBlock(@NonNull final BaseCustomBlock customBlock) {
+  public boolean loadCustomBlock(@NonNull final CustomBlock customBlock) {
     Location location = customBlock.getLocation();
 
     if (customBlocks.computeIfAbsent(location.getChunk(), k -> new ConcurrentHashMap<>())
@@ -78,17 +73,10 @@ public class CustomBlockManager {
    */
   @Synchronized
   public void unloadCustomChunk(@NonNull final Chunk chunk, boolean save) {
-    Map<Location, BaseCustomBlock> customBlockMap = getLoadedCustomBlocksInChunk(chunk);
-    if (customBlockMap.isEmpty()) {
-      return;
-    }
+    Map<Location, CustomBlock> customBlockMap = getLoadedCustomBlocksInChunk(chunk);
+    if (customBlockMap.isEmpty()) return;
 
-    if (save) {
-      Collection<BaseCustomBlock> blocks = customBlockMap.values();
-      dataStorageManager.writeChunkAndSave(chunk, blocks);
-    }
-
-    for (BaseCustomBlock block : customBlockMap.values()) {
+    for (CustomBlock block : customBlockMap.values()) {
       removeFromExecutorSchedule(block);
     }
     customBlocks.remove(chunk);
@@ -106,7 +94,7 @@ public class CustomBlockManager {
   @Synchronized
   public void unloadCustomBlock(@NonNull final Location location, boolean save) {
 
-    Optional<BaseCustomBlock> customBlockOptional = Optional.ofNullable(customBlocks.get(location.getChunk()).get(location));
+    Optional<CustomBlock> customBlockOptional = Optional.ofNullable(customBlocks.get(location.getChunk()).get(location));
     customBlockOptional.ifPresent(customBlock -> unloadCustomBlock(customBlock, save));
   }
 
@@ -119,7 +107,7 @@ public class CustomBlockManager {
    * @throws IllegalArgumentException if the given blocks location isn't loaded
    */
   @Synchronized
-  public void unloadCustomBlock(@NonNull final BaseCustomBlock customBlock, boolean save) {
+  public void unloadCustomBlock(@NonNull final CustomBlock customBlock, boolean save) {
     Location location = customBlock.getLocation();
 
     if (!location.getChunk().isLoaded()) {
@@ -127,11 +115,6 @@ public class CustomBlockManager {
     }
 
     removeFromExecutorSchedule(customBlock);
-    if (save) {
-      dataStorageManager.writeBlockAndSave(customBlock);
-    } else {
-      dataStorageManager.removeBlockAndSave(customBlock);
-    }
 
     customBlocks.get(location.getChunk()).remove(location);
   }
@@ -147,12 +130,12 @@ public class CustomBlockManager {
    */
   //Method from Logistics API
   @Synchronized
-  public Optional<BaseCustomBlock> getLoadedCustomBlockAt(@NonNull final Location location) {
+  public Optional<CustomBlock> getLoadedCustomBlockAt(@NonNull final Location location) {
     Chunk chunk = location.getChunk();
     if (!chunk.isLoaded()) {
       throw new IllegalArgumentException("The provided location must be loaded!");
     }
-    Map<Location, BaseCustomBlock> loadedBlockInChunk = getLoadedCustomBlocksInChunk(chunk);
+    Map<Location, CustomBlock> loadedBlockInChunk = getLoadedCustomBlocksInChunk(chunk);
     if (loadedBlockInChunk == null) {
       return Optional.empty();
     }
@@ -165,7 +148,7 @@ public class CustomBlockManager {
   @Synchronized
   public boolean containsCustomBlock(@NonNull final Location location) {
     if (location.getChunk().isLoaded()) {
-      Map<Location, BaseCustomBlock> chunkData = customBlocks.get(location.getChunk());
+      Map<Location, CustomBlock> chunkData = customBlocks.get(location.getChunk());
       if (chunkData != null) {
         return chunkData.containsKey(location);
       }
@@ -183,7 +166,7 @@ public class CustomBlockManager {
    */
   //Method from Logistics API
   @Synchronized
-  public Map<Location, BaseCustomBlock> getLoadedCustomBlocksInChunk(@NonNull final Chunk chunk) {
+  public Map<Location, CustomBlock> getLoadedCustomBlocksInChunk(@NonNull final Chunk chunk) {
     if (!chunk.isLoaded()) {
       throw new IllegalArgumentException("The provided chunk must be loaded!");
     }
@@ -202,9 +185,9 @@ public class CustomBlockManager {
    *
    * @return instance of the newly created Custom Block or Optional.empty if failed
    */
-  public Optional<BaseCustomBlock> placeCustomBlock(@NonNull CraftoryBlockKey craftoryBlockKey, @NonNull Location location,
-      @NonNull CraftoryDirection direction) {
-    Optional<BaseCustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(craftoryBlockKey, location, direction);
+  public Optional<CustomBlock> placeCustomBlock(@NonNull CraftoryBlockKey craftoryBlockKey, @NonNull Location location,
+  @NonNull CraftoryDirection direction) {
+    Optional<CustomBlock> customBlock = blockRegister.getNewCustomBlockInstance(craftoryBlockKey, location, direction);
 
     if (customBlock.isEmpty()) {
       Log.warn("Unable to place CustomBlock: " + craftoryBlockKey.getName() + " at location: " + location);
@@ -212,7 +195,7 @@ public class CustomBlockManager {
     }
 
     if (loadCustomBlock(customBlock.get())) {
-      blockRenderManager.renderCustomBlock(craftoryBlockKey, location.getBlock(), direction);
+      blockRenderer.renderCustomBlock(craftoryBlockKey, location.getBlock(), direction);
 
       return customBlock;
     }
@@ -225,12 +208,12 @@ public class CustomBlockManager {
     return customBlocks.keySet().stream().filter(chunk -> chunk.getWorld().equals(world)).collect(Collectors.toUnmodifiableSet());
   }
 
-  private void addToExecutorSchedule(@NonNull final BaseCustomBlock block) {
-    asyncExecutionManager.addTickableObject(block);
+  private void addToExecutorSchedule(@NonNull final CustomBlock block) {
+    asyncExecutionManager.addTickableObject( block);
     syncExecutionManager.addTickableObject(block);
   }
 
-  private void removeFromExecutorSchedule(@NonNull final BaseCustomBlock block) {
+  private void removeFromExecutorSchedule(@NonNull final CustomBlock block) {
     asyncExecutionManager.removeTickableObject(block);
     syncExecutionManager.removeTickableObject(block);
   }

@@ -1,5 +1,7 @@
 package studio.craftory.core.containers.persitanceholders;
 
+import org.bukkit.persistence.PersistentDataContainer;
+
 public interface PersistentDataHolder {
 
   /**
@@ -7,5 +9,5 @@ public interface PersistentDataHolder {
    *
    * @return the DataHolder
    */
-  DataHolder getPersistentData();
+  PersistentDataContainer getPersistentData();
 }

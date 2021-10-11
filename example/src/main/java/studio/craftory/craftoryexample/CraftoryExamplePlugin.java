@@ -39,10 +39,10 @@ public final class CraftoryExamplePlugin extends JavaPlugin implements CraftoryA
   @Override
   public void onEnable() {
     String[] test = {"custom/block/machine/generator_n"};
-    Craftory.getCustomBlockAPI().registerCustomBlock(this, SimpleGenerator.class, test, DefaultRotationalRenderer.class);
+    Craftory.customBlockAPI().registerCustomBlock(this, SimpleGenerator.class, test, DefaultRotationalRenderer.class);
 
     String[] test1 = {"custom/block/mineral/copper/copper_ore"};
-    Craftory.getCustomBlockAPI().registerCustomBlock(this, CopperOre.class, test1);
+    Craftory.customBlockAPI().registerCustomBlock(this, CopperOre.class, test1);
 
     ItemDataKey magicalPower = new ItemDataKey(new NamespacedKey(this, "magical-power"), PersistentDataType.INTEGER);
     CustomItem wrench = CustomItem.builder()

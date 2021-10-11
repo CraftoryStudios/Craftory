@@ -1,8 +1,11 @@
 package studio.craftory.core.items;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +32,8 @@ public class CustomItemManager implements Listener {
 
   @Inject
   private AssetLinker assetLinker;
+
+  private static Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
   protected CustomItemManager() {
 
@@ -78,10 +83,9 @@ public class CustomItemManager implements Listener {
 
   private void assignRenderIds() {
     File renderIdFile = new File(ResourcePack.ITEM_RENDER_DATA);
-    ObjectMapper mapper = new ObjectMapper();
-    if (renderIdFile.exists()) {
+    if(renderIdFile.exists()) {
       try {
-        customItemRenderIdCache = mapper.readValue(renderIdFile, new TypeReference<>() {});
+        customItemRenderIdCache = gson.fromJson(new FileReader(renderIdFile), new TypeToken<Map<String, Integer>>(){}.getType());
         Log.debug("Loaded item render data: " + customItemRenderIdCache.toString());
       } catch (IOException e) {
         Log.error("Couldn't read item render data");

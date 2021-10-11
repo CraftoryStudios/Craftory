@@ -55,7 +55,7 @@ public class ShapedCraftingRecipe implements ICraftingRecipe {
 
     // Register the recipe
     Bukkit.addRecipe(bukkitRecipe);
-    Craftory.getRecipeManager().registerRecipe(this);
+    Craftory.recipeManager().registerRecipe(this);
   }
 
   @Override

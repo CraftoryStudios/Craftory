@@ -1,4 +1,4 @@
-package studio.craftory.core.listeners;
+package studio.craftory.core.blocks.listeners;
 
 import java.util.Optional;
 import javax.inject.Inject;
@@ -16,36 +16,30 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import studio.craftory.core.blocks.CustomBlock;
 import studio.craftory.core.blocks.CustomBlockManager;
-import studio.craftory.core.blocks.CustomBlockRegistry;
-import studio.craftory.core.blocks.templates.BaseCustomBlock;
+import studio.craftory.core.blocks.BlockRegistry;
 import studio.craftory.core.containers.CraftoryDirection;
 import studio.craftory.core.containers.keys.CraftoryBlockKey;
 import studio.craftory.core.items.CustomItemUtils;
 import studio.craftory.core.utils.Constants.Keys;
 import studio.craftory.core.utils.Log;
 
-public class CustomBlockListener implements Listener {
-
+public class BlockInteractionListener implements Listener {
 
   @Inject
   private CustomBlockManager customBlockManager;
-
   @Inject
-  private CustomBlockRegistry blockRegistry;
+  private BlockRegistry blockRegistry;
 
   @EventHandler
   public void onCustomBlockPlace(BlockPlaceEvent blockPlaceEvent) {
     //Check is Custom Block Being Placed
-    if (!blockPlaceEvent.getItemInHand().hasItemMeta()) {
-      return;
-    }
+    if (!blockPlaceEvent.getItemInHand().hasItemMeta()) return;
     ItemStack itemStack = blockPlaceEvent.getItemInHand();
     CustomItemUtils.validateItemStackMeta(itemStack);
     PersistentDataContainer dataHolder = itemStack.getItemMeta().getPersistentDataContainer();
-    if (!dataHolder.has(Keys.BLOCK_ITEM_KEY, PersistentDataType.STRING)) {
-      return;
-    }
+    if (!dataHolder.has(Keys.BLOCK_ITEM_KEY, PersistentDataType.STRING)) return;
 
     //Get Custom Block Data
     CraftoryDirection direction = getDirection(blockPlaceEvent.getPlayer());
@@ -61,24 +55,16 @@ public class CustomBlockListener implements Listener {
 
   @EventHandler
   public void onCustomBlockClick(PlayerInteractEvent playerInteractEvent) {
-    if (playerInteractEvent.getAction() != Action.LEFT_CLICK_BLOCK && playerInteractEvent.getAction() != Action.RIGHT_CLICK_BLOCK) {
-      return;
-    }
-    Optional<BaseCustomBlock> customBlock = customBlockManager.getLoadedCustomBlockAt(playerInteractEvent.getClickedBlock().getLocation());
-    customBlock.ifPresent(baseCustomBlock -> baseCustomBlock.onPlayerClick(playerInteractEvent));
+    if (playerInteractEvent.getAction() != Action.LEFT_CLICK_BLOCK && playerInteractEvent.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+    Optional<CustomBlock> customBlock = customBlockManager.getLoadedCustomBlockAt(playerInteractEvent.getClickedBlock().getLocation());
+    customBlock.ifPresent(CustomBlock -> CustomBlock.onPlayerClick(playerInteractEvent));
   }
 
   private CraftoryDirection getDirection(Player player) {
     int degrees = (Math.round(player.getLocation().getYaw()) + 270) % 360;
-    if (degrees > 315 || degrees <= 45) {
-      return CraftoryDirection.NORTH;
-    }
-    if (degrees <= 135) {
-      return CraftoryDirection.EAST;
-    }
-    if (degrees <= 225) {
-      return CraftoryDirection.SOUTH;
-    }
+    if (degrees > 315 || degrees <= 45) return CraftoryDirection.NORTH;
+    if (degrees <= 135) return CraftoryDirection.EAST;
+    if (degrees <= 225) return CraftoryDirection.SOUTH;
     return CraftoryDirection.WEST;
   }
 
@@ -94,12 +80,9 @@ public class CustomBlockListener implements Listener {
 
   @EventHandler
   public void onNoteBlockTwo(BlockFadeEvent e) {
-    if (e.getBlock().getType() != Material.GRASS_BLOCK) {
-      return;
-    }
+    if (e.getBlock().getType() != Material.GRASS_BLOCK) return;
     for (BlockFace face : BlockFace.values()) {
-      if (e.getBlock().getRelative(face).getType() == Material.NOTE_BLOCK && customBlockManager.containsCustomBlock(
-          e.getBlock().getRelative(face).getLocation())) {
+      if (e.getBlock().getRelative(face).getType() == Material.NOTE_BLOCK && customBlockManager.containsCustomBlock(e.getBlock().getRelative(face).getLocation())) {
         e.setCancelled(true);
         e.getBlock().setType(Material.DIRT, false);
         return;
@@ -109,8 +92,7 @@ public class CustomBlockListener implements Listener {
 
   @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   public void onNoteBlockInteract(PlayerInteractEvent event) {
-    if (event.hasBlock() && event.getClickedBlock().getType() == Material.NOTE_BLOCK && customBlockManager.containsCustomBlock(
-        event.getClickedBlock().getLocation())) {
+    if (event.hasBlock() && event.getClickedBlock().getType() == Material.NOTE_BLOCK && customBlockManager.containsCustomBlock(event.getClickedBlock().getLocation())) {
       event.setCancelled(true);
     }
   }

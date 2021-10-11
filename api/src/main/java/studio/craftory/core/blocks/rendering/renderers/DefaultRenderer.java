@@ -1,7 +1,8 @@
 package studio.craftory.core.blocks.rendering.renderers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import lombok.NonNull;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
@@ -19,20 +20,7 @@ import studio.craftory.core.utils.Log;
 
 public class DefaultRenderer implements CraftoryRenderer {
 
-  protected static MultipleFacing getMutlifacingData(@NonNull String stateData, Block block) {
-    MultipleFacing blockData = (MultipleFacing) block.getBlockData();
-
-    String[] states = stateData.split("");
-
-    blockData.setFace(BlockFace.DOWN, states[0].equals("T"));
-    blockData.setFace(BlockFace.EAST, states[1].equals("T"));
-    blockData.setFace(BlockFace.NORTH, states[2].equals("T"));
-    blockData.setFace(BlockFace.SOUTH, states[3].equals("T"));
-    blockData.setFace(BlockFace.UP, states[4].equals("T"));
-    blockData.setFace(BlockFace.WEST, states[5].equals("T"));
-
-    return blockData;
-  }
+  private static Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
   @Override
   public void render(@NonNull Block block, @NonNull CraftoryDirection direction, @NonNull RenderData renderData) {
@@ -79,10 +67,8 @@ public class DefaultRenderer implements CraftoryRenderer {
 
   @Override
   public void generateAssets(String blockKey, String[] assetsData, BlockAssetGenerator blockAssetGenerator) {
-    ObjectMapper mapper = new ObjectMapper();
-
     if (assetsData.length == 1 || assetsData.length == 6) {
-      ArrayNode renderFileData = mapper.createArrayNode();
+      JsonArray renderFileData = new JsonArray();
       renderFileData.add(this.getClass().getSimpleName());
       for (String assetsDatum : assetsData) {
         String data = blockAssetGenerator.generateBlockState();
@@ -176,6 +162,21 @@ public class DefaultRenderer implements CraftoryRenderer {
       default:
         return Instrument.BANJO;
     }
+  }
+
+  protected static MultipleFacing getMutlifacingData(@NonNull String stateData, Block block) {
+    MultipleFacing blockData = (MultipleFacing) block.getBlockData();
+
+    String[] states = stateData.split("");
+
+    blockData.setFace(BlockFace.DOWN, states[0].equals("T"));
+    blockData.setFace(BlockFace.EAST, states[1].equals("T"));
+    blockData.setFace(BlockFace.NORTH, states[2].equals("T"));
+    blockData.setFace(BlockFace.SOUTH, states[3].equals("T"));
+    blockData.setFace(BlockFace.UP, states[4].equals("T"));
+    blockData.setFace(BlockFace.WEST, states[5].equals("T"));
+
+    return blockData;
   }
 
 }

@@ -1,16 +1,21 @@
 package studio.craftory.core.blocks;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.block.Block;
@@ -26,16 +31,14 @@ import studio.craftory.core.containers.events.ResourcePackBuilt;
 import studio.craftory.core.containers.keys.CraftoryBlockKey;
 import studio.craftory.core.utils.Log;
 
-public class BlockRenderManager implements Listener {
-
-  private final ObjectMapper mapper;
+public class BlockRenderer implements Listener {
+  private Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
   @Getter
   private final Map<String, CraftoryRenderer> renderers = new HashMap<>();
   private final Map<String, RenderData> blockToRenderDataMap = new HashMap<>();
 
-  public BlockRenderManager() {
-    mapper = new ObjectMapper();
+  public BlockRenderer() {
     registerDefaultRenders();
   }
 
@@ -52,7 +55,7 @@ public class BlockRenderManager implements Listener {
   public void registerRenderer(@NonNull Class<? extends CraftoryRenderer> renderer) {
     try {
       renderers.putIfAbsent(renderer.getSimpleName(), renderer.getDeclaredConstructor().newInstance());
-    } catch (Exception e) {
+    } catch (Exception e ) {
       Log.error("Couldn't register renderer ", renderer.getName());
     }
   }
@@ -66,8 +69,11 @@ public class BlockRenderManager implements Listener {
     File renderDataFile = new File(Craftory.getInstance().getDataFolder(), "renderData.json");
     if (renderDataFile.exists()) {
       try {
-        JsonNode node = mapper.readTree(renderDataFile);
-        parseRenderData(node);
+        JsonElement node = new JsonParser().parse(new FileReader(renderDataFile));
+        if (node == null || !node.isJsonObject()) {
+          node = new JsonObject();
+        }
+        parseRenderData(node.getAsJsonObject());
       } catch (IOException e) {
         Log.error("Couldn't read render data");
       }
@@ -76,19 +82,14 @@ public class BlockRenderManager implements Listener {
     }
   }
 
-  private void parseRenderData(@NonNull JsonNode node) {
-    if (node.isObject()) {
-      ObjectNode objectNode = (ObjectNode) node;
+  private void parseRenderData(@NonNull JsonObject node) {
+    if (node.isJsonObject()) {
 
-      Iterator<Entry<String, JsonNode>> fields = objectNode.fields();
-      Entry<String, JsonNode> field;
-      while (fields.hasNext()) {
-        field = fields.next();
-
-        if (field.getValue().isArray() && field.getValue().size() > 1) {
-          blockToRenderDataMap.put(field.getKey(), extractRenderData(field.getValue()));
+      for (Entry<String, JsonElement> field : node.entrySet()) {
+        if (field.getValue().isJsonArray() && ((JsonArray)field.getValue()).size() > 1) {
+          blockToRenderDataMap.put(field.getKey(), extractRenderData((JsonArray)field.getValue()));
         } else {
-          Log.warn("Block type " + field.getKey() + " doesn't have correct render data");
+          Log.warn("Block type "+ field.getKey() + " doesn't have correct render data");
         }
       }
     } else {
@@ -96,8 +97,8 @@ public class BlockRenderManager implements Listener {
     }
   }
 
-  private RenderData extractRenderData(@NonNull JsonNode node) {
-    ArrayList<String> renderDetails = mapper.convertValue(node, new TypeReference<>() {});
+  private RenderData extractRenderData(@NonNull JsonArray node) {
+    ArrayList<String> renderDetails = gson.fromJson(node, new TypeToken<ArrayList<String>>(){}.getType());
     CraftoryRenderer renderer = renderers.get(renderDetails.get(0));
     renderDetails.remove(0);
     return new RenderData(renderer, renderDetails);

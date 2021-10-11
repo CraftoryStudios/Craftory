@@ -3,14 +3,14 @@ package studio.craftory.core.executors;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
-import studio.craftory.core.blocks.templates.BaseCustomBlock;
+import studio.craftory.core.blocks.CustomBlock;
 
 public class TickGroup {
 
   final int tick;
 
   @Getter
-  private final Set<BaseCustomBlock> tickables;
+  private final Set<CustomBlock> tickables;
 
   public TickGroup(int tick) {
     this.tickables = new HashSet<>();

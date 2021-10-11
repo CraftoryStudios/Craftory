@@ -43,7 +43,7 @@ public class CraftoryDataKey implements Serializable {
   }
 
   private void register() {
-    Craftory.getCustomBlockAPI().registerDataKey(this);
+    Craftory.blockRegistry().registerDataKey(this.toString(), this);
   }
 
 

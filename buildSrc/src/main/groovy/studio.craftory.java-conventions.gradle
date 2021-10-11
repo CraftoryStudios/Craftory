@@ -40,8 +40,8 @@ tasks.prepareSpigotPlugins.dependsOn(shadowJar)
 group = 'studio.craftory'
 version = '1.0.0'
 
-java.sourceCompatibility = JavaVersion.VERSION_11
-java.targetCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_16
+java.targetCompatibility = JavaVersion.VERSION_16
 
 sonarqube {
     properties {
