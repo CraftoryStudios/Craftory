@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.Synchronized;
 import org.bukkit.Chunk;
@@ -26,7 +25,6 @@ public class CustomBlockManager {
   private final SyncExecutionManager syncExecutionManager;
   private final BlockRenderer blockRenderer;
 
-  @Getter
   private final Map<Chunk,Map<Location, CustomBlock>> customBlocks;
 
   @Inject
@@ -219,4 +217,5 @@ public class CustomBlockManager {
   }
 
 
+  public Map<Chunk, Map<Location, CustomBlock>> getCustomBlocks() {return this.customBlocks;}
 }

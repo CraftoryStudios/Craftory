@@ -2,19 +2,17 @@ package studio.craftory.core.blocks.components.fluid;
 
 import java.util.Optional;
 import lombok.NonNull;
-import lombok.Value;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import studio.craftory.core.containers.keys.CraftoryKey;
 
 // TODO redo as registry of fluids instead of recreate each time
-@Value
-public class CraftoryFluid {
+public final class CraftoryFluid {
 
-  CraftoryKey id;
-  String displayName;
-  ItemStack representingItem;
-  boolean gaseous;
+  private final CraftoryKey id;
+  private final String displayName;
+  private final ItemStack representingItem;
+  private final boolean gaseous;
 
   public CraftoryFluid(@NonNull Plugin plugin, @NonNull String internalName, @NonNull String displayName, @NonNull ItemStack representingItem,
       boolean gaseous) {
@@ -53,4 +51,11 @@ public class CraftoryFluid {
     return id.toString().hashCode();
   }
 
+  public CraftoryKey getId() {return this.id;}
+
+  public String getDisplayName() {return this.displayName;}
+
+  public ItemStack getRepresentingItem() {return this.representingItem;}
+
+  public boolean isGaseous() {return this.gaseous;}
 }

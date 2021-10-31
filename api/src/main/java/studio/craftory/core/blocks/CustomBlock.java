@@ -1,6 +1,5 @@
 package studio.craftory.core.blocks;
 
-import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -17,9 +16,7 @@ import studio.craftory.core.containers.persitanceholders.VolatileDataHolder;
 public abstract class CustomBlock implements PersistentDataHolder, VolatileDataHolder {
   private CustomBlockData persistentData;
   private DataHolder volatileData = new DataHolder();
-  @Getter
   private final Location location;
-  @Getter
   private CraftoryDirection facingDirection;
 
 
@@ -45,4 +42,8 @@ public abstract class CustomBlock implements PersistentDataHolder, VolatileDataH
   public void renderCustomBlock() {}
 
   public void onPlayerClick(PlayerInteractEvent playerInteractEvent) {}
+
+  public Location getLocation() {return this.location;}
+
+  public CraftoryDirection getFacingDirection() {return this.facingDirection;}
 }

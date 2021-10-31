@@ -12,7 +12,6 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -29,8 +28,9 @@ import studio.craftory.core.Craftory;
 import studio.craftory.core.containers.errors.CraftoryItemHasNoMetaException;
 import studio.craftory.core.utils.StringUtils;
 
-@UtilityClass
-public class CustomItemUtils {
+public final class CustomItemUtils {
+
+  private CustomItemUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
   /* Utility Methods */
   public static boolean isCustomItem(@NonNull ItemStack itemStack) {

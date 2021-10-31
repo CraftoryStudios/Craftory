@@ -6,10 +6,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
-public class Reflections {
+public final class Reflections {
+
+  private Reflections() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
   public static <T extends Annotation> T getClassAnnotation(@NonNull Object object, @NonNull Class<T> annotation) {
     Class<?> clazz = object.getClass();

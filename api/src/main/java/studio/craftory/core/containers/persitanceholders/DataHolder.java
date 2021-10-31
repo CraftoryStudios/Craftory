@@ -3,20 +3,18 @@ package studio.craftory.core.containers.persitanceholders;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import studio.craftory.core.containers.keys.CraftoryDataKey;
 
 /**
  * Class inspired by LogisticsCraft's Logistics-API and the DataHolder class
  **/
-@NoArgsConstructor
 public class DataHolder {
 
   //Data container for component data
-  @Getter
   private final Map<CraftoryDataKey, Object> data = new HashMap<>();
+
+  public DataHolder() {}
 
   /**
    * Set the property value with the given key.
@@ -49,4 +47,6 @@ public class DataHolder {
   public <T> Optional<T> get(@NonNull CraftoryDataKey key) {
     return (Optional<T>) Optional.ofNullable(key.getDataClass().cast(data.get(key)));
   }
+
+  public Map<CraftoryDataKey, Object> getData() {return this.data;}
 }

@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import studio.craftory.core.api.CustomBlockAPI;
@@ -13,8 +11,6 @@ import studio.craftory.core.blocks.CustomBlock;
 import studio.craftory.core.containers.IntRange;
 import studio.craftory.core.containers.Vector3;
 
-@Getter
-@RequiredArgsConstructor
 public abstract class Ore {
 
   protected final Class<? extends CustomBlock> material;
@@ -31,9 +27,26 @@ public abstract class Ore {
     this.height = height;
   }
 
+  public Ore(Class<? extends CustomBlock> material, Set<Material> replaceable, IntRange amount, IntRange height) {
+    this.material = material;
+    this.replaceable = replaceable;
+    this.amount = amount;
+    this.height = height;
+  }
+
   public void injectAPI(CustomBlockAPI customBlockAPI) {
     this.customBlockAPI = customBlockAPI;
   }
 
   public abstract void generate(Vector3 origin, Chunk chunk, Random random);
+
+  public Class<? extends CustomBlock> getMaterial() {return this.material;}
+
+  public Set<Material> getReplaceable() {return this.replaceable;}
+
+  public IntRange getAmount() {return this.amount;}
+
+  public IntRange getHeight() {return this.height;}
+
+  public CustomBlockAPI getCustomBlockAPI() {return this.customBlockAPI;}
 }

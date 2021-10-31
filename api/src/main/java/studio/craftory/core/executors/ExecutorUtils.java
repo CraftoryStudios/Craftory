@@ -9,14 +9,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
 import studio.craftory.core.annotations.Tickable;
 import studio.craftory.core.blocks.CustomBlock;
 import studio.craftory.core.utils.Log;
 import studio.craftory.core.utils.Reflections;
 
-@UtilityClass
-public class ExecutorUtils {
+public final class ExecutorUtils {
+
+  private ExecutorUtils() {throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");}
 
   public static void registerTickableClass(Class<? extends CustomBlock> clazz,
       Map<Class<? extends CustomBlock>, Map<Integer, List<Method>>> tickableMethods, boolean async) {
@@ -45,7 +45,8 @@ public class ExecutorUtils {
     }
   }
 
-  public static void runMethods(@NonNull Set<TickGroup> tickGroups, int tick, Map<Class<? extends CustomBlock>, Map<Integer, List<Method>>> tickableMethods) {
+  public static void runMethods(@NonNull Set<TickGroup> tickGroups, int tick,
+      Map<Class<? extends CustomBlock>, Map<Integer, List<Method>>> tickableMethods) {
     for (TickGroup tickGroup : tickGroups) {
       if (tick % tickGroup.tick == 0) {
         for (CustomBlock tickable : tickGroup.getTickables()) {

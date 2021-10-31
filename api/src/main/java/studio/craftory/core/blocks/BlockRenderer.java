@@ -12,11 +12,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -34,7 +31,6 @@ import studio.craftory.core.utils.Log;
 public class BlockRenderer implements Listener {
   private Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
-  @Getter
   private final Map<String, CraftoryRenderer> renderers = new HashMap<>();
   private final Map<String, RenderData> blockToRenderDataMap = new HashMap<>();
 
@@ -103,4 +99,6 @@ public class BlockRenderer implements Listener {
     renderDetails.remove(0);
     return new RenderData(renderer, renderDetails);
   }
+
+  public Map<String, CraftoryRenderer> getRenderers() {return this.renderers;}
 }

@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import javax.inject.Inject;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Synchronized;
 import org.bukkit.Location;
@@ -23,7 +21,6 @@ import studio.craftory.core.items.CustomItem;
 import studio.craftory.core.utils.Log;
 
 /** Class based on LogisticsCraft's Logistics-API (MIT) and the LogisticsTypeRegister class **/
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class BlockRegistry {
 
   @Inject
@@ -38,6 +35,8 @@ public class BlockRegistry {
 
   private final Map<String, CraftoryDataKey> craftoryDataKeyMap = new HashMap<>();
   private final Map<String, CraftoryBlockKey> craftoryBlockKeyMap = new HashMap<>();
+
+  BlockRegistry() {}
 
   @Synchronized
   public CraftoryBlockKey registerCustomBlockClass(@NonNull Plugin plugin, @NonNull Class<?> block, @NonNull String model) {

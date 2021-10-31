@@ -1,11 +1,19 @@
 plugins {
     id 'studio.craftory.java-conventions'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.0-RC'
 }
 
 apply from: "$rootDir/publish.gradle"
 
+repositories {
+    maven { url "https://repo.dmulloy2.net/repository/public/" }
+    mavenCentral()
+}
+
 dependencies {
     compileOnly 'ch.jalu:injector:1.0'
+    compileOnly group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.7.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8";
 }
 
 version '1.0.0'
@@ -18,3 +26,13 @@ sonarqube {
 
 tasks.publish.dependsOn(shadowJar)
 description = 'craftory-api'
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
