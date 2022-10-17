@@ -10,11 +10,11 @@ repositories {
 }
 
 dependencies {
-    implementation "io.freefair.gradle:lombok-plugin:6.0.0-m2"
+    implementation "io.freefair.gradle:lombok-plugin:6.5.1"
     implementation "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.1.1"
     implementation 'com.github.jengelman.gradle.plugins:shadow:6.1.0'
     implementation "kr.entree:spigradle:2.2.4"
-    implementation "io.freefair.gradle:lombok-plugin:6.0.0-m2"
+    implementation "io.freefair.gradle:lombok-plugin:6.5.1"
 }
 
 
